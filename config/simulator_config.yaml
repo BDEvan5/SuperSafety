@@ -23,11 +23,12 @@ range_finder_scale: 5
 h_size: 100
 r1: 0.08
 r2: 0.001
-rk: 0.04
+rk: 0.0
 
 
 #simulator
 sim_steps: 5
+max_steps: 1000
 
 # PP
 lookahead: 0.82
@@ -36,7 +37,7 @@ v_min_plan: 1
 
 # test params
 test_n: 10
-train_n: 20000
+train_n: 5000
 
 #save_paths
 vehicle_path: "Data/Vehicles/"

@@ -58,6 +58,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     print(f"Starting Baseline Training: {vehicle.name}")
     crash_counter = 0
 
+    ep_steps = 0 
     for n in range(conf.train_n):
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
@@ -67,8 +68,10 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
 
         state = s_prime
         vehicle.agent.train(2)
+        env.render('human_fast')
         
-        if done:
+        if done or ep_steps > conf.max_steps:
+            ep_steps = 0 
             vehicle.done_entry(s_prime)
             if show:
                 env.render(wait=False)
@@ -76,6 +79,8 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
                 crash_counter += 1
 
             state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+            
+        ep_steps += 1
 
     vehicle.t_his.print_update(True)
     vehicle.t_his.save_csv_data()

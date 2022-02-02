@@ -64,7 +64,7 @@ class BaseVehicle:
     def transform_action(self, nn_action):
         steering_angle = nn_action[0] * self.max_steer
         # this is to ensure that it doesn't stay still
-        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 0.5
+        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 2) + 1
         # max_speed = calculate_speed(steering_angle)
         # speed = np.clip(speed, 0, max_speed)
         action = np.array([steering_angle, speed])
