@@ -37,7 +37,7 @@ from PIL import Image
 import yaml
 
 # helpers
-from f110_gym.envs.collision_models import get_vertices
+from SuperSafety.f110_gym.collision_models import get_vertices
 
 # zooming constants
 ZOOM_IN_FACTOR = 1.2
@@ -112,7 +112,7 @@ class EnvRenderer(pyglet.window.Window):
 
         self.fps_display = pyglet.window.FPSDisplay(self)
 
-    def update_map(self, map_path, map_ext):
+    def update_map(self, map_name, map_ext):
         """
         Update the map being drawn by the renderer. Converts image to a list of 3D points representing each obstacle pixel in the map.
 
@@ -125,7 +125,8 @@ class EnvRenderer(pyglet.window.Window):
         """
 
         # load map metadata
-        with open(map_path + '.yaml', 'r') as yaml_stream:
+        map_path = "maps/" + map_name  
+        with open(map_path+ '.yaml', 'r') as yaml_stream:
             try:
                 map_metadata = yaml.safe_load(yaml_stream)
                 map_resolution = map_metadata['resolution']

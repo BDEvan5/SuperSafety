@@ -31,8 +31,8 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 
 # base classes
-from f110_gym.envs.base_classes import Simulator
-from f110_gym.envs.laser_models import get_dt
+from SuperSafety.f110_gym.base_classes import Simulator
+from SuperSafety.f110_gym.laser_models import get_dt
 
 # others
 import numpy as np
@@ -137,7 +137,7 @@ class F110Env(gym.Env):
         try:
             self.num_agents = kwargs['num_agents']
         except:
-            self.num_agents = 2
+            self.num_agents = 1
 
         try:
             self.timestep = kwargs['timestep']
@@ -234,7 +234,8 @@ class F110Env(gym.Env):
             if self.toggle_list[i] < 4:
                 self.lap_times[i] = self.current_time
         
-        done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 4)
+        done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
+        # This number (2) is 2x the number of laps desired
         
         return done, self.toggle_list >= 4
 
@@ -466,7 +467,7 @@ class F110Env(gym.Env):
         
         if F110Env.renderer is None:
             # first call, initialize everything
-            from f110_gym.envs.rendering import EnvRenderer
+            from SuperSafety.f110_gym.rendering import EnvRenderer
             F110Env.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
             F110Env.renderer.update_map(self.map_name, self.map_ext)
             
