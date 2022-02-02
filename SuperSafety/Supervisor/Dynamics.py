@@ -326,114 +326,118 @@ class RaceCarDynamics(object):
         self.state = self.state + f * self.time_step
 
 
-# def run_dynamics_update(x, u, dt):
-#     params = {'mu': 1.0489, 'C_Sf': 4.718, 'C_Sr': 5.4562, 'lf': 0.15875, 'lr': 0.17145, 'h': 0.074, 'm': 3.74, 'I': 0.04712, 's_min': -0.4189, 's_max': 0.4189, 'sv_min': -3.2, 'sv_max': 3.2, 'v_switch': 7.319, 'a_max': 9.51, 'v_min':-5.0, 'v_max': 20.0, 'width': 0.31, 'length': 0.58}
+def run_dynamics_update(x, u, dt):
+    params = {'mu': 1.0489, 'C_Sf': 4.718, 'C_Sr': 5.4562, 'lf': 0.15875, 'lr': 0.17145, 'h': 0.074, 'm': 3.74, 'I': 0.04712, 's_min': -0.4189, 's_max': 0.4189, 'sv_min': -3.2, 'sv_max': 3.2, 'v_switch': 7.319, 'a_max': 9.51, 'v_min':-5.0, 'v_max': 20.0, 'width': 0.31, 'length': 0.58}
 
-#     sim_step = 0.01 
-#     car = RaceCarDynamics(params, sim_step)
-#     car.reset(x[0:3])
-#     car.state[3] = x[3] # set the velocity
-#     car.state[2] = x[4] # set the steering
-#     # print(f"Original state: {x}")
-#     # print(f"car state: {car.state}")
-#     #TODO: set the delta state...
+    sim_step = 0.01 
+    car = RaceCarDynamics(params, sim_step)
+    car.reset(x[0:3])
+    car.state[3] = x[3] # set the velocity
+    car.state[2] = x[4] # set the steering
+    # print(f"Original state: {x}")
+    # print(f"car state: {car.state}")
+    #TODO: set the delta state...
 
-#     # n_steps = 5
-#     n_steps = int(dt / sim_step)
-#     # states = [car.state]
-#     for i in range(n_steps):
-#         car.update_pose(u[0], u[1])
-#         # states.append(car.state)
+    # n_steps = 5
+    n_steps = int(dt / sim_step)
+    # states = [car.state]
+    for i in range(n_steps):
+        car.update_pose(u[0], u[1])
+        # states.append(car.state)
 
-#     # plt.figure(1)
-#     # states = np.array(states)
-#     # plt.plot(states[:, 0], states[:, 1])
-#     # plt.title('Positions: official sim')
+    # plt.figure(1)
+    # states = np.array(states)
+    # plt.plot(states[:, 0], states[:, 1])
+    # plt.title('Positions: official sim')
 
-#     # plt.show()
-#     inds = np.array([0, 1, 4, 3, 2])
+    # plt.show()
+    inds = np.array([0, 1, 4, 3, 2])
 
-#     new_state = np.array(car.state[inds])
-#     return new_state
+    new_state = np.array(car.state[inds])
+
+
+    print(f"Original state: {x} + {u}")
+    print(f"New state: {new_state}")
+    return new_state
 
 
 
 #Dynamics functions
-@njit(cache=True)
-def update_kinematic_state(x, u, dt, whlb=0.33, max_steer=0.4, max_v=7):
-    """
-    Updates the kinematic state according to bicycle model
+# @njit(cache=True)
+# def update_kinematic_state(x, u, dt, whlb=0.33, max_steer=0.4, max_v=7):
+#     """
+#     Updates the kinematic state according to bicycle model
 
-    Args:
-        X: State, x, y, theta, velocity, steering
-        u: control action, d_dot, a
-    Returns
-        new_state: updated state of vehicle
-    """
-    dx = np.array([x[3]*np.sin(x[2]), # x
-                x[3]*np.cos(x[2]), # y
-                x[3]/whlb * np.tan(x[4]), # theta
-                u[1], # velocity
-                u[0]]) # steering
+#     Args:
+#         X: State, x, y, theta, velocity, steering
+#         u: control action, d_dot, a
+#     Returns
+#         new_state: updated state of vehicle
+#     """
+#     dx = np.array([x[3]*np.sin(x[2]), # x
+#                 x[3]*np.cos(x[2]), # y
+#                 x[3]/whlb * np.tan(x[4]), # theta
+#                 u[1], # velocity
+#                 u[0]]) # steering
 
-    new_state = x + dx * dt 
+#     new_state = x + dx * dt 
 
-    # check limits
-    new_state[4] = min(new_state[4], max_steer)
-    new_state[4] = max(new_state[4], -max_steer)
-    new_state[3] = min(new_state[3], max_v)
+#     # check limits
+#     new_state[4] = min(new_state[4], max_steer)
+#     new_state[4] = max(new_state[4], -max_steer)
+#     new_state[3] = min(new_state[3], max_v)
 
-    return new_state
+#     return new_state
 
 
-@njit(cache=True)
-def control_system(state, action, max_v=7, max_steer=0.4, max_a=6.5, max_d_dot=3.2):
-    """
-    Generates acceleration and steering velocity commands to follow a reference
-    Note: the controller gains are hand tuned in the fcn
+# @njit(cache=True)
+# def control_system(state, action, max_v=7, max_steer=0.4, max_a=6.5, max_d_dot=3.2):
+#     """
+#     Generates acceleration and steering velocity commands to follow a reference
+#     Note: the controller gains are hand tuned in the fcn
 
-    Args:
-        v_ref: the reference velocity to be followed
-        d_ref: reference steering to be followed
+#     Args:
+#         v_ref: the reference velocity to be followed
+#         d_ref: reference steering to be followed
 
-    Returns:
-        a: acceleration
-        d_dot: the change in delta = steering velocity
-    """
-    # clip action
-    v_ref = min(action[1], max_v)
-    d_ref = max(action[0], -max_steer)
-    d_ref = min(action[0], max_steer)
+#     Returns:
+#         a: acceleration
+#         d_dot: the change in delta = steering velocity
+#     """
+#     # clip action
+#     v_ref = min(action[1], max_v)
+#     d_ref = max(action[0], -max_steer)
+#     d_ref = min(action[0], max_steer)
 
-    kp_a = 10
-    a = (v_ref-state[3])*kp_a
+#     kp_a = 10
+#     a = (v_ref-state[3])*kp_a
     
-    kp_delta = 40
-    d_dot = (d_ref-state[4])*kp_delta
+#     kp_delta = 40
+#     d_dot = (d_ref-state[4])*kp_delta
 
-    # clip actions
-    #TODO: temporary removal of dynamic constraints
-    a = min(a, max_a)
-    a = max(a, -max_a)
-    d_dot = min(d_dot, max_d_dot)
-    d_dot = max(d_dot, -max_d_dot)
+#     # clip actions
+#     #TODO: temporary removal of dynamic constraints
+#     a = min(a, max_a)
+#     a = max(a, -max_a)
+#     d_dot = min(d_dot, max_d_dot)
+#     d_dot = max(d_dot, -max_d_dot)
     
-    u = np.array([d_dot, a])
+#     u = np.array([d_dot, a])
 
-    return u
+#     return u
 
-@njit(cache=True)
-def run_dynamics_update(state, action, dt, whlb=0.33, max_steer=0.4, max_v=7):
-# def update_complex_state(state, action, dt, plan_steps=10, whlb=0.33, max_steer=0.4, max_v=7):
-    t = 0.01
-    plan_steps = int(dt / t)
+# @njit(cache=True)
+# def run_dynamics_update(state, action, dt, whlb=0.33, max_steer=0.4, max_v=7):
+# # def update_complex_state(state, action, dt, plan_steps=10, whlb=0.33, max_steer=0.4, max_v=7):
+#     t = 0.01
+#     plan_steps = int(dt / t)
 
-    for i in range(plan_steps):
-        u = control_system(state, action)
-        state = update_kinematic_state(state, u, t, whlb, max_steer, max_v)
-        # print(f"CMPLX:: Action: {u} --. New state: {state}")
+#     for i in range(plan_steps):
+#         u = control_system(state, action)
+#         state = update_kinematic_state(state, u, t, whlb, max_steer, max_v)
+#         # print(f"CMPLX:: Action: {u} --. New state: {state}")
 
-    return state
+#     return state
 
 
 if __name__ == "__main__":
