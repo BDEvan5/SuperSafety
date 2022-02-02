@@ -5,6 +5,24 @@ from matplotlib import pyplot as plt
 
 SIZE = 20000
 
+
+def plot_data(values, moving_avg_period=10, title="Results", figure_n=2):
+    plt.figure(figure_n)
+    plt.clf()        
+    plt.title(title)
+    plt.xlabel('Episode')
+    plt.ylabel('Duration')
+    plt.plot(values)
+
+    moving_avg = moving_average(values, moving_avg_period)
+    plt.plot(moving_avg)    
+    moving_avg = moving_average(values, moving_avg_period * 5)
+    plt.plot(moving_avg)    
+    plt.pause(0.001)
+
+def moving_average(data, period):
+    return np.convolve(data, np.ones(period), 'same') / period
+
 class TrainHistory():
     def __init__(self, agent_name, conf, load=False) -> None:
         self.agent_name = agent_name
@@ -68,20 +86,20 @@ class TrainHistory():
         print(f"Run: {self.t_counter} --> Moving10: {mean10:.2f} --> Moving100: {mean100:.2f}  ")
         
         if plot_reward:
-            raise NotImplementedError
-            # lib.plot(self.rewards[0:self.ptr], figure_n=2)
+            # raise NotImplementedError
+            plot_data(self.rewards[0:self.ptr], figure_n=2)
 
     def save_csv_data(self):
         data = []
         for i in range(len(self.rewards)):
             data.append([i, self.rewards[i], self.lengths[i]])
-        full_name = 'Vehicles/' + self.agent_name + '/training_data.csv'
+        full_name = self.path + '/training_data.csv'
         with open(full_name, 'w') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
 
         plt.figure(2)
-        plt.savefig('Vehicles/' + self.agent_name + "/training_rewards.png")
+        plt.savefig(self.path + "/training_rewards.png")
 
 def moving_average(data, period):
     return np.convolve(data, np.ones(period), 'same') / period

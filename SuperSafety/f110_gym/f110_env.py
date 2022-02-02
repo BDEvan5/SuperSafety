@@ -53,6 +53,21 @@ VIDEO_H = 400
 WINDOW_W = 1000
 WINDOW_H = 800
 
+
+class LinkyLogger:
+    def __init__(self):
+        self.path = "Data/Logs"  
+        self.env_log = "/env_log.txt"
+        self.lap = 0
+
+        with open(self.path + self.env_log, "w") as f:
+            f.write("Official F110 Env\n")
+
+    def write_env_log(self, data):
+        with open(self.path + self.env_log, "a") as f:
+            f.write(data)
+
+
 class F110Env(gym.Env):
     """
     OpenAI gym environment for F1TENTH
@@ -103,6 +118,7 @@ class F110Env(gym.Env):
     def __init__(self, **kwargs):        
         # kwargs extraction
         # print("Env has been made")
+        self.logger = LinkyLogger()
         try:
             self.seed = kwargs['seed']
         except:
@@ -295,7 +311,15 @@ class F110Env(gym.Env):
         done, toggle_list = self._check_done()
         info = {'checkpoint_done': toggle_list}
 
+        if done:
+            self.log_data(obs)
+
         return obs, reward, done, info
+
+    def log_data(self, obs):
+        string = f"{self.logger.lap}: Time: {self.current_time:.2f}s Collisions: {obs['collisions'][0]} \n"
+        self.logger.write_env_log(string)
+        self.logger.lap += 1
 
     def reset(self, poses):
         """
