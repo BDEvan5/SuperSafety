@@ -15,19 +15,12 @@ class PurePursuit:
         self.wheelbase =  conf.l_f + conf.l_r
         self.max_steer = conf.max_steer
 
-        self.progresses = []
-
-    def plan_act(self, obs):
-        return self.act(obs)
-
-    def act(self, obs):
+    def plan(self, obs):
         ego_idx = obs['ego_idx']
         pose_th = obs['poses_theta'][ego_idx] 
         p_x = obs['poses_x'][ego_idx]
         p_y = obs['poses_y'][ego_idx]
         v_current = obs['linear_vels_x'][ego_idx]
-
-        # self.progresses.append(obs['progresses'][0])
 
         pos = np.array([p_x, p_y], dtype=np.float)
 
@@ -45,10 +38,5 @@ class PurePursuit:
 
         return np.array([steering_angle, speed])
 
-    def plot_progress(self):
-        plt.figure(2)
-        plt.plot(self.progresses)
-
-        plt.show()
 
 
