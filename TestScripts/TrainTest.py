@@ -12,7 +12,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
         obs, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
         lap_time = 0.0
         while not done:
-            action = vehicle.plan_act(obs)
+            action = vehicle.plan(obs)
             obs, step_reward, done, _ = env.step(action[None, :])
             laptime += step_reward
             if show:
