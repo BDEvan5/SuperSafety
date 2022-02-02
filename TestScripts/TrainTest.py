@@ -52,6 +52,43 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
     return eval_dict
 
 
+def train_baseline_vehicle(env, vehicle, conf, show=False):
+    start_time = time.time()
+    state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+    print(f"Starting Baseline Training: {vehicle.name}")
+    crash_counter = 0
+
+    for n in range(conf.train_n):
+        action = vehicle.plan(state)
+        sim_steps = conf.sim_steps
+        while sim_steps > 0 and not done:
+            s_prime, r, done, _ = env.step(action[None, :])
+            sim_steps -= 1
+
+        state = s_prime
+        vehicle.agent.train(2)
+        
+        if done:
+            vehicle.done_entry(s_prime)
+            if show:
+                env.render(wait=False)
+            if state['reward'] == -1:
+                crash_counter += 1
+
+            state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+
+    vehicle.t_his.print_update(True)
+    vehicle.t_his.save_csv_data()
+    vehicle.agent.save(vehicle.path)
+
+    train_time = time.time() - start_time
+    print(f"Finished Training: {vehicle.name} in {train_time} seconds")
+    print(f"Crashes: {crash_counter}")
+
+    return train_time, crash_counter
+
+
+
 def find_conclusion(s_p, start):
     laptime = s_p['lap_times'][0]
     if s_p['collisions'][0] == 1:
