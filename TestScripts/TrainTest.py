@@ -13,7 +13,11 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
         lap_time = 0.0
         while not done:
             action = vehicle.plan(obs)
-            obs, step_reward, done, _ = env.step(action[None, :])
+            sim_steps = conf.sim_steps
+            while sim_steps > 0 and not done:
+                obs, step_reward, done, _ = env.step(action[None, :])
+                sim_steps -= 1
+
             laptime += step_reward
             if show:
                 env.render(mode='human_fast')
