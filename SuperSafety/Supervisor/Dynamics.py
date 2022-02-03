@@ -266,16 +266,19 @@ class RaceCarDynamics(object):
         self.steer_buffer = np.empty((0, ))
         self.steer_buffer_size = 2
 
-    def reset(self, pose):
+    def reset(self, state):
         """
         Resets the vehicle to a pose
         """
         self.accel = 0.0
         self.steer_angle_vel = 0.0
         self.state = np.zeros((7, ))
-        self.state[0:2] = pose[0:2]
-        self.state[4] = pose[2]
+        self.state[0:2] = state[0:2]
+        self.state[4] = state[2]
+        self.state[3] = state[3] # velocity
+        self.state[2] = state[4] # steering
         self.steer_buffer = np.empty((0, ))
+        self.steer_buffer = np.append(state[4], self.steer_buffer)
 
     def update_pose(self, raw_steer, vel):
         """
@@ -331,9 +334,10 @@ def run_dynamics_update(x, u, dt):
 
     sim_step = 0.01 
     car = RaceCarDynamics(params, sim_step)
-    car.reset(x[0:3])
-    car.state[3] = x[3] # set the velocity
-    car.state[2] = x[4] # set the steering
+    car.reset(x)
+    # car.reset(x[0:3])
+    # car.state[3] = x[3] # set the velocity
+    # car.state[2] = x[4] # set the steering
     # print(f"Original state: {x}")
     # print(f"car state: {car.state}")
     #TODO: set the delta state...
@@ -361,7 +365,9 @@ def run_dynamics_update(x, u, dt):
     return new_state
 
 
-
+"""
+Notes:
+"""
 #Dynamics functions
 # @njit(cache=True)
 # def update_kinematic_state(x, u, dt, whlb=0.33, max_steer=0.4, max_v=7):

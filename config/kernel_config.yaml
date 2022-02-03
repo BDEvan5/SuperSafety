@@ -1,6 +1,6 @@
 # map
-map_name: "porto"
-# map_name: "columbia_small"
+# map_name: "porto"
+map_name: "columbia_small"
 # map_name: "f1_aut_wide"
 map_ext: ".png"
 sx: 0.0
@@ -48,7 +48,7 @@ kernel_path: "Data/Kernels/"
 dynamics_path: "Data/Dynamics/"
 # kernel_mode: "disc"
 kernel_mode: "viab"
-lookahead_time_step: 0.15
+lookahead_time_step: 0.2
 
 nq_steer: 5
 nq_velocity: 4
