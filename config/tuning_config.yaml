@@ -42,7 +42,7 @@ test_n: 10
 train_n: 15000
 
 #save_paths
-vehicle_path: "Data/Vehicles/"
+vehicle_path: "Data/TuningVehicles/"
 
 #kernel
 kernel_path: "Data/Kernels/"

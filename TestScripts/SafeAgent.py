@@ -26,6 +26,6 @@ def eval_safe_agent(n):
     evaluate_vehicle(env, planner, conf, True)
 
 if __name__ == '__main__':
-    train_safe_agent(3)
+    train_safe_agent(4)
     # eval_safe_agent(1)
 

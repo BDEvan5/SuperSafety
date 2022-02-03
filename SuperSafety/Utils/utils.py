@@ -9,7 +9,7 @@ import shutil
 def save_conf_dict(dictionary, save_name=None):
     if save_name is None:
         save_name  = dictionary["name"]
-    path = dictionary["vehicle_path"] + dictionary["name"] + f"/{save_name}_record.yaml"
+    path = dictionary["vehicle_path"] + dictionary["agent_name"] + f"/{save_name}_record.yaml"
     with open(path, 'w') as file:
         yaml.dump(dictionary, file)
 
