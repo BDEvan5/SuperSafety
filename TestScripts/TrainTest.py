@@ -126,7 +126,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             print(f"Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
             lap_counter += 1
             s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
-            vehicle.lap_complete(s_prime)
+            vehicle.lap_complete(env.lap_times[0])
             if show:
                 env.render(wait=False)
 

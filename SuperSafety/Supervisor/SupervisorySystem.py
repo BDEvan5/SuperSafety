@@ -220,7 +220,7 @@ class LearningSupervisor(Supervisor):
 
         valids = self.simulate_and_classify(state)
         if not valids.any():
-            print(f"No Valid options --> State: {obs['state']}")
+            print(f"No Valid options --> State: {state}")
             self.intervention_mag = 1
             return init_action
 
