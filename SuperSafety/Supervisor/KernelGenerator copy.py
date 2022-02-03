@@ -195,18 +195,18 @@ def check_viable_state(i, j, k, q, dynamics, previous_kernel):
     l_xs, l_ys, l_phis, n_modes = previous_kernel.shape
     for l in range(n_modes):
         safe = True
-        di, dj, new_k, new_q = dynamics[k, q, l, 0, :]
+        di, dj, new_k, new_q = dynamics[q, l, 0, :]
 
         if new_q == -9223372036854775808:
             continue
 
-        for n in range(dynamics.shape[3]): # cycle through 8 block states
-            di, dj, new_k, new_q = dynamics[k, q, l, n, :]
+        for n in range(dynamics.shape[2]): # cycle through 8 block states
+            di, dj, dk, new_q = dynamics[q, l, n, :]
 
                 # return True # not safe.
             new_i = min(max(0, i + di), l_xs-1)  
             new_j = min(max(0, j + dj), l_ys-1)
-            # new_k = min(max(0, k + dk), l_phis-1)
+            new_k = min(max(0, k + dk), l_phis-1)
 
             if previous_kernel[new_i, new_j, new_k, new_q]:
                 # if you hit a constraint, break

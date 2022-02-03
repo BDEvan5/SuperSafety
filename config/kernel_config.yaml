@@ -8,7 +8,7 @@ sy: 0
 stheta: 0  # porto
 
 # max_v: 7
-max_v: 4
+max_v: 3
 max_a: 8.5
 max_steer: 0.4
 max_d_dot: 3.2
@@ -50,8 +50,8 @@ dynamics_path: "Data/Dynamics/"
 kernel_mode: "viab"
 
 nq_steer: 5
-nq_velocity: 3
-min_kernel_v: 2
+nq_velocity: 4
+min_kernel_v: 1.5
 kernel_time_step: 0.3
 n_dx: 40
 phi_range: 6.28

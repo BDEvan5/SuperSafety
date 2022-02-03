@@ -356,8 +356,8 @@ def run_dynamics_update(x, u, dt):
     new_state = np.array(car.state[inds])
 
 
-    print(f"Original state: {x} + {u}")
-    print(f"New state: {new_state}")
+    # print(f"Original state: {x} + {u}")
+    # print(f"New state: {new_state}")
     return new_state
 
 
