@@ -206,7 +206,8 @@ def check_viable_state(i, j, k, q, dynamics, previous_kernel):
                 # return True # not safe.
             new_i = min(max(0, i + di), l_xs-1)  
             new_j = min(max(0, j + dj), l_ys-1)
-            new_k = min(max(0, k + dk), l_phis-1)
+            #TODO: this is definitely a problem because you are no considering that there is continuity with the phi.
+            new_k = add_phis(k, dk, l_phis)
 
             if previous_kernel[new_i, new_j, new_k, new_q]:
                 # if you hit a constraint, break
@@ -217,6 +218,15 @@ def check_viable_state(i, j, k, q, dynamics, previous_kernel):
             return False # it is safe
 
     return True # it isn't safe because I haven't found a valid action yet...
+
+@njit(cache=True)
+def add_phis(k, dk, l_phis):
+    new_k = k + dk 
+    if new_k > l_phis-1:
+        return new_k - l_phis 
+    if new_k < 0:
+        return new_k + l_phis
+    return new_k
 
 
 def prepare_track_img(sim_conf):
