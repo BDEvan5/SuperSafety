@@ -1,4 +1,4 @@
-from SuperSafety.Planners.SafeAgentPlanner import TrainVehicle, TestVehicle
+from SuperSafety.Planners.AgentPlanner import TrainVehicle, TestVehicle
 from SuperSafety.f110_gym.f110_env import F110Env
 from SuperSafety.Utils.utils import *
 from SuperSafety.Supervisor.SupervisorySystem import LearningSupervisor

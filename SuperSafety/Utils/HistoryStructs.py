@@ -98,6 +98,7 @@ class TrainHistory():
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
 
+        plot_data(self.rewards[0:self.ptr], figure_n=2)
         plt.figure(2)
         plt.savefig(self.path + "/training_rewards.png")
 

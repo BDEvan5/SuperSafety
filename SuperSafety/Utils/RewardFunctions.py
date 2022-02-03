@@ -166,7 +166,7 @@ class RefCTHReward(TrackPtsBase):
 
 
     def __call__(self, state, s_prime):
-        s_prime['reward'] = find_reward(s_prime)
+        # s_prime['reward'] = find_reward(s_prime)
         prime_pos = np.array([s_prime['poses_x'][0], s_prime['poses_y'][0]])
         theta = s_prime['poses_theta'][0]
         velocity = s_prime['linear_vels_x'][0]

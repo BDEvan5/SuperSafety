@@ -55,12 +55,6 @@ class BaseVehicle:
 
         return nn_obs
 
-    def plan(self, obs):
-        if obs['linear_vels_x'][0] < self.v_min_plan:
-            return np.array([0, 7])
-        self.plan_act(obs)
-        return self.action
-
     def transform_action(self, nn_action):
         steering_angle = nn_action[0] * self.max_steer
         # this is to ensure that it doesn't stay still
@@ -89,10 +83,11 @@ class TrainVehicle(BaseVehicle):
 
         self.calculate_reward = RefCTHReward(sim_conf) 
 
-    def plan_act(self, obs):
+    def plan(self, obs, add_mem_entry=True):
         nn_obs = self.transform_obs(obs)
-        self.add_memory_entry(obs, nn_obs)
-
+        if add_mem_entry:
+            self.add_memory_entry(obs, nn_obs)
+            
         if obs['linear_vels_x'][0] < self.v_min_plan:
             self.action = np.array([0, 7])
             return self.action
@@ -132,6 +127,28 @@ class TrainVehicle(BaseVehicle):
 
         self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
 
+    def intervention_entry(self, s_prime):
+        """
+        To be called when the supervisor intervenes
+        """
+        nn_s_prime = self.transform_obs(s_prime)
+        reward = self.calculate_reward(self.state, s_prime)
+
+        self.t_his.add_step_data(reward)
+
+        self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
+
+
+    def lap_complete(self):
+        """
+        To be called when ep is done.
+        """
+        self.t_his.lap_done(False)
+        self.t_his.print_update(False) #remove this line
+        if self.t_his.ptr % 10 == 0:
+            self.t_his.print_update(False)
+            self.agent.save(self.path)
+
 
 class TestVehicle(BaseVehicle):
     def __init__(self, agent_name, sim_conf):
@@ -151,7 +168,7 @@ class TestVehicle(BaseVehicle):
 
         print(f"Agent loaded: {agent_name}")
 
-    def plan_act(self, obs):
+    def plan(self, obs):
         nn_obs = self.transform_obs(obs)
 
         if obs['linear_vels_x'][0] < self.v_min_plan:

@@ -138,7 +138,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
     vehicle.planner.t_his.print_update(True)
     vehicle.planner.t_his.save_csv_data()
-    vehicle.planner.agent.save(vehicle.path)
+    vehicle.planner.agent.save(vehicle.planner.path)
+    vehicle.save_intervention_list()
 
     train_time = time.time() - start_time
     print(f"Finished Training: {vehicle.planner.name} in {train_time} seconds")
