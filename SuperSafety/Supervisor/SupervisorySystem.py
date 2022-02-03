@@ -1,10 +1,10 @@
-from SupervisorySafetySystem.Utils import load_conf
+from SuperSafety.Utils.utils import load_conf
 import numpy as np
 from numba import njit
 from matplotlib import pyplot as plt
 import yaml, csv
-from SupervisorySafetySystem.Simulator.Dynamics import update_complex_state, update_std_state
-from SupervisorySafetySystem.Modes import Modes
+from SuperSafety.Supervisor.Dynamics import run_dynamics_update 
+from SuperSafety.Supervisor.Modes import Modes
 
 class SafetyHistory:
     def __init__(self):
@@ -92,9 +92,22 @@ class Supervisor:
 
         self.m = Modes(conf)
 
+    def extract_state(self, obs):
+        ego_idx = obs['ego_idx']
+        pose_th = obs['poses_theta'][ego_idx] 
+        p_x = obs['poses_x'][ego_idx]
+        p_y = obs['poses_y'][ego_idx]
+        velocity = obs['linear_vels_x'][ego_idx]
+        delta = obs['steering_deltas'][ego_idx]
+
+        state = np.array([p_x, p_y, pose_th, velocity, delta])
+
+        return state
+
+
     def plan(self, obs):
-        init_action = self.planner.plan_act(obs)
-        state = np.array(obs['state'])
+        init_action = self.planner.plan(obs)
+        state = self.extract_state(obs)
 
         safe, next_state = self.check_init_action(state, init_action)
         if safe:
@@ -104,7 +117,7 @@ class Supervisor:
         # print(f"Intervening")
         valids = self.simulate_and_classify(state)
         if not valids.any():
-            print(f"No Valid options -> State: {obs['state']}")
+            print(f"No Valid options -> State: {state}")
             return init_action
         
         action, idx = modify_mode(valids, self.m.nq_velocity, self.m.nv_modes, self.m.nv_level_modes, self.m.qs)
@@ -113,11 +126,11 @@ class Supervisor:
         return action
 
     def check_init_action(self, state, init_action):
-        next_state = update_complex_state(state, init_action, self.time_step/2)
+        next_state = run_dynamics_update(state, init_action, self.time_step/2)
         safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
         if not safe:
             return safe, next_state
-        next_state = update_complex_state(state, init_action, self.time_step)
+        next_state = run_dynamics_update(state, init_action, self.time_step)
         safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
         
         return safe, next_state
@@ -125,8 +138,9 @@ class Supervisor:
     def simulate_and_classify(self, state):
         valids = np.ones(len(self.m.qs))
         for i in range(len(self.m.qs)):
-            next_state = update_complex_state(state, self.m.qs[i], self.time_step)
+            next_state = run_dynamics_update(state, self.m.qs[i], self.time_step)
             valids[i] = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
+            # self.kernel.plot_state(next_state)
 
         return valids
 
@@ -342,6 +356,9 @@ class TrackKernel:
 
         return x_ind, y_ind, theta_ind, mode
 
+    def plot_state(self, state):
+        i, j, k, m = self.get_indices(state)
+        self.plot_kernel_point(i, j, k, m)
 
 if __name__ == "__main__":
     conf = load_conf("std_test_kernel")

@@ -5,7 +5,7 @@ map_name: "porto"
 map_ext: ".png"
 sx: 0.0
 sy: 0
-stheta: 0  # porto
+stheta: -0.4  # porto
 
 # max_v: 7
 max_v: 3
@@ -48,6 +48,7 @@ kernel_path: "Data/Kernels/"
 dynamics_path: "Data/Dynamics/"
 # kernel_mode: "disc"
 kernel_mode: "viab"
+lookahead_time_step: 0.15
 
 nq_steer: 5
 nq_velocity: 4

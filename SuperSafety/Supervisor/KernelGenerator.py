@@ -273,8 +273,8 @@ def shrink_img(img, n_shrinkpx):
 def build_track_kernel(conf):
   
     img = prepare_track_img(conf) 
-    # img, img2 = shrink_img(img, 5)
-    kernel = KernelGenerator(img, conf)
+    img, img2 = shrink_img(img, 5)
+    kernel = KernelGenerator(img2, conf)
     kernel.calculate_kernel(60)
     kernel.save_kernel(f"Kernel_{conf.kernel_mode}_{conf.map_name}")
 
