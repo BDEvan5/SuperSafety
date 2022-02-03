@@ -5,7 +5,7 @@ from TrainTest import *
 from SuperSafety.Planners.PurePursuit import PurePursuit
 from SuperSafety.Planners.follow_the_gap import FollowTheGap
 
-conf = load_conf("simulator_config")
+conf = load_conf("std_config")
 env = F110Env(map=conf.map_name)
 
 planner = PurePursuit(conf)

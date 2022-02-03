@@ -7,7 +7,7 @@ from TrainTest import *
 
 
 def train_baseline(n):
-    conf = load_conf("simulator_config")
+    conf = load_conf("std_config")
     agent_name = f"Baseline_{n}"
     env = F110Env(map=conf.map_name)
     planner = TrainVehicle(agent_name, conf)
@@ -16,7 +16,7 @@ def train_baseline(n):
 
 def eval_baseline(n):
 
-    conf = load_conf("simulator_config")
+    conf = load_conf("std_config")
     agent_name = f"Baseline_{n}"
     env = F110Env(map=conf.map_name)
     planner = TestVehicle(agent_name, conf)
