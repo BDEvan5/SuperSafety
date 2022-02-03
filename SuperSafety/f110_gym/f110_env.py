@@ -366,6 +366,17 @@ class F110Env(gym.Env):
         
         return obs, reward, done, info
 
+    def data_reset(self):
+        """
+        Reset the data in the environment so the lap counting works
+        """
+        self.current_time = 0.0
+        self.collisions = np.zeros((self.num_agents, ))
+        self.num_toggles = 0
+        self.near_start = True
+        self.near_starts = np.array([True]*self.num_agents)
+        self.toggle_list = np.zeros((self.num_agents,))
+
     def load_centerline(self, file_name=None):
         """
         Loads a centerline from a csv file. 

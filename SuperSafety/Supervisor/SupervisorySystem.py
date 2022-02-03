@@ -149,7 +149,7 @@ class LearningSupervisor(Supervisor):
     def __init__(self, planner, conf):
         Supervisor.__init__(self, planner, conf)
         self.intervention_mag = 0
-        self.mag_reward = conf.mag_reward
+        # self.mag_reward = conf.mag_reward
         self.constant_reward = conf.constant_reward
         self.ep_interventions = 0
         self.intervention_list = []
@@ -201,11 +201,11 @@ class LearningSupervisor(Supervisor):
         if abs(self.intervention_mag) > 0:
             obs['reward'] = self.calculate_reward(self.intervention_mag, obs)
             self.planner.intervention_entry(obs)
-            init_action = self.planner.plan_act(obs, False)
+            init_action = self.planner.plan(obs, False)
         else:
-            init_action = self.planner.plan_act(obs, True)
+            init_action = self.planner.plan(obs, True)
 
-        state = np.array(obs['state'])
+        state = self.extract_state(obs)
 
         # init_mode_action = self.m.action2mode(init_action)
         safe, next_state = self.check_init_action(state, init_action)
@@ -232,8 +232,7 @@ class LearningSupervisor(Supervisor):
         return action
 
     def calculate_reward(self, intervention_mag, obs):
-        mag = - self.mag_reward * abs(intervention_mag)
-        total_reward = mag - self.constant_reward + obs['reward']
+        total_reward = - self.constant_reward + obs['reward']
         return  total_reward
 
 @njit(cache=True)

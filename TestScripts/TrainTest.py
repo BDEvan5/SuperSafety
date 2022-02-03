@@ -93,6 +93,60 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     return train_time, crash_counter
 
 
+def train_kernel_vehicle(env, vehicle, conf, show=False):
+    start_time = time.time()
+    state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+    print(f"Starting KernelSSS Training: {vehicle.name}")
+    crash_counter = 0
+
+    ep_steps = 0 
+    lap_counter = 0
+    for n in range(conf.train_n):
+        state['reward'] = set_reward(state) #theoretically always zero in this position
+        action = vehicle.plan(state)
+        sim_steps = conf.sim_steps
+        while sim_steps > 0 and not done:
+            s_prime, r, done, _ = env.step(action[None, :])
+            sim_steps -= 1
+
+        state = s_prime
+        vehicle.planner.agent.train(2)
+        env.render('human_fast')
+        
+        if s_prime['collisions'][0] == 1:
+            print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
+            state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+            lap_counter += 1
+            s_prime['reward'] = set_reward(s_prime) # -1 in this position
+            vehicle.done_entry(s_prime, env.lap_times[0])
+            ep_steps = 0 
+
+
+        if done or ep_steps > conf.max_steps:
+            print(f"Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
+            lap_counter += 1
+            s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
+            vehicle.lap_complete(s_prime)
+            if show:
+                env.render(wait=False)
+
+            env.data_reset()
+            done = False
+            ep_steps = 0 
+            
+        ep_steps += 1
+
+    vehicle.planner.t_his.print_update(True)
+    vehicle.planner.t_his.save_csv_data()
+    vehicle.planner.agent.save(vehicle.path)
+
+    train_time = time.time() - start_time
+    print(f"Finished Training: {vehicle.planner.name} in {train_time} seconds")
+    print(f"Crashes: {crash_counter}")
+
+    return train_time, crash_counter
+
+
 
 def find_conclusion(s_p, start):
     laptime = s_p['lap_times'][0]
@@ -105,5 +159,13 @@ def find_conclusion(s_p, start):
     else:
         print("No conclusion: Awkward palm trees")
         # print(s_p)
+    return 0
+
+
+def set_reward(s_p):
+    if s_p['collisions'][0] == 1:
+        return -1
+    elif s_p['lap_counts'][0] == 1:
+        return 1
     return 0
 
