@@ -253,7 +253,18 @@ class F110Env(gym.Env):
         done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
         # This number (2) is 2x the number of laps desired
         
+        personal_done = self.check_location()
+        done = personal_done or done
+
         return done, self.toggle_list >= 4
+
+    def check_location(self):
+        location = np.array([self.poses_x[0], self.poses_y[0]])
+        p_done = self.sim.agents[0].scan_simulator.check_location(location)
+        if not p_done:
+            return False
+        print(f"Personl done called: {location}")
+        return True
 
     def _update_state(self, obs_dict):
         """
@@ -365,6 +376,17 @@ class F110Env(gym.Env):
             }
         
         return obs, reward, done, info
+
+    def data_reset(self):
+        """
+        Reset the data in the environment so the lap counting works
+        """
+        self.current_time = 0.0
+        self.collisions = np.zeros((self.num_agents, ))
+        self.num_toggles = 0
+        self.near_start = True
+        self.near_starts = np.array([True]*self.num_agents)
+        self.toggle_list = np.zeros((self.num_agents,))
 
     def load_centerline(self, file_name=None):
         """

@@ -1,9 +1,10 @@
 from numba.core.decorators import njit
 import numpy as np 
 import os, shutil
+from SuperSafety.Utils.utils import init_file_struct
 
 class FollowTheGap:
-    def __init__(self, agent_name, conf):
+    def __init__(self, conf, agent_name):
         self.name = agent_name
         self.conf = conf
         self.map = None
@@ -15,12 +16,7 @@ class FollowTheGap:
         self.v_min_plan = conf.v_min_plan
 
         path = os.getcwd() + "/" + conf.vehicle_path + self.name
-        if os.path.exists(path):
-            try:
-                os.rmdir(path)
-            except:
-                shutil.rmtree(path)
-        os.mkdir(path)
+        init_file_struct(path)
 
     def plan(self, obs):
 
@@ -44,7 +40,8 @@ class FollowTheGap:
         half_pt = len(ranges) /2
         steering_angle =  angle_increment * (aim - half_pt)
 
-        speed = self.max_speed * ranges[aim] / max_range * 0.7
+        # speed = self.max_speed * ranges[aim] / max_range * 0.3
+        speed = 1
 
         return np.array([steering_angle, speed])
 

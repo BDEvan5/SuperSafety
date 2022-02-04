@@ -5,20 +5,6 @@ from SuperSafety.Utils.RewardFunctions import *
 import torch
 from numba import njit
 
-# @njit(cache=True)
-# def calculate_max_speed(delta):
-#     b = 0.523
-#     g = 9.81
-#     l_d = 0.329
-#     f_s = 0.5
-#     max_v = 7
-
-#     if abs(delta) < 0.06:
-#         return max_v
-
-#     V = f_s * np.sqrt(b*g*l_d/np.tan(abs(delta)))
-
-#     return V
 
 class BaseVehicle: 
     def __init__(self, agent_name, sim_conf):
@@ -58,7 +44,7 @@ class BaseVehicle:
     def transform_action(self, nn_action):
         steering_angle = nn_action[0] * self.max_steer
         # this is to ensure that it doesn't stay still
-        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
+        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 2) + 1
         # max_speed = calculate_speed(steering_angle)
         # speed = np.clip(speed, 0, max_speed)
         action = np.array([steering_angle, speed])
@@ -82,13 +68,13 @@ class TrainVehicle(BaseVehicle):
         self.t_his = TrainHistory(agent_name, sim_conf, load)
 
         self.calculate_reward = RefCTHReward(sim_conf) 
-        # self.calculate_reward = RefCTHReward(sim_conf) 
+
 
     def plan(self, obs, add_mem_entry=True):
         nn_obs = self.transform_obs(obs)
         if add_mem_entry:
             self.add_memory_entry(obs, nn_obs)
-            
+
         if obs['linear_vels_x'][0] < self.v_min_plan:
             self.action = np.array([0, 7])
             return self.action
@@ -120,13 +106,14 @@ class TrainVehicle(BaseVehicle):
 
         self.t_his.add_step_data(reward)
         self.t_his.lap_done(False)
-        # self.t_his.print_update(False) #remove this line
-        if self.t_his.ptr % 10 == 0:
-            self.t_his.print_update(False)
+        self.t_his.print_update(False) #remove this line
+        # if self.t_his.ptr % 10 == 0:
+            # self.t_his.print_update(False)
         self.agent.save(self.path)
         self.state = None
 
         self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
+
 
     def intervention_entry(self, s_prime):
         """

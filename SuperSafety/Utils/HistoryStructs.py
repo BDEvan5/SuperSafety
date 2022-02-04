@@ -60,6 +60,7 @@ class TrainHistory():
     def lap_done(self, show_reward=False):
         self.lengths[self.ptr] = self.ep_counter
         self.rewards[self.ptr] = self.ep_reward
+        # print(f"EP reward: {self.ep_reward:.2f}")
         self.ptr += 1
 
         if show_reward:
@@ -98,6 +99,7 @@ class TrainHistory():
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
 
+        plot_data(self.rewards[0:self.ptr], figure_n=2)
         plt.figure(2)
         plt.savefig(self.path + "/training_rewards.png")
 

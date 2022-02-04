@@ -159,6 +159,7 @@ class RefCTHReward(TrackPtsBase):
         TrackPtsBase.__init__(self, conf)
         self.max_v = conf.max_v
 
+        # self.load_center_pts()
         self.load_reference_pts()
         self.mh = conf.r1
         self.md = conf.r2
@@ -166,9 +167,9 @@ class RefCTHReward(TrackPtsBase):
 
 
     def __call__(self, state, s_prime):
-        s_prime['reward'] = find_reward(s_prime)
+        # s_prime['reward'] = find_reward(s_prime)
         prime_pos = np.array([s_prime['poses_x'][0], s_prime['poses_y'][0]])
-        theta = s_prime['poses_theta'][0]
+        theta = - s_prime['poses_theta'][0] + np.pi/2 #! NOTE: get angle right for simulator
         velocity = s_prime['linear_vels_x'][0]
 
         pt_i, pt_ii, d_i, d_ii = find_closest_pt(prime_pos, self.wpts)

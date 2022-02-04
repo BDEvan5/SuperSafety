@@ -8,8 +8,8 @@ import shutil
 # Admin functions
 def save_conf_dict(dictionary, save_name=None):
     if save_name is None:
-        save_name  = dictionary["name"]
-    path = dictionary["vehicle_path"] + dictionary["name"] + f"/{save_name}_record.yaml"
+        save_name  = dictionary["agent_name"]
+    path = dictionary["vehicle_path"] + dictionary["agent_name"] + f"/{save_name}_record.yaml"
     with open(path, 'w') as file:
         yaml.dump(dictionary, file)
 
@@ -21,6 +21,15 @@ def load_conf(fname):
     conf = Namespace(**conf_dict)
 
     return conf
+
+def load_yaml_dict(fname):
+    full_path =  "config/" + fname + '.yaml'
+    with open(full_path) as file:
+        conf_dict = yaml.load(file, Loader=yaml.FullLoader)
+
+    return conf_dict
+
+
 
 def init_file_struct(path):
     if os.path.exists(path):
