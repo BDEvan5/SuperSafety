@@ -19,6 +19,7 @@ def test():
 
 def run_pp_set(n=1):
     conf = load_conf("std_config")
+    conf.test_n = 1
 
     for track in ['porto', 'columbia_small', 'f1_aut_wide']:
         conf.map_name = track
@@ -31,13 +32,16 @@ def run_pp_set(n=1):
         
         config_dict = vars(conf)
         config_dict['test_number'] = n
-        config_dict.update(eval_dict)
+        config_dict['eval_name'] = "benchmark"
+        config_dict['agent_name'] = agent_name
+        config_dict['Wo'] = eval_dict
 
         save_conf_dict(config_dict)
 
 
 def run_fgm_set(n=1):
     conf = load_conf("std_config")
+    conf.test_n = 1
 
     for track in ['porto', 'columbia_small', 'f1_aut_wide']:
         conf.map_name = track
@@ -50,13 +54,15 @@ def run_fgm_set(n=1):
         
         config_dict = vars(conf)
         config_dict['test_number'] = n
-        config_dict.update(eval_dict)
+        config_dict['eval_name'] = "benchmark"
+        config_dict['agent_name'] = agent_name
+        config_dict['Wo'] = eval_dict
 
         save_conf_dict(config_dict)
 
 
 
 if __name__ == "__main__":
-    # run_pp_set(1)
-    # run_fgm_set(1)
-    test()
+    run_pp_set(1)
+    run_fgm_set(1)
+    # test()

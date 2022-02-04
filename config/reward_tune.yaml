@@ -1,7 +1,7 @@
 run_name: RewardTest
 
 base_config_name: "kernel_config"
-n: 2
+n: 1
 
 runs:
   # - run: 1
@@ -11,19 +11,19 @@ runs:
   #   rk: 0
   #   constant_reward: 0
 
-  - run: 2
-    name: "2BasePenalty"
-    r1: 0.08
-    r2: 0.001
-    rk: 0
-    constant_reward: 1
+  # - run: 2
+  #   name: "2BasePenalty"
+  #   r1: 0.08
+  #   r2: 0.001
+  #   rk: 0
+  #   constant_reward: 1
 
-  - run: 3
-    name: "3Bias002"
-    r1: 0.08
-    r2: 0.001
-    rk: 0.002
-    constant_reward: 1
+  # - run: 3
+  #   name: "3Bias002"
+  #   r1: 0.08
+  #   r2: 0.001
+  #   rk: 0.002
+  #   constant_reward: 1
 
   # - run: 4
   #   name: "4Bias004"
@@ -46,5 +46,18 @@ runs:
   #   rk: 0.002
   #   constant_reward: 1
 
+  - run: 7
+    name: "7RkOnly001"
+    r1: 0.0
+    r2: 0.00
+    rk: 0.002
+    constant_reward: 1
 
+
+  - run: 8
+    name: "8RkOnly004"
+    r1: 0.0
+    r2: 0.00
+    rk: 0.004
+    constant_reward: 1
 

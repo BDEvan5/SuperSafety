@@ -46,9 +46,10 @@ def run_safe_train_eval(n):
 
     config_dict = vars(conf)
     config_dict['test_number'] = n
-    config_dict['wo'] = eval_wo
-    config_dict['sss'] = eval_sss
+    config_dict['Wo'] = eval_wo
+    config_dict['SSS'] = eval_sss
     config_dict['agent_name'] = agent_name
+    config_dict['eval_name'] = "Performance"
 
     save_conf_dict(config_dict)
 
@@ -56,5 +57,5 @@ def run_safe_train_eval(n):
 if __name__ == '__main__':
     # train_safe_agent(5)
     # eval_safe_agent(1)
-    run_safe_train_eval(11)
+    run_safe_train_eval(100)
 

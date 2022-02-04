@@ -33,13 +33,29 @@ kable(kernel_gen)
 # Learning Investigation
 
 ```{r}
+reward = data %>%
+  filter(eval_name=="RewardTest") %>%
+  select(agent_name, r1, r2, rk, constant_reward, SSS_avg_times, SSS_success_rate, Wo_avg_times, Wo_success_rate)%>%
+     arrange(agent_name)
 
+
+kable(reward)
 ```
 
 
 # Training Comparision
 
+## Performance
 ```{r}
+
+benchmarks = data %>%
+  filter(eval_name=="Performance")%>%
+  select(agent_name, SSS_avg_times, SSS_success_rate, Wo_avg_times, Wo_success_rate)%>%
+   arrange(desc(agent_name))
+
+#TODO: get map name then use pivot wider to compare accross maps.
+
+kable(benchmarks)
 
 ```
 
@@ -48,6 +64,15 @@ kable(kernel_gen)
 
 
 ```{r}
+
+benchmarks = data %>%
+  filter(eval_name=="benchmark")%>%
+  select(agent_name, SSS_avg_times, SSS_success_rate, Wo_avg_times, Wo_success_rate)%>%
+   arrange(desc(agent_name))
+
+#TODO: get map name then use pivot wider to compare accross maps.
+
+kable(benchmarks)
 
 ```
 
