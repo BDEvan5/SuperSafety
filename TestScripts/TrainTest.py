@@ -220,6 +220,6 @@ def set_reward(s_p):
     if s_p['collisions'][0] == 1:
         return -1
     elif s_p['lap_counts'][0] == 1:
-        return 1 + (30 - s_p['lap_times'][0]) 
+        return (30 - s_p['lap_times'][0]) 
     return 0
 

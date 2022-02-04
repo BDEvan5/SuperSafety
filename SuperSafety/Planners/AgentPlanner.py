@@ -58,7 +58,7 @@ class BaseVehicle:
     def transform_action(self, nn_action):
         steering_angle = nn_action[0] * self.max_steer
         # this is to ensure that it doesn't stay still
-        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 2) + 1
+        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
         # max_speed = calculate_speed(steering_angle)
         # speed = np.clip(speed, 0, max_speed)
         action = np.array([steering_angle, speed])
@@ -82,6 +82,7 @@ class TrainVehicle(BaseVehicle):
         self.t_his = TrainHistory(agent_name, sim_conf, load)
 
         self.calculate_reward = RefCTHReward(sim_conf) 
+        # self.calculate_reward = RefCTHReward(sim_conf) 
 
     def plan(self, obs, add_mem_entry=True):
         nn_obs = self.transform_obs(obs)
