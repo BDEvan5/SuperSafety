@@ -176,7 +176,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
 
         if done or ep_steps > conf.max_steps:
-            print(f"{n}::Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
+            print(f"{n}::Lap done {lap_counter} -> LapTime {env.lap_times[0]:.2f} -> Inters: {vehicle.ep_interventions} -> Reward: {vehicle.planner.t_his.rewards[vehicle.planner.t_his.ptr-1]:.2f}")
             lap_counter += 1
             s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
             vehicle.lap_complete(env.lap_times[0])
@@ -216,10 +216,18 @@ def find_conclusion(s_p, start):
     return 0
 
 
-def set_reward(s_p):
+def set_reward_time(s_p):
     if s_p['collisions'][0] == 1:
         return -1
     elif s_p['lap_counts'][0] == 1:
         return (30 - s_p['lap_times'][0]) 
+    return 0
+
+
+def set_reward(s_p):
+    if s_p['collisions'][0] == 1:
+        return -1
+    elif s_p['lap_counts'][0] == 1:
+        return 1 
     return 0
 
