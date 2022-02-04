@@ -28,11 +28,11 @@ def train_test_baseline(n):
     conf = load_conf("std_config")
     agent_name = f"Baseline_{n}"
     env = F110Env(map=conf.map_name)
-    conf.r1 = 0.08
-    conf.r2 = 0.001
+    conf.r1 = 0.01
+    conf.r2 = 0.01
     planner = TrainVehicle(agent_name, conf)
 
-    train_baseline_vehicle(env, planner, conf, False)
+    train_baseline_vehicle(env, planner, conf, True)
 
     planner = TestVehicle(agent_name, conf)
     eval_dict = evaluate_vehicle(env, planner, conf, True)
@@ -50,5 +50,7 @@ if __name__ == '__main__':
     # train_baseline(1)
     # eval_baseline(1)
     # train_test_baseline(100)
-    for i in range(200, 204):
-        train_test_baseline(i)
+
+    train_test_baseline(400)
+    # for i in range(300, 303):
+    #     train_test_baseline(i)

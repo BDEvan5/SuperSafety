@@ -63,6 +63,6 @@ def run_fgm_set(n=1):
 
 
 if __name__ == "__main__":
-    run_pp_set(1)
-    run_fgm_set(1)
+    run_pp_set(2)
+    # run_fgm_set(1)
     # test()

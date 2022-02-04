@@ -29,7 +29,7 @@ class PurePursuit:
 
         v_min_plan = 1
         if v_current < v_min_plan:
-            return np.array([0, 7])
+            return np.array([0, 3]) #TODO:  change this.
 
         lookahead_point = self.trajectory.get_current_waypoint(pos, self.lookahead)
 
@@ -38,7 +38,7 @@ class PurePursuit:
         speed *= self.vgain
 
         # speed = calculate_speed(steering_angle)
-
+        speed = np.clip(speed, 0, 3)
         return np.array([steering_angle, speed])
 
 

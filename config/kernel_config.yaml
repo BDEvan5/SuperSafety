@@ -5,7 +5,7 @@ map_name: "columbia_small"
 map_ext: ".png"
 sx: 0.0
 sy: 0
-stheta: -0.4  # porto
+# stheta: -0.4  # porto
 stheta: 0  # columbia
 
 # max_v: 7
@@ -39,7 +39,7 @@ v_min_plan: 1
 
 # test params
 test_n: 10
-train_n: 15000
+train_n: 20000
 
 #save_paths
 vehicle_path: "Data/Vehicles/"

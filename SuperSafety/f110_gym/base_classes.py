@@ -103,8 +103,8 @@ class RaceCar(object):
         self.ttc_thresh = 0.005
 
         # initialize scan sim
+        self.scan_rng = np.random.default_rng(seed=self.seed)
         if RaceCar.scan_simulator is None:
-            self.scan_rng = np.random.default_rng(seed=self.seed)
             RaceCar.scan_simulator = ScanSimulator2D(num_beams, fov)
 
             scan_ang_incr = RaceCar.scan_simulator.get_increment()
