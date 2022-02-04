@@ -42,3 +42,7 @@ target/
 
 Data/
 .Rproj.user
+
+*.html
+
+*.Rproj
