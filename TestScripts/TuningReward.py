@@ -24,14 +24,16 @@ def train_baseline_tune(n):
     conf.r2 = 0.001
     planner = TrainVehicle(agent_name, conf)
 
-    train_baseline_vehicle(env, planner, conf)
+    train_baseline_vehicle(env, planner, conf, False)
 
     planner = TestVehicle(agent_name, conf)
     eval_dict = evaluate_vehicle(env, planner, conf, True)
     
     config_dict = vars(conf)
     config_dict['test_number'] = n
-    config_dict.update(eval_dict)
+    config_dict['wo'] = eval_dict
+    config_dict['agent_name'] = agent_name
+    # config_dict.update(eval_dict)
 
     save_conf_dict(config_dict)
 
@@ -53,7 +55,10 @@ def eval_baseline(n):
 
 if __name__ == '__main__':
     # train_baseline(1)
-    # train_baseline_tune(1)
-    eval_baseline(1)
+    train_baseline_tune(4)
+    # eval_baseline(1)
+
+    # for i in range(2, 10):
+    #     train_baseline_tune(i)
 
 

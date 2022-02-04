@@ -8,7 +8,7 @@ import shutil
 # Admin functions
 def save_conf_dict(dictionary, save_name=None):
     if save_name is None:
-        save_name  = dictionary["name"]
+        save_name  = dictionary["agent_name"]
     path = dictionary["vehicle_path"] + dictionary["agent_name"] + f"/{save_name}_record.yaml"
     with open(path, 'w') as file:
         yaml.dump(dictionary, file)

@@ -69,14 +69,13 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
 
         state = s_prime
         vehicle.agent.train(2)
-        env.render('human_fast')
+        if show:
+            env.render('human_fast')
         
         if done or ep_steps > conf.max_steps:
             s_prime['reward'] = set_reward(s_prime) 
             ep_steps = 0 
             vehicle.done_entry(s_prime)
-            if show:
-                env.render(wait=False)
             if state['reward'] == -1:
                 crash_counter += 1
 
