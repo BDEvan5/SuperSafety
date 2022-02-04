@@ -253,7 +253,18 @@ class F110Env(gym.Env):
         done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
         # This number (2) is 2x the number of laps desired
         
+        personal_done = self.check_location()
+        done = personal_done or done
+
         return done, self.toggle_list >= 4
+
+    def check_location(self):
+        location = np.array([self.poses_x[0], self.poses_y[0]])
+        p_done = self.sim.agents[0].scan_simulator.check_location(location)
+        if not p_done:
+            return False
+        print(f"Personl done called: {location}")
+        return True
 
     def _update_state(self, obs_dict):
         """

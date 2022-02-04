@@ -422,6 +422,11 @@ class ScanSimulator2D(object):
     def get_increment(self):
         return self.angle_increment
 
+    def check_location(self, pose):
+        d = distance_transform(pose[0], pose[1], self.orig_x, self.orig_y, self.orig_c, self.orig_s, self.map_height, self.map_width, self.map_resolution, self.dt)
+        if d < 0.001: #1mm
+            return True
+        return False
 
 """
 Unit tests for the 2D scan simulator class
