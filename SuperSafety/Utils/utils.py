@@ -22,6 +22,15 @@ def load_conf(fname):
 
     return conf
 
+def load_yaml_dict(fname):
+    full_path =  "config/" + fname + '.yaml'
+    with open(full_path) as file:
+        conf_dict = yaml.load(file, Loader=yaml.FullLoader)
+
+    return conf_dict
+
+
+
 def init_file_struct(path):
     if os.path.exists(path):
         try:

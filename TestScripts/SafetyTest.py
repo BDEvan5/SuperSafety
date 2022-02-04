@@ -42,6 +42,7 @@ def run_random_test(n=1):
 
 def run_test_set(n=1):
     conf = load_conf("kernel_config")
+    conf.test_n = 2
 
     for track in ['porto', 'columbia_small', 'f1_aut_wide']:
         conf.map_name = track
@@ -51,11 +52,13 @@ def run_test_set(n=1):
         planner = RandomPlanner(conf, agent_name)
         safety_planner = Supervisor(planner, conf)
 
-        eval_dict = evaluate_vehicle(env, safety_planner, conf, False)
+        eval_dict = evaluate_kernel_vehicle(env, safety_planner, conf, False)
         
         config_dict = vars(conf)
+        config_dict['eval_name'] = "KernelGen"
         config_dict['test_number'] = n
-        config_dict.update(eval_dict)
+        config_dict['agent_name'] = agent_name
+        config_dict['SSS'] = eval_dict
 
         save_conf_dict(config_dict)
 

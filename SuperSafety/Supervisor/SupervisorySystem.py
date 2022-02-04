@@ -91,6 +91,7 @@ class Supervisor:
         self.name = planner.name
 
         self.m = Modes(conf)
+        self.interventions = 0
 
     def extract_state(self, obs):
         ego_idx = obs['ego_idx']
@@ -115,6 +116,7 @@ class Supervisor:
             return init_action
 
         # print(f"Intervening")
+        self.interventions += 1
         valids = self.simulate_and_classify(state)
         if not valids.any():
             print(f"No Valid options -> State: {state}")
