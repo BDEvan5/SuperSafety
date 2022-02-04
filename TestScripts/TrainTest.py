@@ -10,7 +10,6 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
 
     for i in range(conf.test_n):
         obs, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
-        lap_time = 0.0
         while not done:
             action = vehicle.plan(obs)
             sim_steps = conf.sim_steps
@@ -18,7 +17,6 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
                 obs, step_reward, done, _ = env.step(action[None, :])
                 sim_steps -= 1
 
-            laptime += step_reward
             if show:
                 env.render(mode='human_fast')
 
@@ -28,7 +26,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
             crashes += 1
         else:
             completes += 1
-            lap_times.append(laptime)
+            lap_times.append(env.lap_times[0])
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:

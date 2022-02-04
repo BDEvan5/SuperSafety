@@ -55,10 +55,10 @@ def eval_baseline(n):
 
 if __name__ == '__main__':
     # train_baseline(1)
-    train_baseline_tune(4)
+    # train_baseline_tune(9)
     # eval_baseline(1)
 
-    # for i in range(2, 10):
+    # for i in range(6, 8):
     #     train_baseline_tune(i)
 
 
