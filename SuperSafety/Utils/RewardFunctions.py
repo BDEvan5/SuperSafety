@@ -159,8 +159,8 @@ class RefCTHReward(TrackPtsBase):
         TrackPtsBase.__init__(self, conf)
         self.max_v = conf.max_v
 
-        self.load_center_pts()
-        # self.load_reference_pts()
+        # self.load_center_pts()
+        self.load_reference_pts()
         self.mh = conf.r1
         self.md = conf.r2
         self.rk = conf.rk
