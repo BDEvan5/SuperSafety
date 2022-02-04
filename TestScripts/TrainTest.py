@@ -107,6 +107,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     crash_counter = 0
 
     ep_steps = 0 
+    lap_counter = 0
     for n in range(conf.train_n):
         state['reward'] = set_reward(state)
         action = vehicle.plan(state)
@@ -122,6 +123,8 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
         
         if done or ep_steps > conf.max_steps:
             s_prime['reward'] = set_reward(s_prime) 
+            print(f"{n}::Lap done {lap_counter} -> FinalR: {s_prime['reward']} -> LapTime {env.lap_times[0]:.2f} -> TotalReward: {vehicle.t_his.ep_reward:.2f}")
+            lap_counter += 1
             ep_steps = 0 
             vehicle.done_entry(s_prime)
             if state['reward'] == -1:

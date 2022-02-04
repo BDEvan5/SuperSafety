@@ -60,7 +60,7 @@ class TrainHistory():
     def lap_done(self, show_reward=False):
         self.lengths[self.ptr] = self.ep_counter
         self.rewards[self.ptr] = self.ep_reward
-        print(f"EP reward: {self.ep_reward:.2f}")
+        # print(f"EP reward: {self.ep_reward:.2f}")
         self.ptr += 1
 
         if show_reward:
