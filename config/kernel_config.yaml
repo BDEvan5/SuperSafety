@@ -23,8 +23,8 @@ l_f: 0.158
 n_beams: 20
 range_finder_scale: 5
 h_size: 100
-r1: 0.0
-r2: 0.00
+r1: 0.012
+r2: 0.006
 rk: 0.0
 r_time: 30
 r_done: 1

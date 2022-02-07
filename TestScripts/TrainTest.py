@@ -177,13 +177,14 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
         if done or ep_steps > conf.max_steps:
             vehicle.lap_complete(env.lap_times[0])
+            # vehicle.done_entry(s_prime, env.lap_times[0])
             print(f"{n}::Lap done {lap_counter} -> LapTime {env.lap_times[0]:.2f} -> Inters: {vehicle.intervention_list[-1]} -> Reward: {vehicle.planner.t_his.rewards[vehicle.planner.t_his.ptr-1]:.2f}")
             lap_counter += 1
             # s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
             if show:
                 env.render(wait=False)
 
-            env.data_reset()
+            state = env.data_reset()
             done = False
             ep_steps = 0 
             

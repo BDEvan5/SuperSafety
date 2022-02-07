@@ -142,7 +142,7 @@ class TrackPtsBase:
 
     def lap_reward(self, s_p):
         if s_p['collisions'][0] == 1:
-            return -100
+            return -1
         elif s_p['lap_counts'][0] == 1:
             return self.r_done
             # return self.r_done + self.r_time_weight * (self.r_time - s_p['lap_times'][0]) 

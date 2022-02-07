@@ -166,6 +166,7 @@ class LearningSupervisor(Supervisor):
 
     def lap_complete(self, steps):
         self.planner.lap_complete()
+        # self.planner.done_entry(s_prime)
         self.intervention_list.append(self.ep_interventions)
         self.ep_interventions = 0
         self.lap_times.append(steps)

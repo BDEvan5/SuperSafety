@@ -390,6 +390,11 @@ class F110Env(gym.Env):
         self.lap_times = np.zeros((self.num_agents,))
         self.lap_counts = np.zeros((self.num_agents,))
 
+        F110Env.current_obs['lap_times'] = np.zeros((self.num_agents,))
+        F110Env.current_obs['lap_counts'] = np.zeros((self.num_agents,))
+
+        return F110Env.current_obs.copy()
+
     def load_centerline(self, file_name=None):
         """
         Loads a centerline from a csv file. 
