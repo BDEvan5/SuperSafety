@@ -1,15 +1,15 @@
 # map
 # map_name: "porto"
-map_name: "columbia_small"
-# map_name: "f1_aut_wide"
+# map_name: "columbia_small"
+map_name: "f1_aut_wide"
 map_ext: ".png"
 sx: 0.0
 sy: 0
 # stheta: -0.4  # porto
 stheta: 0  # columbia
 
-# max_v: 7
 max_v: 7
+# max_v: 3
 max_a: 8.5
 max_steer: 0.4
 max_d_dot: 3.2
@@ -54,12 +54,12 @@ lookahead_time_step: 0.2
 nq_steer: 5
 nq_velocity: 11
 min_kernel_v: 2
-kernel_time_step: 0.2
+kernel_time_step: 0.3
 n_dx: 40
 phi_range: 6.28
 n_phi: 41
-discrim_block: 1
-discrim_phi: 0.1
+# discrim_block: 1
+# discrim_phi: 0.1
 
 # kernel Learning
 constant_reward: 1

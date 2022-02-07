@@ -11,7 +11,7 @@ def generate_kernels():
     build_dynamics_table(conf)
 
     # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
-    for track in ['porto', 'f1_aut_wide']:
+    for track in ['porto', 'columbia_small']:
         conf.map_name = track
         img = prepare_track_img(conf) 
         img, img2 = shrink_img(img, 5)
@@ -70,8 +70,8 @@ def run_test_set(n=1):
 
 
 if __name__ == "__main__":
-    # generate_kernels()
+    generate_kernels()
 
-    run_random_test(2)
+    # run_random_test(2)
     # run_test_set(2)
 

@@ -110,7 +110,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     ep_steps = 0 
     lap_counter = 0
     for n in range(conf.train_n):
-        state['reward'] = set_reward(state)
+        # state['reward'] = set_reward(state)
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
         while sim_steps > 0 and not done:
@@ -123,7 +123,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
             env.render('human_fast')
         
         if done or ep_steps > conf.max_steps:
-            s_prime['reward'] = set_reward(s_prime) 
+            # s_prime['reward'] = set_reward(s_prime) 
             vehicle.done_entry(s_prime)
 
             print(f"{n}::Lap done {lap_counter} -> FinalR: {s_prime['reward']} -> LapTime {env.lap_times[0]:.2f} -> TotalReward: {vehicle.t_his.rewards[vehicle.t_his.ptr-1]:.2f}")
@@ -156,7 +156,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
     ep_steps = 0 
     lap_counter = 0
     for n in range(conf.train_n):
-        state['reward'] = set_reward(state) #theoretically always zero in this position
+        # state['reward'] = set_reward(state) #theoretically always zero in this position
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
         while sim_steps > 0 and not done:
@@ -171,7 +171,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
             state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
             lap_counter += 1
-            s_prime['reward'] = set_reward(s_prime) # -1 in this position
+            # s_prime['reward'] = set_reward(s_prime) # -1 in this position
             vehicle.done_entry(s_prime, env.lap_times[0])
             ep_steps = 0 
 
@@ -179,7 +179,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
         if done or ep_steps > conf.max_steps:
             print(f"{n}::Lap done {lap_counter} -> LapTime {env.lap_times[0]:.2f} -> Inters: {vehicle.ep_interventions} -> Reward: {vehicle.planner.t_his.rewards[vehicle.planner.t_his.ptr-1]:.2f}")
             lap_counter += 1
-            s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
+            # s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
             vehicle.lap_complete(env.lap_times[0])
             if show:
                 env.render(wait=False)
@@ -217,18 +217,18 @@ def find_conclusion(s_p, start):
     return 0
 
 
-def set_reward_time(s_p):
-    if s_p['collisions'][0] == 1:
-        return -1
-    elif s_p['lap_counts'][0] == 1:
-        return (30 - s_p['lap_times'][0]) 
-    return 0
+# def simulator_lap_reward(conf, s_p):
+#     if s_p['collisions'][0] == 1:
+#         return -1
+#     elif s_p['lap_counts'][0] == 1:
+#         return conf.r_done + (conf.t_time - s_p['lap_times'][0]) 
+#     return 0
 
 
-def set_reward(s_p):
-    if s_p['collisions'][0] == 1:
-        return -1
-    elif s_p['lap_counts'][0] == 1:
-        return 1 
-    return 0
+# def set_reward(s_p):
+#     if s_p['collisions'][0] == 1:
+#         return -1
+#     elif s_p['lap_counts'][0] == 1:
+#         return 1 
+#     return 0
 

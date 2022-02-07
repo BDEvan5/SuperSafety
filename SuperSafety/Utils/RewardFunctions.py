@@ -56,6 +56,9 @@ class TrackPtsBase:
         self.map_name = config.map_name
         self.total_s = None
 
+        self.r_done = config.r_done
+        self.r_time = config.r_time
+
     def load_center_pts(self):
         track_data = []
         filename = 'maps/' + self.map_name + '_std.csv'
@@ -136,6 +139,12 @@ class TrackPtsBase:
 
         return shaped_r
 
+    def lap_reward(self, s_p):
+        if s_p['collisions'][0] == 1:
+            return -1
+        elif s_p['lap_counts'][0] == 1:
+            return self.r_done + (self.t_time - s_p['lap_times'][0]) 
+        return 0
 
 class RefDistanceReward(TrackPtsBase):
     def __init__(self, config, b_distance) -> None:
@@ -148,11 +157,10 @@ class RefDistanceReward(TrackPtsBase):
         s_prime['reward'] = find_reward(s_prime)
         prime_pos = np.array([s_prime['poses_x'][0], s_prime['poses_y'][0]])
         pos = np.array([state['poses_x'][0], state['poses_y'][0]])
-        reward = self.get_distance_r(pos, prime_pos, 1)
+        reward = self.get_distance_r(pos, prime_pos, self.b_distance)
+        lap_reward = self.lap_reward(s_prime)
 
-        reward += s_prime['reward']
-
-        return reward
+        return reward + lap_reward
 
 class RefCTHReward(TrackPtsBase):
     def __init__(self, conf) -> None:
@@ -184,8 +192,9 @@ class RefCTHReward(TrackPtsBase):
         r_h = self.mh * np.cos(d_th) * v_scale
         r_d = self.md * d_c
         new_r = r_h - r_d - self.rk
+        lap_reward = self.lap_reward(s_prime)
 
-        return new_r + s_prime['reward']
+        return new_r + lap_reward
 
 
 

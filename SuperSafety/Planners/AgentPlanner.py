@@ -111,12 +111,12 @@ class TrainVehicle(BaseVehicle):
 
             self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)
 
-    def done_entry(self, s_prime):
+    def done_entry(self, s_prime, extra_reward=0):
         """
         To be called when ep is done.
         """
         nn_s_prime = self.transform_obs(s_prime)
-        reward = self.calculate_reward(self.state, s_prime)
+        reward = self.calculate_reward(self.state, s_prime) + extra_reward
 
         self.t_his.add_step_data(reward)
         self.t_his.lap_done(False)

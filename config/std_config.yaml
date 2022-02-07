@@ -25,7 +25,8 @@ h_size: 100
 r1: 0.08
 r2: 0.001
 rk: 0.0
-
+r_time: 30
+r_done: 0 
 
 #simulator
 sim_steps: 5

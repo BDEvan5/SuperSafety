@@ -158,8 +158,8 @@ class LearningSupervisor(Supervisor):
         self.lap_times = []
 
     def done_entry(self, s_prime, steps=0):
-        s_prime['reward'] = self.calculate_reward(self.intervention_mag, s_prime)
-        self.planner.done_entry(s_prime)
+        extra_reward = self.calculate_reward(self.intervention_mag, s_prime)
+        self.planner.done_entry(s_prime, extra_reward)
         self.intervention_list.append(self.ep_interventions)
         self.ep_interventions = 0
         self.lap_times.append(steps)
