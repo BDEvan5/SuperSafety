@@ -90,7 +90,7 @@ class TrainVehicle(BaseVehicle):
             self.add_memory_entry(obs, nn_obs)
             
         if obs['linear_vels_x'][0] < self.v_min_plan:
-            self.action = np.array([0, 7])
+            self.action = np.array([0, self.max_v])
             return self.action
 
         self.state = obs
@@ -172,7 +172,7 @@ class TestVehicle(BaseVehicle):
         nn_obs = self.transform_obs(obs)
 
         if obs['linear_vels_x'][0] < self.v_min_plan:
-            self.action = np.array([0, 7])
+            self.action = np.array([0, self.max_v])
             return self.action
 
         nn_obs = torch.FloatTensor(nn_obs.reshape(1, -1))

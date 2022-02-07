@@ -43,10 +43,12 @@ class Modes:
                     v_mode_list[i].append(s)
                     continue
 
-                friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *1.1 # nice for the maths, but a bit wrong for actual friction
+                friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *2.2# nice for the maths, but a bit wrong for actual friction
                 if friction_v > v:
                     mode_list.append([s, v])
                     v_mode_list[i].append(s)
+                # mode_list.append([s, v])
+                # v_mode_list[i].append(s)
 
             nv_modes.append(len(v_mode_list[i])+nv_modes[-1])
 
@@ -72,15 +74,16 @@ class Modes:
         return self.qs[id]
 
     def check_state_modes(self, v, d):
-        b = 0.523
-        g = 9.81
-        l_d = 0.329
-        if abs(d) < 0.06:
-            return True # safe because steering is small
-        friction_v = np.sqrt(b*g*l_d/np.tan(abs(d))) *1.1 # nice for the maths, but a bit wrong for actual friction
-        if friction_v > v:
-            return True # this is allowed mode
-        return False # this is not allowed mode: the friction is too high
+        # b = 0.523
+        # g = 9.81
+        # l_d = 0.329
+        # if abs(d) < 0.06:
+        #     return True # safe because steering is small
+        # friction_v = np.sqrt(b*g*l_d/np.tan(abs(d))) *1.1 # nice for the maths, but a bit wrong for actual friction
+        # if friction_v > v:
+        #     return True # this is allowed mode
+        # return False # this is not allowed mode: the friction is too high
+        return True
 
     def get_safe_mode_id(self, v, d):
         if not self.check_state_modes(v, d):

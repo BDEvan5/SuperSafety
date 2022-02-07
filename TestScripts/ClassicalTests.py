@@ -7,11 +7,11 @@ from SuperSafety.Planners.follow_the_gap import FollowTheGap
 
 def test():
     conf = load_conf("std_config")
-    conf.map_name = 'f1_aut_wide'
+    conf.map_name = 'columbia_small'
     env = F110Env(map=conf.map_name)
 
-    # planner = PurePursuit(conf)
-    planner = FollowTheGap(conf, "FGM")
+    planner = PurePursuit(conf)
+    # planner = FollowTheGap(conf, "FGM")
 
     evaluate_vehicle(env, planner, conf, True)
 
@@ -63,6 +63,6 @@ def run_fgm_set(n=1):
 
 
 if __name__ == "__main__":
-    run_pp_set(2)
+    # run_pp_set(2)
     # run_fgm_set(1)
-    # test()
+    test()

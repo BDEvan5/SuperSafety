@@ -105,7 +105,6 @@ class Supervisor:
 
         return state
 
-
     def plan(self, obs):
         init_action = self.planner.plan(obs)
         state = self.extract_state(obs)

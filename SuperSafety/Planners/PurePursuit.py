@@ -14,6 +14,7 @@ class PurePursuit:
         self.vgain = conf.v_gain
         self.wheelbase =  conf.l_f + conf.l_r
         self.max_steer = conf.max_steer
+        self.max_v = conf.max_v
 
         path = os.getcwd() + f"/{conf.vehicle_path}" + self.name
         init_file_struct(path)
@@ -29,7 +30,7 @@ class PurePursuit:
 
         v_min_plan = 1
         if v_current < v_min_plan:
-            return np.array([0, 3]) #TODO:  change this.
+            return np.array([0, self.max_v]) #TODO:  change this.
 
         lookahead_point = self.trajectory.get_current_waypoint(pos, self.lookahead)
 
@@ -38,7 +39,7 @@ class PurePursuit:
         speed *= self.vgain
 
         # speed = calculate_speed(steering_angle)
-        speed = np.clip(speed, 0, 3)
+        # speed = np.clip(speed, 0, 3)
         return np.array([steering_angle, speed])
 
 

@@ -2,7 +2,7 @@
 from SuperSafety.Utils.utils import load_conf
 
 from SuperSafety.Supervisor.Modes import Modes
-from SuperSafety.Supervisor.Dynamics import run_dynamics_update
+from SuperSafety.Supervisor.Dynamics import run_dynamics_update, run_dynamic
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -38,8 +38,16 @@ def build_viability_dynamics(phis, m, time, conf):
         for j, state_mode in enumerate(m.qs): # searches through old q's
             state = np.array([0, 0, p, state_mode[1], state_mode[0]])
             for k, action in enumerate(m.qs): # searches through actions
-                new_state = run_dynamics_update(state, action, time/2)
-                dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
+                # new_state = run_dynamics_update(state, action, time/2)
+                # dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
+
+                new_state = run_dynamic(state, action, time/2)
+                dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[4], new_state[3], new_state[2]
+                slip_angle = new_state[6]
+                if abs(slip_angle) > conf.max_slip_angle:
+                    invalid_counter += 1
+                    print(f"Invalid dyns: phi_ind: {i}, s_mode:{j}, action_mode:{k}: slip: {slip_angle}")
+                    continue
                 new_q = m.get_safe_mode_id(vel, steer)
 
                 if new_q is None:
@@ -61,8 +69,17 @@ def build_viability_dynamics(phis, m, time, conf):
                 dynamics[i, j, k, 0, 3] = int(new_q)                  
                 
 
-                new_state = run_dynamics_update(state, action, time)
-                dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
+                # new_state = run_dynamics_update(state, action, time)
+                # dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
+
+                new_state = run_dynamic(state, action, time/2)
+                dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[4], new_state[3], new_state[2]
+                slip_angle = new_state[6]
+                if abs(slip_angle) > conf.max_slip_angle:
+                    invalid_counter += 1
+                    print(f"Invalid dyns: phi_ind: {i}, s_mode:{j}, action_mode:{k}: slip: {slip_angle}")
+                    continue
+
                 new_q = m.get_safe_mode_id(vel, steer)
 
                 if new_q is None:

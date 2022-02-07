@@ -365,6 +365,29 @@ def run_dynamics_update(x, u, dt):
     return new_state
 
 
+def run_dynamic(x, u, dt):
+    params = {'mu': 1.0489, 'C_Sf': 4.718, 'C_Sr': 5.4562, 'lf': 0.15875, 'lr': 0.17145, 'h': 0.074, 'm': 3.74, 'I': 0.04712, 's_min': -0.4189, 's_max': 0.4189, 'sv_min': -3.2, 'sv_max': 3.2, 'v_switch': 7.319, 'a_max': 9.51, 'v_min':-5.0, 'v_max': 20.0, 'width': 0.31, 'length': 0.58}
+
+    sim_step = 0.01 
+    car = RaceCarDynamics(params, sim_step)
+    car.reset(x)
+    # car.reset(x[0:3])
+    # car.state[3] = x[3] # set the velocity
+    # car.state[2] = x[4] # set the steering
+    # print(f"Original state: {x}")
+    # print(f"car state: {car.state}")
+    #TODO: set the delta state...
+
+    # n_steps = 5
+    n_steps = int(dt / sim_step)
+    # states = [car.state]
+    for i in range(n_steps):
+        car.update_pose(u[0], u[1])
+        # states.append(car.state)
+
+    return car.state
+
+
 """
 Notes:
 """

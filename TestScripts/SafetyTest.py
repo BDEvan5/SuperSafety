@@ -26,10 +26,10 @@ def generate_kernels():
 def run_random_test(n=1):
     conf = load_conf("kernel_config")
 
-    agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
-    planner = RandomPlanner(conf, agent_name)
-    # agent_name = f"ConstantResult_{conf.map_name}_{conf.kernel_mode}_{n}"
-    # planner = ConstantPlanner(agent_name, 0)
+    # agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    # planner = RandomPlanner(conf, agent_name)
+    agent_name = f"ConstantResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    planner = ConstantPlanner(agent_name, 0, 7)
     env = F110Env(map=conf.map_name)
 
     safety_planner = Supervisor(planner, conf)

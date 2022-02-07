@@ -21,6 +21,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
                 # env.render(mode='human')
                 env.render(mode='human_fast')
 
+        env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
 
         if r == -1:
@@ -68,6 +69,7 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
             if show:
                 env.render(mode='human_fast')
 
+        env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
         interventions.append(vehicle.interventions)
         vehicle.interventions = 0

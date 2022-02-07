@@ -8,7 +8,7 @@ sy: 0
 # stheta: -0.4  # porto
 stheta: 0  # columbia
 
-max_v: 5
+max_v: 7
 # max_v: 3
 max_a: 8.5
 max_steer: 0.4
@@ -55,7 +55,7 @@ lookahead_time_step: 0.2
 
 nq_steer: 5
 nq_velocity: 7
-min_kernel_v: 2
+min_kernel_v: 4
 kernel_time_step: 0.2
 n_dx: 40
 phi_range: 6.28
@@ -66,5 +66,5 @@ n_phi: 41
 # kernel Learning
 constant_reward: 1
 
-
+max_slip_angle: 0.2
 
