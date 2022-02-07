@@ -103,7 +103,7 @@ class KernelGenerator:
         # quarter_phi = int(len(self.phis)/4)
         # phi_ind = 
 
-        inds = np.array([2, 3, 6, 7], dtype=int)
+        inds = np.array([2, 5, 13, 18], dtype=int)
 
         self.axs[0, 0].imshow(self.kernel[:, :, phi_ind, inds[0]].T + self.o_map.T, origin='lower')
         self.axs[0, 0].set_title(f"Kernel Mode: {self.m.qs[inds[0]]}")

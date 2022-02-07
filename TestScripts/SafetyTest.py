@@ -10,7 +10,8 @@ def generate_kernels():
     conf = load_conf("kernel_config")
     build_dynamics_table(conf)
 
-    for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    for track in ['porto', 'f1_aut_wide']:
         conf.map_name = track
         img = prepare_track_img(conf) 
         img, img2 = shrink_img(img, 5)
@@ -26,15 +27,18 @@ def run_random_test(n=1):
 
     agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
     planner = RandomPlanner(conf, agent_name)
+    # agent_name = f"ConstantResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    # planner = ConstantPlanner(agent_name, 0)
     env = F110Env(map=conf.map_name)
 
     safety_planner = Supervisor(planner, conf)
 
-    eval_dict = evaluate_vehicle(env, safety_planner, conf, True)
+    eval_dict = evaluate_kernel_vehicle(env, safety_planner, conf, True)
     
     config_dict = vars(conf)
     config_dict['test_number'] = n
-    config_dict.update(eval_dict)
+    config_dict['SSS'] = eval_dict
+    config_dict['agent_name'] = agent_name
 
     save_conf_dict(config_dict)
 
@@ -68,6 +72,6 @@ def run_test_set(n=1):
 if __name__ == "__main__":
     # generate_kernels()
 
-    # run_random_test(1)
-    run_test_set(2)
+    run_random_test(2)
+    # run_test_set(2)
 
