@@ -128,17 +128,16 @@ class TrainVehicle(BaseVehicle):
 
         self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
 
-    def intervention_entry(self, s_prime):
+    def intervention_entry(self, s_prime, inter_reward):
         """
         To be called when the supervisor intervenes
         """
         nn_s_prime = self.transform_obs(s_prime)
-        reward = self.calculate_reward(self.state, s_prime)
+        reward = self.calculate_reward(self.state, s_prime) + inter_reward
 
         self.t_his.add_step_data(reward)
 
         self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
-
 
     def lap_complete(self):
         """

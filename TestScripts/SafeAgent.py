@@ -29,7 +29,7 @@ def run_safe_train_eval(n):
     conf = load_conf("kernel_config")
     conf.r1 = 0.012
     conf.r2 = 0.006
-    conf.rk = 0.004
+    conf.rk = 0.008
     agent_name = f"KernelSSS_{n}"
     env = F110Env(map=conf.map_name)
 
@@ -56,6 +56,6 @@ def run_safe_train_eval(n):
 
 if __name__ == '__main__':
     # train_safe_agent(5)
-    # eval_safe_agent(1)
-    run_safe_train_eval(401)
+    # eval_safe_agent(404)
+    run_safe_train_eval(405)
 

@@ -151,15 +151,15 @@ class LearningSupervisor(Supervisor):
     def __init__(self, planner, conf):
         Supervisor.__init__(self, planner, conf)
         self.intervention_mag = 0
-        # self.mag_reward = conf.mag_reward
         self.constant_reward = conf.constant_reward
         self.ep_interventions = 0
         self.intervention_list = []
         self.lap_times = []
 
     def done_entry(self, s_prime, steps=0):
-        extra_reward = self.calculate_reward(self.intervention_mag, s_prime)
-        self.planner.done_entry(s_prime, extra_reward)
+        # extra_reward = self.calculate_reward(self.intervention_mag, s_prime) 
+        # if the ep is finished, then it gets a crash reward
+        self.planner.done_entry(s_prime)
         self.intervention_list.append(self.ep_interventions)
         self.ep_interventions = 0
         self.lap_times.append(steps)
@@ -201,8 +201,7 @@ class LearningSupervisor(Supervisor):
 
     def plan(self, obs):
         if abs(self.intervention_mag) > 0:
-            obs['reward'] = self.calculate_reward(self.intervention_mag, obs)
-            self.planner.intervention_entry(obs)
+            self.planner.intervention_entry(obs, -self.constant_reward)
             init_action = self.planner.plan(obs, False)
         else:
             init_action = self.planner.plan(obs, True)
@@ -233,9 +232,9 @@ class LearningSupervisor(Supervisor):
 
         return action
 
-    def calculate_reward(self, intervention_mag, obs):
-        total_reward = - self.constant_reward + obs['reward']
-        return  total_reward
+    # def calculate_reward(self, intervention_mag, obs):
+    #     total_reward = - self.constant_reward
+    #     return  total_reward
 
 @njit(cache=True)
 def modify_mode(valid_window, nq_velocity, nv_modes, nv_level_modes, qs):

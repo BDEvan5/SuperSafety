@@ -254,7 +254,7 @@ class F110Env(gym.Env):
         # This number (2) is 2x the number of laps desired
         
         personal_done = self.check_location()
-        done = personal_done or done
+        done = personal_done or done or self.lap_counts[0]
 
         return done, self.toggle_list >= 4
 
@@ -387,6 +387,8 @@ class F110Env(gym.Env):
         self.near_start = True
         self.near_starts = np.array([True]*self.num_agents)
         self.toggle_list = np.zeros((self.num_agents,))
+        self.lap_times = np.zeros((self.num_agents,))
+        self.lap_counts = np.zeros((self.num_agents,))
 
     def load_centerline(self, file_name=None):
         """
