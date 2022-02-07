@@ -18,7 +18,8 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
                 sim_steps -= 1
 
             if show:
-                env.render(mode='human_fast')
+                env.render(mode='human')
+                # env.render(mode='human_fast')
 
         r = find_conclusion(obs, start)
 
