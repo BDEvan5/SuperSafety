@@ -126,11 +126,10 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
             # s_prime['reward'] = set_reward(s_prime) 
             vehicle.done_entry(s_prime)
 
-            print(f"{n}::Lap done {lap_counter} -> FinalR: {s_prime['reward']} -> LapTime {env.lap_times[0]:.2f} -> TotalReward: {vehicle.t_his.rewards[vehicle.t_his.ptr-1]:.2f}")
+            print(f"{n}::Lap done {lap_counter} -> LapTime {env.lap_times[0]:.2f} -> TotalReward: {vehicle.t_his.rewards[vehicle.t_his.ptr-1]:.2f}")
             lap_counter += 1
             ep_steps = 0 
-            if state['reward'] == -1:
-                crash_counter += 1
+            if s_prime['collisions'][0] == 1: crash_counter += 1
 
             state, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
             

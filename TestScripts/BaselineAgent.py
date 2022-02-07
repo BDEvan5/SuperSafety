@@ -48,8 +48,8 @@ def train_test_baseline(n):
 
 if __name__ == '__main__':
     # train_baseline(1)
-    eval_baseline(302)
-    # train_test_baseline(100)
+    # eval_baseline(304)
+    train_test_baseline(305)
 
     # train_test_baseline(409)
     # for i in range(300, 310):

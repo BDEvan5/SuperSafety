@@ -58,6 +58,7 @@ class TrackPtsBase:
 
         self.r_done = config.r_done
         self.r_time = config.r_time
+        self.r_time_weight = config.r_time_weight
 
     def load_center_pts(self):
         track_data = []
@@ -143,7 +144,8 @@ class TrackPtsBase:
         if s_p['collisions'][0] == 1:
             return -1
         elif s_p['lap_counts'][0] == 1:
-            return self.r_done + (self.t_time - s_p['lap_times'][0]) 
+            return self.r_done
+            # return self.r_done + self.r_time_weight * (self.r_time - s_p['lap_times'][0]) 
         return 0
 
 class RefDistanceReward(TrackPtsBase):
