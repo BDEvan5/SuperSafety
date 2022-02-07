@@ -43,7 +43,7 @@ class Modes:
                     v_mode_list[i].append(s)
                     continue
 
-                friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *2.2# nice for the maths, but a bit wrong for actual friction
+                friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *2# nice for the maths, but a bit wrong for actual friction
                 if friction_v > v:
                     mode_list.append([s, v])
                     v_mode_list[i].append(s)
