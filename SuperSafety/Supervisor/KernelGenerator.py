@@ -104,7 +104,7 @@ class KernelGenerator:
         # phi_ind = 
 
         # inds = np.array([2, 6, 8, 10], dtype=int)
-        inds = np.array([2, 5, 13, 18], dtype=int)
+        inds = np.array([2, 6, 12, 14], dtype=int)
 
         self.axs[0, 0].imshow(self.kernel[:, :, phi_ind, inds[0]].T + self.o_map.T, origin='lower')
         self.axs[0, 0].set_title(f"Kernel Mode: {self.m.qs[inds[0]]}")
@@ -272,7 +272,7 @@ def shrink_img(img, n_shrinkpx):
 
 
 def build_track_kernel(conf):
-    conf.map_name = "f1_aut_wide"
+    # conf.map_name = "f1_aut_wide"
     img = prepare_track_img(conf) 
     img, img2 = shrink_img(img, 5)
     kernel = KernelGenerator(img2, conf)

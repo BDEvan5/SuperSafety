@@ -22,8 +22,8 @@ class RandomPlanner:
     def plan(self, obs):
         steering = np.random.normal(0, 0.1)
         steering = np.clip(steering, -self.d_max, self.d_max)
-        # v = np.random.random() * self.speed_dif + self.min_speed
-        v = 7
+        v = np.random.random() * self.speed_dif + self.min_speed
+        # v = 5
         #TODO: make speed random too
         return np.array([steering, v])
 
