@@ -8,10 +8,11 @@ from SuperSafety.Supervisor.DynamicsBuilder import build_dynamics_table
 
 def generate_kernels():
     conf = load_conf("kernel_config")
-    build_dynamics_table(conf)
+    # build_dynamics_table(conf)
 
     # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
-    for track in ['porto', 'columbia_small']:
+    # for track in ['porto', 'columbia_small']:
+    for track in ['columbia_small']:
         conf.map_name = track
         img = prepare_track_img(conf) 
         img, img2 = shrink_img(img, 5)
@@ -70,8 +71,8 @@ def run_test_set(n=1):
 
 
 if __name__ == "__main__":
-    generate_kernels()
+    # generate_kernels()
 
-    # run_random_test(2)
+    run_random_test(2)
     # run_test_set(2)
 
