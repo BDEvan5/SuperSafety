@@ -168,8 +168,8 @@ class KernelGenerator:
             self.view_speed_build(False)
             self.get_filled_kernel()
 
-        print(f"non: {np.count_nonzero(self.kernel[:, :, :, 8])}")
-        print(f"zero: {np.where(self.kernel[:, :, :, 8]==0)}")
+        # print(f"non: {np.count_nonzero(self.kernel[:, :, :, 8])}")
+        # print(f"zero: {np.where(self.kernel[:, :, :, 8]==0)}")
 
         return self.get_filled_kernel()
 
