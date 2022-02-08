@@ -30,7 +30,9 @@ class Modes:
         #TODO: think about how I do this considering the new dynamics
         b = 0.523
         g = 9.81
-        l_d = 0.329
+        lf = 0.158
+        lr = 0.171
+        L = 0.329
 
         mode_list = []
         v_mode_list = []
@@ -42,8 +44,9 @@ class Modes:
                     mode_list.append([s, v])
                     v_mode_list[i].append(s)
                     continue
-
-                friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *1.1 # nice for the maths, but a bit wrong for actual friction
+                slip = lr/(lr+lf)*np.cos(s)
+                friction_v = np.sqrt(b*g*L/(np.tan(abs(s))*slip)) 
+                # friction_v = np.sqrt(b*g*l_d/np.tan(abs(s))) *1.1 # nice for the maths, but a bit wrong for actual friction
                 if friction_v > v:
                     mode_list.append([s, v])
                     v_mode_list[i].append(s)
@@ -75,9 +78,15 @@ class Modes:
         b = 0.523
         g = 9.81
         l_d = 0.329
+        lf = 0.158
+        lr = 0.171
+        L = 0.329
+        
         if abs(d) < 0.06:
             return True # safe because steering is small
-        friction_v = np.sqrt(b*g*l_d/np.tan(abs(d))) *1.1 # nice for the maths, but a bit wrong for actual friction
+        slip = lr/(lr+lf)*np.cos(d)
+        friction_v = np.sqrt(b*g*L/(np.tan(abs(d))*slip)) 
+        # friction_v = np.sqrt(b*g*l_d/np.tan(abs(d))) *1.1 # nice for the maths, but a bit wrong for actual friction
         if friction_v > v:
             return True # this is allowed mode
         return False # this is not allowed mode: the friction is too high
