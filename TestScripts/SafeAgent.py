@@ -27,7 +27,7 @@ def eval_safe_agent(n):
 
 def run_safe_train_eval(n):
     conf = load_conf("kernel_config")
-    # conf.r1 = 0.08
+    conf.r1 = 0.08
     # conf.r2 = 0.001
     conf.rk = 0.006
     agent_name = f"KernelSSS_{n}"
@@ -56,6 +56,6 @@ def run_safe_train_eval(n):
 
 if __name__ == '__main__':
     # train_safe_agent(5)
-    eval_safe_agent(105)
-    # run_safe_train_eval(105)
+    # eval_safe_agent(105)
+    run_safe_train_eval(106)
 

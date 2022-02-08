@@ -20,7 +20,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
             if show:
                 env.render(mode='human_fast')
  
-        env.sim.agents[0].history.plot_history()
+        # env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
 
         if r == -1:

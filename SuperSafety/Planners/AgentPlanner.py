@@ -60,7 +60,7 @@ class BaseVehicle:
         # this is to ensure that it doesn't stay still
         speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
         # max_speed = calculate_speed(steering_angle)
-        # speed = np.clip(speed, 0, max_speed)
+        # speed = 4
         action = np.array([steering_angle, speed])
 
         return action
