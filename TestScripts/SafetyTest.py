@@ -68,6 +68,6 @@ def run_test_set(n=1):
 if __name__ == "__main__":
     # generate_kernels()
 
-    # run_random_test(1)
-    run_test_set(2)
+    run_random_test(1)
+    # run_test_set(2)
 
