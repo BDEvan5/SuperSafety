@@ -1,7 +1,7 @@
 # map
 # map_name: "porto"
-# map_name: "columbia_small"
-map_name: "f1_aut_wide"
+map_name: "columbia_small"
+# map_name: "f1_aut_wide"
 map_ext: ".png"
 sx: 0.0
 sy: 0
@@ -52,13 +52,11 @@ kernel_mode: "viab"
 lookahead_time_step: 0.2
 
 nq_steer: 9
-kernel_speed: 2
+kernel_speed: 3
 kernel_time_step: 0.2
-n_dx: 80
+n_dx: 40
 phi_range: 6.28
 n_phi: 41
-discrim_block: 1
-discrim_phi: 0.1
 
 # kernel Learning
 constant_reward: 1

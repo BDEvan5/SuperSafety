@@ -44,7 +44,8 @@ def run_test_set(n=1):
     conf = load_conf("kernel_config")
     conf.test_n = 10
 
-    for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    for track in ['porto', 'columbia_small']:
         conf.map_name = track
         env = F110Env(map=conf.map_name)
 
@@ -68,7 +69,7 @@ def run_test_set(n=1):
 def run_test_f1(n=1):
     conf = load_conf("kernel_config")
     conf.test_n = 10
-    conf.n_dx = 60
+    # conf.n_dx = 60
 
     conf.map_name = 'f1_aut_wide'
     env = F110Env(map=conf.map_name)
@@ -94,6 +95,6 @@ if __name__ == "__main__":
     # generate_kernels()
 
     # run_random_test(1)
-    # run_test_set(2)
-    run_test_f1(1)
+    run_test_set(2)
+    # run_test_f1(1)
 

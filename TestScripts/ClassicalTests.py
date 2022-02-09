@@ -35,7 +35,8 @@ def run_pp_set(n=1):
     conf = load_conf("std_config")
     conf.test_n = 1
 
-    for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    for track in ['porto', 'columbia_small']:
         conf.map_name = track
         env = F110Env(map=conf.map_name)
 
@@ -57,7 +58,8 @@ def run_fgm_set(n=1):
     conf = load_conf("std_config")
     conf.test_n = 1
 
-    for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    for track in ['porto', 'columbia_small']:
         conf.map_name = track
         env = F110Env(map=conf.map_name)
 
@@ -77,7 +79,7 @@ def run_fgm_set(n=1):
 
 
 if __name__ == "__main__":
-    run_pp_set(1)
+    # run_pp_set(1)
     run_fgm_set(1)
     # test()
     # test_kernel()
