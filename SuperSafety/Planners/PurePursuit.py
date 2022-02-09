@@ -39,7 +39,7 @@ class PurePursuit:
 
         # speed = calculate_speed(steering_angle)
         # speed = np.clip(speed, 0, 3)
-        speed = 4
+        # speed = self.max_v
         return np.array([steering_angle, speed])
 
 
