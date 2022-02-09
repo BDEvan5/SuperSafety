@@ -4,33 +4,33 @@ base_config_name: "kernel_config"
 n: 2
 
 runs:
-  # - run: 1
-  #   name: "1Baseline"
-  #   r1: 0.012
-  #   r2: 0.006
-  #   rk: 0
-  #   constant_reward: 0
+  - run: 1
+    name: "1Baseline"
+    r1: 0.012
+    r2: 0.006
+    rk: 0
+    constant_reward: 0
 
-  # - run: 2
-  #   name: "2BasePenalty"
-  #   r1: 0.012
-  #   r2: 0.006
-  #   rk: 0
-  #   constant_reward: 1
+  - run: 2
+    name: "2BasePenalty"
+    r1: 0.012
+    r2: 0.006
+    rk: 0
+    constant_reward: 1
 
-  # - run: 3
-  #   name: "3Bias002"
-  #   r1: 0.012
-  #   r2: 0.006
-  #   rk: 0.002
-  #   constant_reward: 1
+  - run: 3
+    name: "3Bias002"
+    r1: 0.012
+    r2: 0.006
+    rk: 0.002
+    constant_reward: 1
 
-  # - run: 4
-  #   name: "4Bias008"
-  #   r1: 0.012
-  #   r2: 0.006
-  #   rk: 0.008
-  #   constant_reward: 1
+  - run: 4
+    name: "4Bias008"
+    r1: 0.012
+    r2: 0.006
+    rk: 0.008
+    constant_reward: 1
 
   - run: 5
     name: "5Bias04"
