@@ -1,7 +1,7 @@
 # map
 # map_name: "porto"
-# map_name: "columbia_small"
-map_name: "f1_aut_wide"
+map_name: "columbia_small"
+# map_name: "f1_aut_wide"
 map_ext: ".png"
 sx: 0.0
 sy: 0
@@ -38,7 +38,7 @@ v_min_plan: 1
 
 # test params
 test_n: 10
-train_n: 10000
+train_n: 20000
 
 #save_paths
 vehicle_path: "Data/Vehicles/"
