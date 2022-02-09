@@ -338,7 +338,7 @@ if __name__ == "__main__":
     # test_construction()
     conf = load_conf("kernel_config")
     # conf.map_name = "porto"
-    # build_track_kernel(conf)
-    view_kernel()
+    build_track_kernel(conf)
+    # view_kernel()
 
 

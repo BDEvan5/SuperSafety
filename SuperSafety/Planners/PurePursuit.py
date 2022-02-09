@@ -38,7 +38,8 @@ class PurePursuit:
         speed *= self.vgain
 
         # speed = calculate_speed(steering_angle)
-        speed = np.clip(speed, 0, 3)
+        # speed = np.clip(speed, 0, 3)
+        speed = 4
         return np.array([steering_angle, speed])
 
 

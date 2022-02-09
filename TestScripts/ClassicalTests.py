@@ -4,6 +4,7 @@ from SuperSafety.Utils.utils import *
 from TrainTest import *
 from SuperSafety.Planners.PurePursuit import PurePursuit
 from SuperSafety.Planners.follow_the_gap import FollowTheGap
+from SuperSafety.Supervisor.SupervisorySystem import Supervisor
 
 def test():
     conf = load_conf("std_config")
@@ -13,6 +14,19 @@ def test():
     # planner = PurePursuit(conf)
     planner = FollowTheGap(conf, "FGM")
 
+    evaluate_vehicle(env, planner, conf, True)
+
+
+def test_kernel():
+    conf = load_conf("kernel_config")
+    # conf.map_name = 'f1_aut_wide'
+    env = F110Env(map=conf.map_name)
+
+    planner = PurePursuit(conf)
+    safe_planner = Supervisor(planner, conf)
+    # planner = FollowTheGap(conf, "FGM")
+
+    # evaluate_kernel_vehicle(env, safe_planner, conf, True)
     evaluate_vehicle(env, planner, conf, True)
 
 
@@ -63,6 +77,7 @@ def run_fgm_set(n=1):
 
 
 if __name__ == "__main__":
-    run_pp_set(2)
+    # run_pp_set(2)
     # run_fgm_set(1)
     # test()
+    test_kernel()
