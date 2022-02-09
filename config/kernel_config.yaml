@@ -39,7 +39,7 @@ v_min_plan: 1
 
 # test params
 test_n: 10
-train_n: 10000
+train_n: 2000
 
 #save_paths
 vehicle_path: "Data/Vehicles/"

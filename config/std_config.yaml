@@ -8,7 +8,7 @@ sy: 0
 # stheta: -0.4  # porto
 stheta: 0  # columbia, f1 aut
 
-max_v: 4
+max_v: 7
 max_a: 8.5
 max_steer: 0.4
 max_d_dot: 3.2
@@ -38,8 +38,10 @@ v_min_plan: 1
 
 # test params
 test_n: 10
-train_n: 30000
+train_n: 10000
 
 #save_paths
 vehicle_path: "Data/Vehicles/"
+
+kernel_speed: 3
 

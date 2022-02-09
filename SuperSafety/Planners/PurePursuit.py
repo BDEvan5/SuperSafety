@@ -14,6 +14,7 @@ class PurePursuit:
         self.vgain = conf.v_gain
         self.wheelbase =  conf.l_f + conf.l_r
         self.max_steer = conf.max_steer
+        self.speed = conf.kernel_speed
 
         path = os.getcwd() + f"/{conf.vehicle_path}" + self.name
         init_file_struct(path)
@@ -39,7 +40,7 @@ class PurePursuit:
 
         # speed = calculate_speed(steering_angle)
         # speed = np.clip(speed, 0, 3)
-        # speed = self.max_v
+        speed = self.speed
         return np.array([steering_angle, speed])
 
 

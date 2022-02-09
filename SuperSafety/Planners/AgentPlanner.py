@@ -25,6 +25,7 @@ class BaseVehicle:
         self.name = agent_name
         self.n_beams = sim_conf.n_beams
         self.max_v = sim_conf.max_v
+        self.speed = sim_conf.kernel_speed
         self.max_steer = sim_conf.max_steer
         self.range_finder_scale = sim_conf.range_finder_scale
 
@@ -60,8 +61,8 @@ class BaseVehicle:
         # this is to ensure that it doesn't stay still
         # speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
         # max_speed = calculate_speed(steering_angle)
-        speed = self.max_v
-        action = np.array([steering_angle, speed])
+        # speed = self.max_v
+        action = np.array([steering_angle, self.speed])
 
         return action
 

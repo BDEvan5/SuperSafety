@@ -58,7 +58,7 @@ def run_safe_train_eval(n):
 if __name__ == '__main__':
     # train_safe_agent(5)
     # eval_safe_agent(105)
-    run_safe_train_eval(100)
+    run_safe_train_eval(103)
     # for i in range(600, 610):
     #     run_safe_train_eval(i)
 

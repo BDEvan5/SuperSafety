@@ -226,7 +226,7 @@ class LearningSupervisor(Supervisor):
             self.intervention_mag = 1
             return init_action
 
-        action, idx = modify_mode(valids, self.m.nq_velocity, self.m.nv_modes, self.m.nv_level_modes, self.m.qs)
+        action, idx = modify_mode(valids, self.m.qs)
         self.safe_history.add_locations(init_action[0], action[0])
 
         self.intervention_mag = (action[0] - init_action[0])/self.d_max
