@@ -3,20 +3,17 @@ from SuperSafety.f110_gym.f110_env import F110Env
 from SuperSafety.Utils.utils import *
 from TrainTest import *
 from SuperSafety.Supervisor.SupervisorySystem import Supervisor
-from SuperSafety.Supervisor.KernelGenerator import prepare_track_img, shrink_img, KernelGenerator
+from SuperSafety.Supervisor.KernelGenerator import build_track_kernel
 from SuperSafety.Supervisor.DynamicsBuilder import build_dynamics_table
 
+
 def generate_kernels():
-    conf = load_conf("kernel_config")
+    conf = load_conf("config_file")
     build_dynamics_table(conf)
 
-    for track in ['porto', 'columbia_small', 'f1_aut_wide']:
+    for track in ['porto', 'columbia_small']:
         conf.map_name = track
-        img = prepare_track_img(conf) 
-        img, img2 = shrink_img(img, 5)
-        kernel = KernelGenerator(img2, conf)
-        kernel.calculate_kernel(60)
-        kernel.save_kernel(f"Kernel_{conf.kernel_mode}_{conf.map_name}")
+        build_track_kernel(conf)
 
 
 
@@ -112,9 +109,9 @@ def run_test_f1(n=1):
 
 
 if __name__ == "__main__":
-    # generate_kernels()
+    generate_kernels()
 
-    run_random_test(1)
+    # run_random_test(1)
     # run_test_set(2)
     # run_test_f1(1)
 

@@ -3,7 +3,8 @@ import csv
 import os 
 from argparse import Namespace
 import shutil
-
+import numpy as np
+from numba import njit
 
 # Admin functions
 def save_conf_dict(dictionary, save_name=None):
@@ -19,6 +20,8 @@ def load_conf(fname):
         conf_dict = yaml.load(file, Loader=yaml.FullLoader)
 
     conf = Namespace(**conf_dict)
+
+    np.random.seed(conf.random_seed)
 
     return conf
 
@@ -38,3 +41,11 @@ def init_file_struct(path):
         except:
             shutil.rmtree(path)
     os.mkdir(path)
+
+@njit(cache=True)
+def limit_phi(phi):
+    while phi > np.pi:
+        phi = phi - 2*np.pi
+    while phi < -np.pi:
+        phi = phi + 2*np.pi
+    return phi
