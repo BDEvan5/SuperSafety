@@ -19,7 +19,7 @@ def baseline(conf, env, n):
     config_dict['test_number'] = n
     config_dict['Wo'] = eval_dict
     config_dict['agent_name'] = agent_name
-    config_dict['eval_name'] = "benchmark"
+    config_dict['eval_name'] = "repeat"
     config_dict['vehicle'] = "Base"
 
     save_conf_dict(config_dict)
@@ -43,7 +43,7 @@ def kernel_sss(conf, env, n):
     config_dict['Wo'] = eval_wo
     config_dict['SSS'] = eval_sss
     config_dict['agent_name'] = agent_name
-    config_dict['eval_name'] = "benhcmark"
+    config_dict['eval_name'] = "repeat"
     config_dict['vehicle'] = "KernelSSS"
 
 
@@ -55,8 +55,8 @@ def run_repeatability():
     env = F110Env(map=conf.map_name)
 
     for i in range (100, 110):
-        # baseline(conf, env, i)
-        kernel_sss(conf, env, i)
+        baseline(conf, env, i)
+        # kernel_sss(conf, env, i)
 
 if __name__ == "__main__":
     run_repeatability()
