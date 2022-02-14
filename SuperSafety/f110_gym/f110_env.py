@@ -238,7 +238,7 @@ class F110Env(gym.Env):
         temp_y[np.invert(np.logical_or(idx1, idx2))] = 0
 
         dist2 = delta_pt[0, :]**2 + temp_y**2
-        closes = dist2 <= 0.1
+        closes = dist2 <= 0.02
         for i in range(self.num_agents):
             if closes[i] and not self.near_starts[i]:
                 self.near_starts[i] = True

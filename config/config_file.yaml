@@ -26,9 +26,9 @@ vehicle_speed: 3          # speed at which the vehilce is set to travel at
 n_beams: 20               # number of beams used by agent
 range_finder_scale: 5     # scaling of beams for NN
 h_size: 100               # size of hidden layers in NN
-r1: 0.0                   # heading & velocity reward value
-r2: 0.00                  # distance reward penalty
-rk: 0.0                   # constant reward applied at every step
+r1: 0.012                 # heading & velocity reward value
+r2: 0.006                 # distance reward penalty
+rk: 0.004                   # constant reward applied at every step
 
 
 #simulator
@@ -61,6 +61,5 @@ n_phi: 41                # number of points per rotation in discretising vehicle
 # kernel Learning
 constant_reward: 1       # constant reward applied at every step
 kernel_mode: "viab"      # Name to save kernel by
-
 
 

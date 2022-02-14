@@ -23,6 +23,7 @@ def generate_kernels():
 
 def run_random_test(n=1):
     conf = load_conf("kernel_config")
+    conf.map_name = "porto"
 
     agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
     planner = RandomPlanner(conf, agent_name)
@@ -37,6 +38,7 @@ def run_random_test(n=1):
     config_dict.update(eval_dict)
 
     save_conf_dict(config_dict)
+
 
 
 
@@ -112,7 +114,7 @@ def run_test_f1(n=1):
 if __name__ == "__main__":
     # generate_kernels()
 
-    # run_random_test(1)
-    run_test_set(2)
+    run_random_test(1)
+    # run_test_set(2)
     # run_test_f1(1)
 
