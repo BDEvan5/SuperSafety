@@ -97,6 +97,7 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
     eval_dict['avg_times'] = float(avg_times)
     eval_dict['std_dev'] = float(std_dev)
     eval_dict['avg_interventions'] = float(avg_interventions)
+    eval_dict['std_inters'] = float(np.std(interventions))
 
     print(f"Finished running test and saving file with results.")
 

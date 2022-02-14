@@ -42,26 +42,44 @@ def run_random_test(n=1):
 
 def run_test_set(n=1):
     conf = load_conf("kernel_config")
-    conf.test_n = 10
+    conf.test_n = 100
 
-    # for track in ['porto', 'columbia_small', 'f1_aut_wide']:
-    for track in ['porto', 'columbia_small']:
-        conf.map_name = track
-        env = F110Env(map=conf.map_name)
+    conf.map_name = "porto"
+    conf.stheta = -0.4
+    env = F110Env(map=conf.map_name)
 
-        agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
-        planner = RandomPlanner(conf, agent_name)
-        safety_planner = Supervisor(planner, conf)
+    agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    planner = RandomPlanner(conf, agent_name)
+    safety_planner = Supervisor(planner, conf)
 
-        eval_dict = evaluate_kernel_vehicle(env, safety_planner, conf, False)
-        
-        config_dict = vars(conf)
-        config_dict['eval_name'] = "KernelGen"
-        config_dict['test_number'] = n
-        config_dict['agent_name'] = agent_name
-        config_dict['SSS'] = eval_dict
+    eval_dict = evaluate_kernel_vehicle(env, safety_planner, conf, False)
+    
+    config_dict = vars(conf)
+    config_dict['eval_name'] = "KernelGen"
+    config_dict['test_number'] = n
+    config_dict['agent_name'] = agent_name
+    config_dict['SSS'] = eval_dict
 
-        save_conf_dict(config_dict)
+    save_conf_dict(config_dict)
+
+    conf.map_name = "columbia_small"
+    conf.stheta = 0
+    env = F110Env(map=conf.map_name)
+
+    agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    planner = RandomPlanner(conf, agent_name)
+    safety_planner = Supervisor(planner, conf)
+
+    eval_dict = evaluate_kernel_vehicle(env, safety_planner, conf, False)
+    
+    config_dict = vars(conf)
+    config_dict['eval_name'] = "KernelGen"
+    config_dict['test_number'] = n
+    config_dict['agent_name'] = agent_name
+    config_dict['SSS'] = eval_dict
+
+    save_conf_dict(config_dict)
+
 
 
 
