@@ -353,7 +353,7 @@ class TrackKernel:
         self.plot_kernel_point(i, j, k, m)
 
 if __name__ == "__main__":
-    conf = load_conf("std_test_kernel")
+    conf = load_conf("config_file")
     t = TrackKernel(conf)
 
 

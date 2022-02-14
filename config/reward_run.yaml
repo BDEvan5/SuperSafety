@@ -10,7 +10,7 @@ runs:
     r2: 0.006
     rk: 0
     constant_reward: 0
-    train_n: 10000
+    train_n: 15000
 
   - run: 2
     name: "2BasePenalty"
@@ -18,7 +18,7 @@ runs:
     r2: 0.006
     rk: 0
     constant_reward: 1
-    train_n: 10000
+    train_n: 15000
 
   - run: 3
     name: "3Bias002"
@@ -44,21 +44,14 @@ runs:
     constant_reward: 1
     train_n: 2000
 
-  # - run: 6
-  #   name: "6RaceZero"
-  #   r1: 0.0
-  #   r2: 0.00
-  #   rk: 0.0
-  #   constant_reward: 0
-  #   train_n: 10000
-
-  - run: 7
-    name: "7RaceZeroRk04"
+  - run: 6
+    name: "6RaceZeroRk004"
     r1: 0.0
     r2: 0.00
-    rk: 0.01
+    rk: 0.004
     constant_reward: 0
     train_n: 10000
+
 
 
 

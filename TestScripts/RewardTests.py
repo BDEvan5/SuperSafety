@@ -7,9 +7,6 @@ from copy import copy
 from TrainTest import *
 
 
-
-
-
 MAP_NAME = "columbia_small"
 
 def execute_kernel_run(run_name):

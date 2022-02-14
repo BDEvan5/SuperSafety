@@ -113,7 +113,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.train_n):
+    for n in range(conf.baseline_train_n):
         state['reward'] = set_reward(state)
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
@@ -159,8 +159,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.train_n):
-        state['reward'] = set_reward(state) #theoretically always zero in this position
+    for n in range(conf.kernel_train_n):
+        state['reward'] = 0
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
         while sim_steps > 0 and not done:
@@ -169,7 +169,6 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
         state = s_prime
         vehicle.planner.agent.train(2)
-        # env.render('human_fast')
         
         if s_prime['collisions'][0] == 1:
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
@@ -178,7 +177,6 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             s_prime['reward'] = set_reward(s_prime) # -1 in this position
             vehicle.done_entry(s_prime, env.lap_times[0])
             ep_steps = 0 
-
 
         if done or ep_steps > conf.max_steps:
             s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
@@ -226,6 +224,5 @@ def set_reward(s_p):
         return -1
     elif s_p['lap_counts'][0] == 1:
         return 1
-        # return (30 - s_p['lap_times'][0]) 
     return 0
 
