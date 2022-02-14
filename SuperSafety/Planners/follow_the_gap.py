@@ -41,21 +41,12 @@ class FollowTheGap:
         half_pt = len(ranges) /2
         steering_angle =  angle_increment * (aim - half_pt)
 
-        # speed = self.max_speed * ranges[aim] / max_range * 0.3
-
         return np.array([steering_angle, self.speed])
 
 @njit
 def preprocess_lidar(ranges, max_range):
-    ranges = np.array([min(ran, max_range) for ran in ranges])
+    proc_ranges = np.array([min(ran, max_range) for ran in ranges])
     
-    # moving_avg
-    # n = 3
-    # cumsum = np.cumsum(np.insert(ranges, 0, 0))
-    # proc_ranges = (cumsum[n:] - cumsum[:-n])/float(n)
-
-    proc_ranges = ranges
-
     return proc_ranges
 
 @njit

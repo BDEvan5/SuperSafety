@@ -1,4 +1,3 @@
-from SuperSafety.Planners.SimplePlanners import RandomPlanner, ConstantPlanner
 from SuperSafety.f110_gym.f110_env import F110Env
 from SuperSafety.Utils.utils import *
 from TrainTest import *
@@ -37,6 +36,22 @@ def run_random_test(n=1):
     save_conf_dict(config_dict)
 
 
+
+
+class RandomPlanner:
+    def __init__(self, conf, name="RandoPlanner"):
+        self.d_max = conf.max_steer # radians  
+        self.name = name
+        self.speed = conf.vehicle_speed
+
+        path = os.getcwd() + f"/{conf.vehicle_path}" + self.name 
+        init_file_struct(path)
+        self.path = path
+        np.random.seed(conf.random_seed)
+
+    def plan(self, obs):
+        steering = np.random.uniform(-self.d_max, self.d_max)
+        return np.array([steering, self.speed])
 
 
 def run_random_test(n=1):
