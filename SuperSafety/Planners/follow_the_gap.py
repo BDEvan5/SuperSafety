@@ -14,6 +14,7 @@ class FollowTheGap:
         self.max_speed = conf.max_v
         self.max_steer = conf.max_steer
         self.v_min_plan = conf.v_min_plan
+        self.speed = conf.kernel_speed
 
         path = os.getcwd() + "/" + conf.vehicle_path + self.name
         init_file_struct(path)
@@ -41,9 +42,8 @@ class FollowTheGap:
         steering_angle =  angle_increment * (aim - half_pt)
 
         # speed = self.max_speed * ranges[aim] / max_range * 0.3
-        speed = 1
 
-        return np.array([steering_angle, speed])
+        return np.array([steering_angle, self.speed])
 
 @njit
 def preprocess_lidar(ranges, max_range):

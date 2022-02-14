@@ -19,7 +19,8 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
 
             if show:
                 env.render(mode='human_fast')
-
+ 
+        # env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
 
         if r == -1:
@@ -67,8 +68,10 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
             if show:
                 env.render(mode='human_fast')
 
+        # env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
         interventions.append(vehicle.interventions)
+        print(f"Interventions: {vehicle.interventions}")
         vehicle.interventions = 0
         if r == -1:
             crashes += 1
@@ -94,6 +97,7 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
     eval_dict['avg_times'] = float(avg_times)
     eval_dict['std_dev'] = float(std_dev)
     eval_dict['avg_interventions'] = float(avg_interventions)
+    eval_dict['std_inters'] = float(np.std(interventions))
 
     print(f"Finished running test and saving file with results.")
 
@@ -176,10 +180,10 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
 
         if done or ep_steps > conf.max_steps:
-            print(f"{n}::Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
-            lap_counter += 1
             s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
             vehicle.lap_complete(env.lap_times[0])
+            print(f"{n}::Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.intervention_list[-1]} -> FinalR: {s_prime['reward']} -> TotalReward: {vehicle.planner.t_his.rewards[vehicle.planner.t_his.ptr-1]:.2f}")
+            lap_counter += 1
             if show:
                 env.render(wait=False)
 
@@ -220,6 +224,7 @@ def set_reward(s_p):
     if s_p['collisions'][0] == 1:
         return -1
     elif s_p['lap_counts'][0] == 1:
-        return (30 - s_p['lap_times'][0]) 
+        return 1
+        # return (30 - s_p['lap_times'][0]) 
     return 0
 

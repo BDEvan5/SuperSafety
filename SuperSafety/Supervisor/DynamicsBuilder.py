@@ -40,15 +40,9 @@ def build_viability_dynamics(phis, m, time, conf):
             for k, action in enumerate(m.qs): # searches through actions
                 new_state = run_dynamics_update(state, action, time/2)
                 dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
-                new_q = m.get_safe_mode_id(vel, steer)
-
-                if new_q is None:
-                    invalid_counter += 1
-                    dynamics[i, j, k, :, :] = np.nan # denotes invalid transition
-                    print(f"Invalid dyns: phi_ind: {i}, s_mode:{j}, action_mode:{k}")
-                    continue
-    
-
+                new_q = m.get_mode_id(steer)
+   
+                #TODO: add a loop here so that it repeats for ns points
                 while phi > np.pi:
                     phi = phi - 2*np.pi
                 while phi < -np.pi:
@@ -63,15 +57,8 @@ def build_viability_dynamics(phis, m, time, conf):
 
                 new_state = run_dynamics_update(state, action, time)
                 dx, dy, phi, vel, steer = new_state[0], new_state[1], new_state[2], new_state[3], new_state[4]
-                new_q = m.get_safe_mode_id(vel, steer)
-
-                if new_q is None:
-                    invalid_counter += 1
-                    dynamics[i, j, k, :, :] = np.nan # denotes invalid transition
-                    print(f"Invalid dyns: phi_ind: {i}, s_mode:{j}, action_mode:{k}")
-                    continue
-    
-
+                new_q = m.get_mode_id(steer)
+  
                 while phi > np.pi:
                     phi = phi - 2*np.pi
                 while phi < -np.pi:

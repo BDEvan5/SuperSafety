@@ -122,18 +122,18 @@ class Supervisor:
             print(f"No Valid options -> State: {state}")
             return init_action
         
-        action, idx = modify_mode(valids, self.m.nq_velocity, self.m.nv_modes, self.m.nv_level_modes, self.m.qs)
+        action, idx = modify_mode(valids, self.m.qs)
         self.safe_history.add_locations(init_action, action)
 
         return action
 
     def check_init_action(self, state, init_action):
         next_state = run_dynamics_update(state, init_action, self.time_step/2)
-        safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
+        safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.qs)
         if not safe:
             return safe, next_state
         next_state = run_dynamics_update(state, init_action, self.time_step)
-        safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
+        safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.qs)
         
         return safe, next_state
 
@@ -141,7 +141,7 @@ class Supervisor:
         valids = np.ones(len(self.m.qs))
         for i in range(len(self.m.qs)):
             next_state = run_dynamics_update(state, self.m.qs[i], self.time_step)
-            valids[i] = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.max_steer, self.m.v_mode_list, self.m.nv_modes, self.m.v_res, self.m.min_velocity)
+            valids[i] = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.qs)
             # self.kernel.plot_state(next_state)
 
         return valids
@@ -226,7 +226,7 @@ class LearningSupervisor(Supervisor):
             self.intervention_mag = 1
             return init_action
 
-        action, idx = modify_mode(valids, self.m.nq_velocity, self.m.nv_modes, self.m.nv_level_modes, self.m.qs)
+        action, idx = modify_mode(valids, self.m.qs)
         self.safe_history.add_locations(init_action[0], action[0])
 
         self.intervention_mag = (action[0] - init_action[0])/self.d_max
@@ -238,28 +238,24 @@ class LearningSupervisor(Supervisor):
         return  total_reward
 
 @njit(cache=True)
-def modify_mode(valid_window, nq_velocity, nv_modes, nv_level_modes, qs):
+def modify_mode(valid_window, qs):
     """ 
     modifies the action for obstacle avoidance only, it doesn't check the dynamic limits here.
     """
     assert valid_window.any() == 1, "No valid actions:check modify_mode method"
 
-    for vm in range(nq_velocity-1, -1, -1):
-        idx_search = int(nv_modes[vm] +(nv_level_modes[vm]-1)/2) 
-        if valid_window[idx_search]:
-            return qs[idx_search], idx_search
+    idx_search = int((len(qs)-1)/2)
+    if valid_window[idx_search]:
+        return qs[idx_search], idx_search
 
-        if nv_level_modes[vm] == 1:
-            continue
-
-        d_search_size = int((nv_level_modes[vm]-1)/2)
-        for dind in range(d_search_size+1): 
-            p_d = int(idx_search+dind)
-            if valid_window[p_d]:
-                return qs[p_d], p_d
-            n_d = int(idx_search-dind-1)
-            if valid_window[n_d]:
-                return qs[n_d], n_d
+    d_search_size = int((len(qs)-1)/2)
+    for dind in range(d_search_size+1): 
+        p_d = int(idx_search+dind)
+        if valid_window[p_d]:
+            return qs[p_d], p_d
+        n_d = int(idx_search-dind-1)
+        if valid_window[n_d]:
+            return qs[n_d], n_d
         
 @njit(cache=True)
 def check_state_modes(v, d):
@@ -274,11 +270,7 @@ def check_state_modes(v, d):
     return False # this is not allowed mode: the friction is too high
 
 @njit(cache=True)
-def check_kernel_state(state, kernel, origin, resolution, phi_range, d_max, v_mode_list, nv_modes, v_res, v_min):
-        # if not check_state_modes(state[3], state[4]):
-        #     return False # unsafe
-        #?: this makes it crash, find out why???
-
+def check_kernel_state(state, kernel, origin, resolution, phi_range, qs):
         x_ind = min(max(0, int(round((state[0]-origin[0])*resolution))), kernel.shape[0]-1)
         y_ind = min(max(0, int(round((state[1]-origin[1])*resolution))), kernel.shape[1]-1)
 
@@ -289,14 +281,13 @@ def check_kernel_state(state, kernel, origin, resolution, phi_range, d_max, v_mo
             phi = phi + phi_range
         theta_ind = int(round((phi + phi_range/2) / phi_range * (kernel.shape[2]-1)))
 
-        v_ind = min(max(0, int(round((state[3]-v_min)*v_res))), nv_modes.shape[0]-1)
         d_min, di = 1000, None
-        for i in range(len(v_mode_list[v_ind])):
-            d_dis = abs(v_mode_list[v_ind][i] - state[4])
+        for i in range(len(qs)):
+            d_dis = abs(qs[i, 0] - state[4])
             if d_dis < d_min:
                 d_min, di = d_dis, i
-        d_ind = min(max(0, int(round(di))), v_mode_list[v_ind].shape[0]-1)
-        mode = int(nv_modes[v_ind] + d_ind)
+        d_ind = min(max(0, int(round(di))), qs.shape[0]-1)
+        mode = int(d_ind)
         
         if kernel[x_ind, y_ind, theta_ind, mode] != 0:
             return False # unsfae state

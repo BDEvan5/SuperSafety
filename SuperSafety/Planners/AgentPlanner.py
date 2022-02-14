@@ -25,6 +25,7 @@ class BaseVehicle:
         self.name = agent_name
         self.n_beams = sim_conf.n_beams
         self.max_v = sim_conf.max_v
+        self.speed = sim_conf.kernel_speed
         self.max_steer = sim_conf.max_steer
         self.range_finder_scale = sim_conf.range_finder_scale
 
@@ -58,10 +59,10 @@ class BaseVehicle:
     def transform_action(self, nn_action):
         steering_angle = nn_action[0] * self.max_steer
         # this is to ensure that it doesn't stay still
-        speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
+        # speed = (nn_action[1] + 1) * (self.max_v  / 2 - 0.5) + 1
         # max_speed = calculate_speed(steering_angle)
-        # speed = np.clip(speed, 0, max_speed)
-        action = np.array([steering_angle, speed])
+        # speed = self.max_v
+        action = np.array([steering_angle, self.speed])
 
         return action
 
@@ -71,7 +72,7 @@ class TrainVehicle(BaseVehicle):
 
         self.path = sim_conf.vehicle_path + agent_name
         state_space = 2 + self.n_beams
-        self.agent = TD3(state_space, 2, 1, agent_name)
+        self.agent = TD3(state_space, 1, 1, agent_name)
         self.agent.try_load(load, sim_conf.h_size, self.path)
 
         self.state = None

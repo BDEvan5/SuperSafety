@@ -35,6 +35,59 @@ from SuperSafety.f110_gym.dynamic_models import vehicle_dynamics_st, pid
 from SuperSafety.f110_gym.laser_models import ScanSimulator2D, check_ttc_jit, ray_cast
 from SuperSafety.f110_gym.collision_models import get_vertices, collision_multiple
 
+
+from matplotlib import pyplot as plt
+
+class RaceCarHistory(object):
+    def __init__(self):
+        self.states = []
+        self.steer_acts = []
+        self.vel_acts = []
+
+    def plot_history(self):
+        states = np.array(self.states)
+        # plt.figure(1)
+        # plt.clf()
+        # plt.title('RaceCar Locations')
+        # plt.plot(states[:,0], states[:,1])
+
+        plt.figure(2)
+        plt.clf()
+        plt.title('RaceCar Steering')
+        plt.plot(self.steer_acts)
+        plt.plot(states[:, 2])
+
+        plt.figure(3)
+        plt.clf()
+        plt.title('RaceCar Velocity')
+        plt.plot(self.vel_acts)
+        plt.plot(states[:, 3])
+
+        # plt.figure(4)
+        # plt.clf()
+        # plt.title('RaceCar Slip angle')
+        # plt.plot(states[:, 6])
+
+        # plt.figure(5)
+        # plt.clf()
+        # plt.title('RaceCar Yaw rate')
+        # plt.plot(states[:, 5])
+
+        # plt.figure(6)
+        # plt.clf()
+        # plt.title('RaceCar Vy')
+        # vy = np.tan(states[:, 6]) * states[:,3]
+        # plt.plot(vy)
+
+        plt.show()
+        self.reset_history()
+
+    def reset_history(self):
+        self.states = []
+        self.steer_acts = []
+        self.vel_acts = []
+
+
 class RaceCar(object):
     """
     Base level race car class, handles the physics and laser scan of a single vehicle
@@ -81,7 +134,7 @@ class RaceCar(object):
         self.time_step = time_step
         self.num_beams = num_beams
         self.fov = fov
-
+        self.history = RaceCarHistory()
         # state is [x, y, steer_angle, vel, yaw_angle, yaw_rate, slip_angle]
         self.state = np.zeros((7, ))
 
@@ -190,6 +243,7 @@ class RaceCar(object):
         self.steer_buffer = np.empty((0, ))
         # reset scan random generator
         # self.scan_rng = np.random.default_rng(seed=self.seed)
+        self.history.reset_history()
 
     def ray_cast_agents(self, scan):
         """
@@ -256,6 +310,8 @@ class RaceCar(object):
         # state is [x, y, steer_angle, vel, yaw_angle, yaw_rate, slip_angle]
 
         # steering delay
+        self.history.steer_acts.append(raw_steer)
+        self.history.vel_acts.append(vel)
         steer = 0.
         if self.steer_buffer.shape[0] < self.steer_buffer_size:
             steer = 0.
@@ -298,6 +354,8 @@ class RaceCar(object):
             self.state[4] = self.state[4] - 2*np.pi
         elif self.state[4] < 0:
             self.state[4] = self.state[4] + 2*np.pi
+
+        self.history.states.append(self.state.copy())
 
         # update scan
         current_scan = RaceCar.scan_simulator.scan(np.append(self.state[0:2], self.state[4]), self.scan_rng)

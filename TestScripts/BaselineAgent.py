@@ -42,15 +42,16 @@ def train_test_baseline(n):
     config_dict['Wo'] = eval_dict
     config_dict['agent_name'] = agent_name
     config_dict['eval_name'] = "Performance"
+    config_dict['vehicle'] = "Base"
 
     save_conf_dict(config_dict)
 
 
 if __name__ == '__main__':
     # train_baseline(1)
-    # eval_baseline(1)
-    # train_test_baseline(100)
+    # eval_baseline(104)
+    # train_test_baseline(106)
 
-    train_test_baseline(409)
-    # for i in range(300, 303):
-    #     train_test_baseline(i)
+    # train_test_baseline(101)
+    for i in range(100, 110):
+        train_test_baseline(i)

@@ -27,9 +27,10 @@ def eval_safe_agent(n):
 
 def run_safe_train_eval(n):
     conf = load_conf("kernel_config")
-    # conf.r1 = 0.08
-    # conf.r2 = 0.001
+    conf.r1 = 0.012
+    conf.r2 = 0.006
     conf.rk = 0.004
+    conf.constant_reward = 1
     agent_name = f"KernelSSS_{n}"
     env = F110Env(map=conf.map_name)
 
@@ -50,12 +51,17 @@ def run_safe_train_eval(n):
     config_dict['SSS'] = eval_sss
     config_dict['agent_name'] = agent_name
     config_dict['eval_name'] = "Performance"
+    config_dict['vehicle'] = "SSS"
+
 
     save_conf_dict(config_dict)
 
 
 if __name__ == '__main__':
     # train_safe_agent(5)
-    # eval_safe_agent(1)
-    run_safe_train_eval(301)
+    # eval_safe_agent(105)
+    # run_safe_train_eval(103)
+    for i in range(300, 310):
+        run_safe_train_eval(i)
+
 

@@ -46,3 +46,7 @@ Data/
 *.html
 
 *.Rproj
+
+DataAnalysis/.Rhistory
+
+DataAnalysis/.RData
