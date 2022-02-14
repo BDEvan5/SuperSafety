@@ -4,7 +4,7 @@ from numba import njit
 from matplotlib import pyplot as plt
 import yaml, csv
 from SuperSafety.Supervisor.Dynamics import run_dynamics_update 
-from SuperSafety.Supervisor.Modes import Modes
+from SuperSafety.Supervisor.DynamicsBuilder import Modes
 
 class SafetyHistory:
     def __init__(self):

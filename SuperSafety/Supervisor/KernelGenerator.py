@@ -7,7 +7,6 @@ from numba import njit
 import yaml
 from PIL import Image
 from SuperSafety.Utils.utils import load_conf
-from SuperSafety.Supervisor.Modes import Modes
 
 
 class KernelGenerator:
@@ -193,7 +192,7 @@ class VeiwKernel:
         
         self.phis = np.linspace(-conf.phi_range/2, conf.phi_range/2, conf.n_phi)
 
-        self.m = Modes(conf)
+        self.qs = np.linspace(-conf.max_steer, conf.max_steer, conf.nq_steer)
         self.view_speed_build(True)
      
     def view_speed_build(self, show=True):
@@ -203,26 +202,18 @@ class VeiwKernel:
         self.axs[1, 1].cla()
 
         phi_ind = int(len(self.phis)/2)
-        # phi_ind = 0
-        # quarter_phi = int(len(self.phis)/4)
-        # phi_ind = 
 
         inds = np.array([3, 4, 7, 8], dtype=int)
-        # inds = np.array([2, 16, 17, 18], dtype=int)
-        # inds = np.array([4, 6, 31, 34], dtype=int)
 
         self.axs[0, 0].imshow(self.kernel[:, :, phi_ind, inds[0]].T + self.o_map.T, origin='lower')
-        self.axs[0, 0].set_title(f"Kernel Mode: {self.m.qs[inds[0]]}")
-        # axs[0, 0].clear()
+        self.axs[0, 0].set_title(f"Kernel Mode: {self.qs[inds[0]]}")
         self.axs[1, 0].imshow(self.kernel[:, :, phi_ind, inds[1]].T + self.o_map.T, origin='lower')
-        self.axs[1, 0].set_title(f"Kernel Mode: {self.m.qs[inds[1]]}")
+        self.axs[1, 0].set_title(f"Kernel Mode: {self.qs[inds[1]]}")
         self.axs[0, 1].imshow(self.kernel[:, :, phi_ind, inds[2]].T + self.o_map.T, origin='lower')
-        self.axs[0, 1].set_title(f"Kernel Mode: {self.m.qs[inds[2]]}")
+        self.axs[0, 1].set_title(f"Kernel Mode: {self.qs[inds[2]]}")
 
         self.axs[1, 1].imshow(self.kernel[:, :, phi_ind, inds[3]].T + self.o_map.T, origin='lower')
-        self.axs[1, 1].set_title(f"Kernel Mode: {self.m.qs[inds[3]]}")
-
-        # plt.title(f"Building Kernel")
+        self.axs[1, 1].set_title(f"Kernel Mode: {self.qs[inds[3]]}")
 
         plt.pause(0.0001)
         plt.pause(1)
@@ -283,17 +274,16 @@ def build_track_kernel(conf):
 
 
 def view_kernel():
-    conf = load_conf("kernel_config")
+    conf = load_conf("config_file")
     img = prepare_track_img(conf) 
     img, img2 = shrink_img(img, 5)
     k = VeiwKernel(conf, img2)
 
 if __name__ == "__main__":
 
-    # test_construction()
-    conf = load_conf("kernel_config")
-    # conf.map_name = "porto"
-    build_track_kernel(conf)
-    # view_kernel()
+    # conf = load_conf("kernel_config")
+    # build_track_kernel(conf)
+
+    view_kernel()
 
 

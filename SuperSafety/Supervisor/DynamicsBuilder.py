@@ -1,7 +1,6 @@
 
 from SuperSafety.Utils.utils import limit_phi, load_conf
 
-from SuperSafety.Supervisor.Modes import Modes
 from SuperSafety.Supervisor.Dynamics import run_dynamics_update
 
 import numpy as np
