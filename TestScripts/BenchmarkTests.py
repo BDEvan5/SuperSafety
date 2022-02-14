@@ -96,6 +96,7 @@ def benchmark_baseline_tests(n):
 def benchmark_sss_tests(n):
     conf = load_conf("config_file")
     conf.map_name = MAP_NAME
+    # conf.train_n = 100
     agent_name = f"KernelSSS_{n}"
     env = F110Env(map=conf.map_name)
 
