@@ -1,3 +1,11 @@
+"""
+Code source: https://github.com/f1tenth/f1tenth_gym
+Example waypoint_follow.py from f1tenth_gym
+
+Minor adjustments have been made
+
+"""
+
 import numpy as np
 from numpy import genfromtxt
 import numpy.linalg as LA

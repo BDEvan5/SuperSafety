@@ -4,7 +4,7 @@ import csv
 from matplotlib import pyplot as plt
 from SuperSafety.Utils import pure_pursuit_utils
 
-
+@njit(fastmath=True, cache=True)
 def add_locations(x1=[0, 0], x2=[0, 0], dx=1):
     # dx is a scaling factor
     ret = [0.0, 0.0]
@@ -13,6 +13,7 @@ def add_locations(x1=[0, 0], x2=[0, 0], dx=1):
     return np.array(ret)
 
 #TODO: JIT
+@njit(fastmath=True, cache=True)
 def sub_locations(x1=[0, 0], x2=[0, 0], dx=1):
     # dx is a scaling factor
     ret = [0.0, 0.0]

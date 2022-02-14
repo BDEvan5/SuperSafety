@@ -14,7 +14,7 @@ class FollowTheGap:
         self.max_speed = conf.max_v
         self.max_steer = conf.max_steer
         self.v_min_plan = conf.v_min_plan
-        self.speed = conf.kernel_speed
+        self.speed = conf.vehicle_speed
 
         path = os.getcwd() + "/" + conf.vehicle_path + self.name
         init_file_struct(path)

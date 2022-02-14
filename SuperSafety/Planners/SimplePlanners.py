@@ -11,7 +11,7 @@ class RandomPlanner:
         self.d_max = conf.max_steer # radians  
         self.name = name
         
-        self.speed = conf.kernel_speed
+        self.speed = conf.vehicle_speed
 
         path = os.getcwd() + f"/{conf.vehicle_path}" + self.name 
         init_file_struct(path)

@@ -7,10 +7,10 @@ class Modes:
         self.time_step = conf.kernel_time_step
         self.nq_steer = conf.nq_steer
         self.max_steer = conf.max_steer
-        kernel_speed = conf.kernel_speed
+        vehicle_speed = conf.vehicle_speed
 
         ds = np.linspace(-self.max_steer, self.max_steer, self.nq_steer)
-        vs = kernel_speed * np.ones_like(ds)
+        vs = vehicle_speed * np.ones_like(ds)
         self.qs = np.stack((ds, vs), axis=1)
 
         # print(f"Modes: {self.qs}")

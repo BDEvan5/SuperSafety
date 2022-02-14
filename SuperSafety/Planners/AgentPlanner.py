@@ -25,7 +25,7 @@ class BaseVehicle:
         self.name = agent_name
         self.n_beams = sim_conf.n_beams
         self.max_v = sim_conf.max_v
-        self.speed = sim_conf.kernel_speed
+        self.speed = sim_conf.vehicle_speed
         self.max_steer = sim_conf.max_steer
         self.range_finder_scale = sim_conf.range_finder_scale
 
