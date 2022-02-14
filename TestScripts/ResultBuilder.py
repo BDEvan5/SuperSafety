@@ -83,10 +83,10 @@ class DataBuilder:
 #TODO: in the future, read it in once and then just save it specifically according to eval
 
 def run_builder():
-    DataBuilder()
-    DataBuilder('KernelGen')
-    DataBuilder('benchmark')
-    DataBuilder('repeatability')
+    # DataBuilder()
+    # DataBuilder('KernelGen')
+    # DataBuilder('benchmark')
+    # DataBuilder('repeatability')
     DataBuilder('RewardTest')
 
 

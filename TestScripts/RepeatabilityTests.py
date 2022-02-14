@@ -54,8 +54,8 @@ def run_repeatability():
     conf.map_name = MAP_NAME
     env = F110Env(map=conf.map_name)
 
-    for i in range (1):
-        baseline(conf, env, i)
+    for i in range (100, 110):
+        # baseline(conf, env, i)
         kernel_sss(conf, env, i)
 
 if __name__ == "__main__":

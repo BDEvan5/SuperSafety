@@ -113,7 +113,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.baseline_train_n):
+    for n in range(conf.baseline_train_n + conf.buffer_n):
         state['reward'] = set_reward(state)
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
@@ -122,7 +122,8 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
             sim_steps -= 1
 
         state = s_prime
-        vehicle.agent.train(2)
+        if n > conf.buffer_n:
+            vehicle.agent.train(2)
         if show:
             env.render('human_fast')
         
@@ -159,7 +160,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.kernel_train_n):
+    for n in range(conf.kernel_train_n+ conf.buffer_n):
         state['reward'] = 0
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
@@ -168,7 +169,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             sim_steps -= 1
 
         state = s_prime
-        vehicle.planner.agent.train(2)
+        if n > conf.buffer_n:
+            vehicle.planner.agent.train(2)
         
         if s_prime['collisions'][0] == 1:
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
