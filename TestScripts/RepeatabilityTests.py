@@ -8,6 +8,7 @@ from TrainTest import *
 MAP_NAME = "columbia_small"
 
 def baseline(conf, env, n):
+    conf.rk = 0
     agent_name = f"Baseline_{n}"
     planner = TrainVehicle(agent_name, conf)
     train_baseline_vehicle(env, planner, conf, False)
@@ -26,6 +27,7 @@ def baseline(conf, env, n):
 
 
 def kernel_sss(conf, env, n):
+    conf.rk = 0.04
     agent_name = f"KernelSSS_{n}"
     planner = TrainVehicle(agent_name, conf)
     safe_planner = LearningSupervisor(planner, conf)
@@ -56,7 +58,7 @@ def run_repeatability():
 
     for i in range (100, 110):
         baseline(conf, env, i)
-        # kernel_sss(conf, env, i)
+        kernel_sss(conf, env, i)
 
 if __name__ == "__main__":
     run_repeatability()

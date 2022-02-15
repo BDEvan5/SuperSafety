@@ -7,7 +7,8 @@ from SuperSafety.Planners.follow_the_gap import FollowTheGap
 from SuperSafety.Supervisor.SupervisorySystem import Supervisor, LearningSupervisor
 from SuperSafety.Planners.AgentPlanner import TrainVehicle, TestVehicle
 
-MAP_NAME = "porto"
+# MAP_NAME = "porto"
+MAP_NAME = "columbia_small"
 
 def pure_pursuit_tests(n=1):
     conf = load_conf("config_file")
@@ -73,7 +74,7 @@ def follow_the_gap_tests(n=1):
 def benchmark_baseline_tests(n):
     conf = load_conf("config_file")
     conf.map_name = MAP_NAME
-    conf.train_n = 15000
+    conf.rk = 0
     agent_name = f"Baseline_{n}"
     env = F110Env(map=conf.map_name)
 
@@ -123,7 +124,7 @@ def benchmark_sss_tests(n):
 
 
 if __name__ == "__main__":
-    pure_pursuit_tests(1)
-    follow_the_gap_tests(1)
-    benchmark_sss_tests(1)
+    # pure_pursuit_tests(1)
+    # follow_the_gap_tests(1)
+    # benchmark_sss_tests(1)
     benchmark_baseline_tests(1)

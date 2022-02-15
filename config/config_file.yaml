@@ -28,7 +28,7 @@ range_finder_scale: 5     # scaling of beams for NN
 h_size: 100               # size of hidden layers in NN
 r1: 0.012                 # heading & velocity reward value
 r2: 0.006                 # distance reward penalty
-rk: 0.004                   # constant reward applied at every step
+rk: 0.04                  # constant reward applied at every step
 
 
 #simulator

@@ -62,7 +62,7 @@ kable(benchmarks)
 ```{r, stability}
 
 data %>%
-  filter(eval_name=="benchmark")%>%
+  filter(eval_name=="repeat")%>%
   filter(Wo_avg_times>6)%>%
   select(agent_name, Wo_avg_times, Wo_success_rate, vehicle)%>%
   ggplot(aes(x=vehicle, y=Wo_avg_times, group=vehicle))+
@@ -70,7 +70,7 @@ data %>%
   # coord_cartesian(ylim = c(1, 20))
 
 b =  data %>%
-  filter(eval_name=="benchmark")%>%
+  filter(eval_name=="repeat")%>%
   filter(Wo_avg_times>6)%>%
   select(Wo_avg_times, vehicle, agent_name)%>%
   pivot_wider(names_from = vehicle, values_from = Wo_avg_times)
