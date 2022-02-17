@@ -87,9 +87,9 @@ summary(b)
 
 benchmarks = data %>%
   filter(eval_name=="benchmark")%>%
-  select(vehicle, map_name, Wo_avg_times)%>%
+  select(vehicle, map_name, Wo_avg_times, Wo_std_dev)%>%
    arrange(desc(vehicle)) %>%
-  pivot_wider(names_from = map_name, values_from = Wo_avg_times)
+  pivot_wider(names_from = map_name, values_from = c(Wo_avg_times, Wo_std_dev))
 
 #TODO: get map name then use pivot wider to compare accross maps.
 

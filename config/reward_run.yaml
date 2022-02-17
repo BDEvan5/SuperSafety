@@ -14,7 +14,7 @@ runs:
     name: "2BasePenalty"
     rk: 0
     constant_reward: 1
-    kernel_train_n: 15000
+    kernel_train_n: 5000
 
   - run: 3
     name: "3Bias02"
