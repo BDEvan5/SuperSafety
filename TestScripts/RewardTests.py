@@ -40,7 +40,7 @@ def run_reward_tests():
         save_dict['Wo'] = eval_dict_wo
         save_dict['SSS'] = eval_dict_sss
         save_dict['agent_name'] = agent_name
-        save_dict['vehicle'] = "KernelSSS"
+        save_dict['vehicle'] = "KernelSSS2"
         save_conf_dict(save_dict)
 
 def eval_kernel_run(run_name):

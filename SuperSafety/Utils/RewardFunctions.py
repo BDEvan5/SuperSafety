@@ -138,14 +138,15 @@ class TrackPtsBase:
 
 
 class RefDistanceReward(TrackPtsBase):
-    def __init__(self, config, b_distance) -> None:
+    def __init__(self, config) -> None:
         TrackPtsBase.__init__(self, config)
 
-        self.load_reference_pts()
-        self.b_distance = b_distance
+        # self.load_reference_pts()
+        self.load_center_pts()
+        self.b_distance = 1
 
     def __call__(self, state, s_prime):
-        s_prime['reward'] = find_reward(s_prime)
+        # s_prime['reward'] = find_reward(s_prime)
         prime_pos = np.array([s_prime['poses_x'][0], s_prime['poses_y'][0]])
         pos = np.array([state['poses_x'][0], state['poses_y'][0]])
         reward = self.get_distance_r(pos, prime_pos, 1)
@@ -159,8 +160,8 @@ class RefCTHReward(TrackPtsBase):
         TrackPtsBase.__init__(self, conf)
         self.max_v = conf.max_v
 
-        # self.load_center_pts()
-        self.load_reference_pts()
+        self.load_center_pts()
+        # self.load_reference_pts()
         self.mh = conf.r1
         self.md = conf.r2
         self.rk = conf.rk
