@@ -254,7 +254,8 @@ class F110Env(gym.Env):
         # This number (2) is 2x the number of laps desired
         
         personal_done = self.check_location()
-        done = personal_done or done
+        done = personal_done or done 
+        done = done and self.current_time > 10 #! this is a temporary hack for the porto map
 
         return done, self.toggle_list >= 4
 

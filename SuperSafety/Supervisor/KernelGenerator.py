@@ -80,8 +80,8 @@ class KernelGenerator:
             self.previous_kernel = np.copy(self.kernel)
             self.kernel = viability_loop(self.kernel, self.dynamics)
 
-            self.view_kernel_angles(False)
             self.get_filled_kernel()
+        self.view_kernel_angles(False)
 
         return self.get_filled_kernel()
 

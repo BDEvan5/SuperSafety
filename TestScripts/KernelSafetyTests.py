@@ -56,7 +56,7 @@ class RandomPlanner:
 
 def run_random_test(n=1):
     conf = load_conf("config_file")
-    conf.test_n = 10
+    conf.test_n = 20
 
 
     runs = zip(['porto', 'columbia_small'], [-0.4, 0])
@@ -81,7 +81,7 @@ def run_random_test(n=1):
 
 
 if __name__ == "__main__":
-    # generate_kernels()
+    generate_kernels()
 
     run_random_test(1)
 
