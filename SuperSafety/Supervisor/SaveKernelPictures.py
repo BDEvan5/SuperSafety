@@ -80,15 +80,15 @@ class VeiwKernel:
     def __init__(self, conf, track_img):
         kernel_name = f"{conf.kernel_path}Kernel_{conf.kernel_mode}_{conf.map_name}.npy"
         self.kernel = np.load(kernel_name)
+        self.conf = conf
 
         self.o_map = np.copy(track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
-        
         self.phis = np.linspace(-conf.phi_range/2, conf.phi_range/2, conf.n_phi)
 
         self.qs = np.linspace(-conf.max_steer, conf.max_steer, conf.nq_steer)
-        self.view_speed_build(True)
+        # self.view_speed_build(True)
      
     def view_speed_build(self, show=True):
         self.axs[0, 0].cla()
@@ -155,6 +155,31 @@ class VeiwKernel:
         self.view_angle_build(False)
         plt.savefig(f"{self.sim_conf.kernel_path}KernelAngle_{name}_{self.sim_conf.kernel_mode}.png")
 
+    def save_mode_picture(self):
+        plt.figure(3)
+        plt.clf()
+        angle = int(len(self.phis)/2)
+        modes = [0, 8]
+
+        for m in modes:
+            plt.imshow(self.kernel[:, :, angle, m].T + self.o_map.T, origin='lower')
+            plt.savefig(f"Data/Images/Mode_{m}_{self.conf.map_name}.png")
+
+
+    def save_angle_picture(self):
+        plt.figure(3)
+        plt.clf()
+        mode = 4
+        # angles = [0, 10, 15, 20, 25, 30, 40]
+        # angles = [12, 16, 20, 24]
+        # angles = [12, 15, 18, 21]
+        angles = [12, 14, 16, 18]
+
+        for a in angles:
+            plt.imshow(self.kernel[:, :, a, mode].T + self.o_map.T, origin='lower')
+            plt.savefig(f"Data/Images/Angle_{a}_{self.conf.map_name}.png")
+
+
 from PIL import Image
 
 def assemble_growth_stages_picture():
@@ -183,6 +208,61 @@ def assemble_growth_stages_picture():
     img.save(f"Data/Images/Kernel_{map_name}_growth.png")
 
 
+def assemble_angles_picture():
+    # angles = np.array([10, 15, 20, 25])
+    # angles = [12, 16, 20, 24]
+    # angles = [12, 15, 18, 21]
+    angles = [12, 14, 16, 18]
+    map_name = "columbia_small"
+    
+    y1 = 160
+    x1 = 80
+
+    size = 250
+    b = 25
+    b2 = size+b*3
+    i_size = size*2 + b*4
+    img = np.zeros((i_size, i_size, 4), dtype=np.uint8)
+    pts = [[b, b], [b2, b], [b, b2], [b2, b2]]
+
+    for i, n in enumerate(angles):
+        img_no = Image.open(f"Data/Images/Angle_{n}_{map_name}.png")
+        img_n = np.asarray_chkfinite(img_no)
+        img_crop = img_n[y1:y1+size, x1:x1+size]
+        img[pts[i][0]:pts[i][0]+size, pts[i][1]:pts[i][1]+size] = img_crop
+
+    img = Image.fromarray(img)
+    # img.show()
+    img.save(f"Data/Images/Kernel_{map_name}_angles.png")
+
+
+
+def assemble_modes_picture():
+    modes = [8, 0]
+    map_name = "columbia_small"
+    
+    y1 = 160
+    x1 = 80
+
+    size = 250
+    b = 25
+    b2 = size+b*3
+    i_size = size*2 + b*4
+    i_size2 = size + b*2
+    img = np.zeros((i_size2, i_size, 4), dtype=np.uint8)
+    pts = [[b, b], [b, b2]]
+
+    for i, n in enumerate(modes):
+        img_no = Image.open(f"Data/Images/Mode_{n}_{map_name}.png")
+        img_n = np.asarray_chkfinite(img_no)
+        img_crop = img_n[y1:y1+size, x1:x1+size]
+        img[pts[i][0]:pts[i][0]+size, pts[i][1]:pts[i][1]+size] = img_crop
+
+    img = Image.fromarray(img)
+    # img.show()
+    img.save(f"Data/Images/Kernel_{map_name}_modes.png")
+
+
 
 def build_track_kernel(conf):
     img = prepare_track_img(conf) 
@@ -197,6 +277,8 @@ def view_kernel():
     img = prepare_track_img(conf) 
     img, img2 = shrink_img(img, 5)
     k = VeiwKernel(conf, img2)
+    k.save_mode_picture()
+    k.save_angle_picture()
 
 if __name__ == "__main__":
 
@@ -204,8 +286,10 @@ if __name__ == "__main__":
     # conf.map_name = "porto"
     # build_track_kernel(conf)
 # 
-    assemble_growth_stages_picture()
-
+    # assemble_growth_stages_picture()
     # view_kernel()
+    # assemble_angles_picture()
+    assemble_modes_picture()
+
 
 
