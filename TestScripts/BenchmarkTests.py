@@ -13,7 +13,7 @@ MAP_NAME = "columbia_small"
 def pure_pursuit_tests(n=1):
     conf = load_conf("config_file")
     conf.map_name = MAP_NAME
-    conf.test_n = 2
+    conf.test_n = 5
 
     runs = zip(['porto', 'columbia_small'], [-0.4, 0])
     for track, stheta in runs:
