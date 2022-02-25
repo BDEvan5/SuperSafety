@@ -24,17 +24,17 @@ def pure_pursuit_tests(n=1):
         agent_name = f"PurePursuit_{conf.map_name}_{n}"
         planner = PurePursuit(conf, agent_name)
 
-        eval_dict_wo = evaluate_vehicle(env, planner, conf, False)
+        eval_dict_wo = evaluate_vehicle(env, planner, conf, True)
 
-        safety_planner = Supervisor(planner, conf)
-        eval_dict_sss = evaluate_kernel_vehicle(env, safety_planner, conf, False)
+        # safety_planner = Supervisor(planner, conf)
+        # eval_dict_sss = evaluate_kernel_vehicle(env, safety_planner, conf, False)
         
         config_dict = vars(conf)
         config_dict['test_number'] = n
         config_dict['eval_name'] = "benchmark"
         config_dict['agent_name'] = agent_name
         config_dict['Wo'] = eval_dict_wo
-        config_dict['SSS'] = eval_dict_sss
+        # config_dict['SSS'] = eval_dict_sss
         config_dict['vehicle'] = "PP"
 
 
@@ -111,7 +111,7 @@ def benchmark_sss_tests(n):
         train_kernel_vehicle(env, safe_planner, conf)
 
         planner = TestVehicle(agent_name, conf)
-        eval_wo = evaluate_vehicle(env, planner, conf, False)
+        eval_wo = evaluate_vehicle(env, planner, conf, True)
 
         planner = TestVehicle(agent_name, conf)
         safe_planner = Supervisor(planner, conf)
@@ -130,7 +130,7 @@ def benchmark_sss_tests(n):
 
 
 if __name__ == "__main__":
-    # pure_pursuit_tests(1)
+    pure_pursuit_tests(1)
     # follow_the_gap_tests(1)
-    benchmark_sss_tests(1)
+    # benchmark_sss_tests(2)
     # benchmark_baseline_tests(1)

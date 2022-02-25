@@ -253,9 +253,9 @@ class F110Env(gym.Env):
         done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
         # This number (2) is 2x the number of laps desired
         
+        done = done and self.current_time > 10 #! this is a temporary hack for the porto map
         personal_done = self.check_location()
         done = personal_done or done 
-        done = done and self.current_time > 10 #! this is a temporary hack for the porto map
 
         return done, self.toggle_list >= 4
 
@@ -498,6 +498,39 @@ class F110Env(gym.Env):
 
         F110Env.render_callbacks.append(callback_func)
 
+    # def render(self, mode='human'):
+    #     """
+    #     Renders the environment with pyglet. Use mouse scroll in the window to zoom in/out, use mouse click drag to pan. Shows the agents, the map, current fps (bottom left corner), and the race information near as text.
+
+    #     Args:
+    #         mode (str, default='human'): rendering mode, currently supports:
+    #             'human': slowed down rendering such that the env is rendered in a way that sim time elapsed is close to real time elapsed
+    #             'human_fast': render as fast as possible
+
+    #     Returns:
+    #         None
+    #     """
+    #     assert mode in ['human', 'human_fast']
+        
+    #     if F110Env.renderer is None:
+    #         # first call, initialize everything
+    #         from SuperSafety.f110_gym.rendering import EnvRenderer
+    #         F110Env.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
+    #         F110Env.renderer.update_map(self.map_name, self.map_ext)
+            
+    #     F110Env.renderer.update_obs(self.render_obs)
+
+    #     for render_callback in F110Env.render_callbacks:
+    #         render_callback(F110Env.renderer)
+        
+    #     F110Env.renderer.dispatch_events()
+    #     F110Env.renderer.on_draw()
+    #     F110Env.renderer.flip()
+    #     if mode == 'human':
+    #         time.sleep(0.005)
+    #     elif mode == 'human_fast':
+            # pass
+
     def render(self, mode='human'):
         """
         Renders the environment with pyglet. Use mouse scroll in the window to zoom in/out, use mouse click drag to pan. Shows the agents, the map, current fps (bottom left corner), and the race information near as text.
@@ -512,21 +545,25 @@ class F110Env(gym.Env):
         """
         assert mode in ['human', 'human_fast']
         
-        if F110Env.renderer is None:
+        if self.renderer is None:
             # first call, initialize everything
             from SuperSafety.f110_gym.rendering import EnvRenderer
-            F110Env.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
-            F110Env.renderer.update_map(self.map_name, self.map_ext)
+            self.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
+            self.renderer.update_map(self.map_name, self.map_ext)
             
-        F110Env.renderer.update_obs(self.render_obs)
+        self.renderer.update_obs(self.render_obs)
 
-        for render_callback in F110Env.render_callbacks:
-            render_callback(F110Env.renderer)
+        for render_callback in self.render_callbacks:
+            render_callback(self.renderer)
         
-        F110Env.renderer.dispatch_events()
-        F110Env.renderer.on_draw()
-        F110Env.renderer.flip()
+        self.renderer.dispatch_events()
+        self.renderer.on_draw()
+        self.renderer.flip()
         if mode == 'human':
             time.sleep(0.005)
         elif mode == 'human_fast':
             pass
+
+    def close_rendering(self):
+        self.renderer.close()        
+

@@ -36,7 +36,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
     else:
         avg_times, std_dev = 0, 0
 
-
+    env.close_rendering()
     print(f"Crashes: {crashes}")
     print(f"Completes: {completes} --> {success_rate:.2f} %")
     print(f"Lap times Avg: {avg_times} --> Std: {std_dev}")
@@ -87,6 +87,7 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
     else:
         avg_times, std_dev = 0, 0
 
+    env.close_rendering()
 
     print(f"Crashes: {crashes}")
     print(f"Completes: {completes} --> {success_rate:.2f} %")
@@ -148,6 +149,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     train_time = time.time() - start_time
     print(f"Finished Training: {vehicle.name} in {train_time} seconds")
     print(f"Crashes: {crash_counter}")
+    env.close_rendering()
 
     return train_time, crash_counter
 
@@ -171,6 +173,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
         state = s_prime
         if n > conf.buffer_n:
             vehicle.planner.agent.train(2)
+
+        env.render('human_fast')
         
         if s_prime['collisions'][0] == 1:
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
@@ -202,6 +206,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
     train_time = time.time() - start_time
     print(f"Finished Training: {vehicle.planner.name} in {train_time} seconds")
     print(f"Crashes: {crash_counter}")
+    env.close_rendering()
 
     return train_time, crash_counter
 
