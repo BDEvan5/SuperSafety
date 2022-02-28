@@ -39,6 +39,7 @@ def pure_pursuit_tests(n=1):
 
 
         save_conf_dict(config_dict)
+        env.close_rendering()   
 
 
 def follow_the_gap_tests(n=1):
@@ -85,7 +86,7 @@ def benchmark_baseline_tests(n):
         train_baseline_vehicle(env, planner, conf, False)
 
         planner = TestVehicle(agent_name, conf)
-        eval_dict = evaluate_vehicle(env, planner, conf, False)
+        eval_dict = evaluate_vehicle(env, planner, conf, True)
         
         config_dict = vars(conf)
         config_dict['test_number'] = n
@@ -95,6 +96,7 @@ def benchmark_baseline_tests(n):
         config_dict['vehicle'] = f"Base{n}"
 
         save_conf_dict(config_dict)
+        env.close_rendering()
 
 
 def benchmark_sss_tests(n):
@@ -115,7 +117,7 @@ def benchmark_sss_tests(n):
 
         planner = TestVehicle(agent_name, conf)
         safe_planner = Supervisor(planner, conf)
-        eval_sss = evaluate_kernel_vehicle(env, safe_planner, conf, False)
+        eval_sss = evaluate_kernel_vehicle(env, safe_planner, conf, True)
 
         config_dict = vars(conf)
         config_dict['test_number'] = n
@@ -127,10 +129,11 @@ def benchmark_sss_tests(n):
 
 
         save_conf_dict(config_dict)
+        env.close_rendering() #TODO: add in everywhere
 
 
 if __name__ == "__main__":
-    pure_pursuit_tests(1)
+    # pure_pursuit_tests(1)
     # follow_the_gap_tests(1)
-    # benchmark_sss_tests(2)
-    # benchmark_baseline_tests(1)
+    benchmark_sss_tests(1)
+    benchmark_baseline_tests(1)

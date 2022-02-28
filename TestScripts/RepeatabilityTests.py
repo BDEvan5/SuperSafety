@@ -6,7 +6,8 @@ from copy import copy
 
 from TrainTest import *
 
-MAP_NAME = "columbia_small"
+# MAP_NAME = "columbia_small"
+MAP_NAME = "porto"
 
 def baseline(conf, env, n):
     conf.rk = 0
@@ -57,7 +58,8 @@ def run_repeatability():
     conf.map_name = MAP_NAME
     env = F110Env(map=conf.map_name)
 
-    for i in range (100, 200):
+    # for i in range (100, 105):
+    for i in range (200, 220):
         baseline(copy(conf), env, i)
         kernel_sss(copy(conf), env, i)
 

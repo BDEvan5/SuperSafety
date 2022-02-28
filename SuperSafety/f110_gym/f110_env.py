@@ -240,7 +240,7 @@ class F110Env(gym.Env):
         dist2 = delta_pt[0, :]**2 + temp_y**2
         closes = dist2 <= 0.02
         for i in range(self.num_agents):
-            if closes[i] and not self.near_starts[i]:
+            if closes[i] and not self.near_starts[i] and self.current_time > 10:
                 self.near_starts[i] = True
                 self.toggle_list[i] += 1
             elif not closes[i] and self.near_starts[i]:
@@ -254,8 +254,8 @@ class F110Env(gym.Env):
         # This number (2) is 2x the number of laps desired
         
         done = done and self.current_time > 10 #! this is a temporary hack for the porto map
-        personal_done = self.check_location()
-        done = personal_done or done 
+        if self.current_time < 10:
+            self.lap_counts[0] = 0
 
         return done, self.toggle_list >= 4
 
@@ -321,8 +321,11 @@ class F110Env(gym.Env):
 
         # check done
         done, toggle_list = self._check_done()
-        info = {'checkpoint_done': toggle_list}
+        if self.check_location():
+            obs['collisions'][0] = True
+            done = True
 
+        info = {'checkpoint_done': toggle_list}
         if done:
             self.log_data(obs)
 
@@ -565,5 +568,6 @@ class F110Env(gym.Env):
             pass
 
     def close_rendering(self):
-        self.renderer.close()        
+        if self.renderer is not None:
+            self.renderer.close()        
 

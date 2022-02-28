@@ -1,3 +1,4 @@
+import enum
 from turtle import width
 import numpy as np
 import matplotlib.pyplot as plt
@@ -166,6 +167,58 @@ def generate_dynamics_blocks():
         plt.savefig("Data/Modes/mode_" + str(mode) + ".png", bbox_inches='tight', pad_inches=0.0)
         plt.savefig("Data/Modes/mode_" + str(mode) + ".pgf", bbox_inches='tight', pad_inches=0.0)
 
+import matplotlib.patches as patches
+def generate_dynamics_obs_blocks():
+    dynamics = np.load(f"Data/Dynamics/viab_dyns.npy")
+    print(f"Dynamics Loaded: {dynamics.shape}")
+    
+    obsx = [2.5, 8]
+    obsy = [20, 30]
+
+    ds = np.linspace(-0.4, 0.4, 9)
+    for mode in range(9):
+        dyns = dynamics[30, mode, :, 1, :]
+        print(f"Dynamics Loaded: {dyns.shape}")
+        print(dyns)
+        angles = np.linspace(-np.pi, np.pi, 41)
+        a = [angles[i] for i in dyns[:, 2]]
+
+        spacing = 2.5
+        minorLocator = MultipleLocator(spacing)
+        l = 2
+
+        plt.figure(1, figsize=(1.9, 1.9))
+        plt.clf()
+        plt.ylim([-2, 28])
+        plt.gca().xaxis.set_minor_locator(minorLocator)
+        plt.grid(b=True, ls='--', which='both')
+
+        # plt.plot(dyns[:, 0], dyns[:, 1], '.', color='darkblue', markersize=10)
+        plt.plot(0, 0, '.', color='darkblue', markersize=10)
+        plt.arrow(0, 0, 0, l, head_width=0.24, head_length=0.5, fc='darkblue', ec='darkblue', width=0.06)
+
+        rect = patches.Rectangle((2.5, 20), 6, 10, linewidth=1,
+                         facecolor="grey", edgecolor='black')
+        plt.gca().add_patch(rect)
+
+        dx = np.cos(a) * l
+        dy = np.sin(a) * l
+        for i in range(9):
+            x, y = dyns[i, 0], dyns[i, 1]
+
+            if x > 2.5:
+                plt.plot(dyns[i, 0], dyns[i, 1], 'X', color='red', markersize=7)
+                plt.arrow(dyns[i, 0], dyns[i, 1], dx[i], dy[i], head_width=0.24, head_length=0.5, width=0.06, fc='red', ec='red')
+            else:
+                plt.plot(dyns[i, 0], dyns[i, 1], '.', color='green', markersize=10)
+                plt.arrow(dyns[i, 0], dyns[i, 1], dx[i], dy[i], head_width=0.24, head_length=0.5, width=0.06, fc='green', ec='green')
+
+
+
+        plt.tight_layout()
+        plt.savefig("Data/Modes/mode_obs_" + str(mode) + ".png", bbox_inches='tight', pad_inches=0.0)
+        plt.savefig("Data/Modes/mode_obs_" + str(mode) + ".pgf", bbox_inches='tight', pad_inches=0.0)
+
     # plt.show()
 
 from PIL import Image
@@ -194,13 +247,36 @@ def assemble_modes_picture():
     # img.show()
     img.save(f"Data/Modes/modes_assem.png")
 
+def build_repeat_barplot():
+    path = f"Data/Results/Data_repeat.csv"
 
+    # data = np.load(path, allow_pickle=True)
+    with open(path) as file:
+        reader = csv.reader(file, quoting = csv.QUOTE_ALL)
+        # reader = csv.reader(file, quoting = csv.QUOTE_NONNUMERIC)
+        rewards = []
+        for lines in reader:  
+            if lines[1] == 0:
+                break
+            rewards.append(lines)
+    data = np.array(rewards)
 
+    new_data = np.zeros_like(data, dtype=np.float)
+    for i, entry in enumerate(data):
+        for j, col in enumerate(entry):
+            try:
+                f = float(col)
+                new_data[i, j] = f
+            except: pass
+
+    print(data)
+    print(new_data)
 
 turn_on_pgf()
 # generate_laptime_graph()
 # generate_kernel_graph()
-generate_training_graph()
+# generate_training_graph()
 # generate_dynamics_blocks()
-
+# build_repeat_barplot()
+generate_dynamics_obs_blocks()
 

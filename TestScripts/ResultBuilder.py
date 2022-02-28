@@ -72,8 +72,8 @@ class DataBuilder:
     def save_eval(self, eval_name):
         directory = "Data/Results/Data_" + eval_name + ".csv"
         with open(directory, 'w') as file:
-            writer = csv.DictWriter(file, fieldnames=self.base_keys)
-            writer.writeheader()
+            writer = csv.DictWriter(file, fieldnames=self.base_keys, quoting = csv.QUOTE_MINIMAL)
+            # writer.writeheader()
             for key in self.data.keys():
                 writer.writerow(self.data[key])
 
@@ -86,7 +86,7 @@ def run_builder():
     DataBuilder()
     DataBuilder('KernelGen')
     DataBuilder('benchmark')
-    DataBuilder('repeatability')
+    DataBuilder('repeat')
     DataBuilder('RewardTest')
 
 

@@ -54,7 +54,8 @@ benchmarks = data %>%
   select(agent_name, SSS_avg_times, Wo_avg_times, Wo_success_rate)%>%
    arrange(desc(agent_name))
 
-# kable(benchmarks)
+kable(benchmarks)
+
 
 ```
 

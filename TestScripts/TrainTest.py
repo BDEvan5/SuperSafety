@@ -36,7 +36,6 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
     else:
         avg_times, std_dev = 0, 0
 
-    env.close_rendering()
     print(f"Crashes: {crashes}")
     print(f"Completes: {completes} --> {success_rate:.2f} %")
     print(f"Lap times Avg: {avg_times} --> Std: {std_dev}")
@@ -87,7 +86,6 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
     else:
         avg_times, std_dev = 0, 0
 
-    env.close_rendering()
 
     print(f"Crashes: {crashes}")
     print(f"Completes: {completes} --> {success_rate:.2f} %")
@@ -149,7 +147,6 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
     train_time = time.time() - start_time
     print(f"Finished Training: {vehicle.name} in {train_time} seconds")
     print(f"Crashes: {crash_counter}")
-    env.close_rendering()
 
     return train_time, crash_counter
 
@@ -174,7 +171,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
         if n > conf.buffer_n:
             vehicle.planner.agent.train(2)
 
-        env.render('human_fast')
+        # env.render('human_fast')
         
         if s_prime['collisions'][0] == 1:
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
@@ -206,7 +203,6 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
     train_time = time.time() - start_time
     print(f"Finished Training: {vehicle.planner.name} in {train_time} seconds")
     print(f"Crashes: {crash_counter}")
-    env.close_rendering()
 
     return train_time, crash_counter
 
@@ -214,16 +210,27 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
 def find_conclusion(s_p, start):
     laptime = s_p['lap_times'][0]
-    if s_p['collisions'][0] == 1:
-        print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
-        return -1
-    elif s_p['lap_counts'][0] == 1:
+    if s_p['lap_counts'][0] == 1:
         print(f'Complete --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
         return 1
     else:
-        print("No conclusion: Awkward palm trees")
-        # print(s_p)
-    return 0
+        print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+        return 0
+
+
+
+# def find_conclusion(s_p, start):
+#     laptime = s_p['lap_times'][0]
+#     if s_p['collisions'][0] == 1:
+#         print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+#         return -1
+#     elif s_p['lap_counts'][0] == 1:
+#         print(f'Complete --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+#         return 1
+#     else:
+#         print("No conclusion: Awkward palm trees")
+#         # print(s_p)
+#     return 0
 
 
 def set_reward(s_p):

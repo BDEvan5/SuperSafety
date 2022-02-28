@@ -1,54 +1,54 @@
 run_name: RewardTest
 
 base_config_name: "config_file"
-n: 2
+n: 1
 
 runs:
-  - run: 1
-    name: "1Baseline"
-    rk: 0
-    constant_reward: 0
-    kernel_train_n: 15000
+  # - run: 1
+  #   name: "1Baseline"
+  #   rk: 0
+  #   constant_reward: 0
+  #   kernel_train_n: 2000
 
   - run: 2
     name: "2BasePenalty"
     rk: 0
     constant_reward: 1
-    kernel_train_n: 5000
+    kernel_train_n: 2000
 
   - run: 3
-    name: "3Bias02"
-    rk: 0.02
+    name: "3Bias01"
+    rk: 0.01
     constant_reward: 1
     kernel_train_n: 2000
 
   - run: 4
-    name: "4Bias05"
-    rk: 0.05
+    name: "4Bias04"
+    rk: 0.04
     constant_reward: 1
     kernel_train_n: 2000
 
   - run: 5
-    name: "5Bias6"
+    name: "5Bias1"
     rk: 0.1
     constant_reward: 1
     kernel_train_n: 2000
 
-  - run: 6
-    name: "6RaceZeroRk05"
-    r1: 0.0
-    r2: 0.00
-    rk: 0.05
-    constant_reward: 1
-    kernel_train_n: 10000
+  # - run: 6
+  #   name: "6RaceZeroRk05"
+  #   r1: 0.0
+  #   r2: 0.00
+  #   rk: 0.04
+  #   constant_reward: 1
+  #   kernel_train_n: 2000
 
-  - run: 7
-    name: "7RaceZeroRk05"
-    r1: 0.0
-    r2: 0.00
-    rk: 0.05
-    constant_reward: 1
-    kernel_train_n: 2000
+  # - run: 7
+  #   name: "7RaceZeroRk05"
+  #   r1: 0.0
+  #   r2: 0.00
+  #   rk: 0.04
+  #   constant_reward: 0
+  #   kernel_train_n: 2000
 
 
 

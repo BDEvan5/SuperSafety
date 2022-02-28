@@ -191,7 +191,7 @@ def assemble_growth_stages_picture():
     x1 = 410
 
     size = 160
-    b = 25
+    b = 5
     b2 = size+b*3
     i_size = size*2 + b*4
     img = np.zeros((i_size, i_size, 4), dtype=np.uint8)
@@ -219,7 +219,7 @@ def assemble_angles_picture():
     x1 = 80
 
     size = 250
-    b = 25
+    b = 5
     b2 = size+b*3
     i_size = size*2 + b*4
     img = np.zeros((i_size, i_size, 4), dtype=np.uint8)
@@ -245,7 +245,7 @@ def assemble_modes_picture():
     x1 = 80
 
     size = 250
-    b = 25
+    b = 5
     b2 = size+b*3
     i_size = size*2 + b*4
     i_size2 = size + b*2
@@ -286,10 +286,10 @@ if __name__ == "__main__":
     # conf.map_name = "porto"
     # build_track_kernel(conf)
 # 
-    # assemble_growth_stages_picture()
+    assemble_growth_stages_picture()
     # view_kernel()
     # assemble_angles_picture()
-    assemble_modes_picture()
+    # assemble_modes_picture()
 
 
 
