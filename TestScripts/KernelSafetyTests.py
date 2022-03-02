@@ -81,7 +81,7 @@ def run_random_test(n=1):
 
 
 if __name__ == "__main__":
-    generate_kernels()
+    # generate_kernels()
 
     run_random_test(1)
 

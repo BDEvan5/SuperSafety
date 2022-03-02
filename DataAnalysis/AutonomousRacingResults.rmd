@@ -25,7 +25,7 @@ Firstly, we run random tests to ensure that the kernels are safe and that they d
 ```{r, kernel_safety}
 kernel_gen = data %>%
   filter(eval_name=="KernelGen")%>%
-  select(map_name, SSS_avg_interventions, SSS_avg_times, SSS_std_dev, SSS_success_rate)
+  select(map_name, SSS_avg_times, SSS_std_dev, SSS_avg_interventions, SSS_std_inters, SSS_success_rate)
   
 kable(kernel_gen)
 ```
@@ -97,6 +97,19 @@ benchmarks = data %>%
 kable(benchmarks)
 
 ```
+```{r}
+
+benchmarks = data %>%
+  filter(eval_name=="benchmark")%>%
+  select(vehicle, map_name, Wo_avg_times, Wo_success_rate)%>%
+   arrange(desc(vehicle))
+
+
+kable(benchmarks)
+
+```
+
+
 
 
 
