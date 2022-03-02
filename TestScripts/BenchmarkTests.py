@@ -76,6 +76,7 @@ def benchmark_baseline_tests(n):
     conf = load_conf("config_file")
     conf.rk = 0
     runs = zip(['porto', 'columbia_small'], [-0.4, 0])
+    # runs = zip(['columbia_small'], [0])
     for track, stheta in runs:
         conf.map_name = track
         conf.stheta = stheta

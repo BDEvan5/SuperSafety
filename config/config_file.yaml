@@ -35,7 +35,7 @@ rk: 0.04                  # constant reward applied at every step
 sim_steps: 5              # Number of simulator steps per planning step
 max_steps: 1000
 # add a simtime step?
-random_seed: 100          # Seed for NumPy randomness
+random_seed: 1000          # Seed for NumPy randomness
 
 # PurePursuit planner values
 lookahead: 0.82
@@ -44,7 +44,7 @@ v_min_plan: 1            # minimum speed for selecting a steering angle to preve
 
 # test params
 test_n: 10               # number of test episodes to run
-baseline_train_n: 15000            # number of training steps to train agent
+baseline_train_n: 20000            # number of training steps to train agent
 kernel_train_n: 2000            # number of training steps to train agent
 buffer_n: 500
 

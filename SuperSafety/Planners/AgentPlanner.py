@@ -107,7 +107,7 @@ class TrainVehicle(BaseVehicle):
     def add_memory_entry(self, s_prime, nn_s_prime):
         if self.state is not None:
             reward = self.calculate_reward(self.state, s_prime)
-
+    
             self.t_his.add_step_data(reward)
 
             self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)

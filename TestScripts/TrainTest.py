@@ -162,8 +162,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
+    state['reward'] = 0 # unless changed
     for n in range(conf.kernel_train_n+ conf.buffer_n):
-        state['reward'] = 0
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
         while sim_steps > 0 and not done:
@@ -171,6 +171,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             sim_steps -= 1
 
         state = s_prime
+        state['reward'] = 0 # unless changed
         if n > conf.buffer_n:
             vehicle.planner.agent.train(2)
 

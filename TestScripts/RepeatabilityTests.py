@@ -12,8 +12,8 @@ MAP_NAME = "porto"
 def baseline(conf, env, n):
     conf.rk = 0
     agent_name = f"Baseline_{n}"
-    # planner = TrainVehicle(agent_name, conf)
-    # train_baseline_vehicle(env, planner, conf, False)
+    planner = TrainVehicle(agent_name, conf)
+    train_baseline_vehicle(env, planner, conf, False)
 
     planner = TestVehicle(agent_name, conf)
     eval_dict = evaluate_vehicle(env, planner, conf, False)
@@ -31,9 +31,9 @@ def baseline(conf, env, n):
 def kernel_sss(conf, env, n):
     conf.rk = 0.04
     agent_name = f"KernelSSS_{n}"
-    # planner = TrainVehicle(agent_name, conf)
-    # safe_planner = LearningSupervisor(planner, conf)
-    # train_kernel_vehicle(env, safe_planner, conf)
+    planner = TrainVehicle(agent_name, conf)
+    safe_planner = LearningSupervisor(planner, conf)
+    train_kernel_vehicle(env, safe_planner, conf)
 
     planner = TestVehicle(agent_name, conf)
     eval_wo = evaluate_vehicle(env, planner, conf, False)
@@ -58,9 +58,9 @@ def run_repeatability():
     conf.map_name = MAP_NAME
     env = F110Env(map=conf.map_name)
 
-    # for i in range (100, 105):
-    for i in range (200, 220):
-        baseline(copy(conf), env, i)
+    for i in range (100, 110):
+    # for i in range (200, 220):
+        # baseline(copy(conf), env, i)
         kernel_sss(copy(conf), env, i)
 
 def eval_sss():

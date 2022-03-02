@@ -253,10 +253,10 @@ class F110Env(gym.Env):
             if self.toggle_list[i] < 4:
                 self.lap_times[i] = self.current_time
         
-        done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
+        done = (self.collisions[self.ego_idx]) or (np.all(self.toggle_list >= 2) and self.current_time > 10)
         # This number (2) is 2x the number of laps desired
         
-        done = done and self.current_time > 10 #! this is a temporary hack for the porto map
+        # done = done and self.current_time > 10 #! this is a temporary hack for the porto map
         if self.current_time < 10:
             self.lap_counts[0] = 0
 
