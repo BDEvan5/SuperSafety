@@ -24,11 +24,13 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
         # env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
 
-        if r == -1:
-            crashes += 1
-        else:
+        if r == 1:
             completes += 1
             lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
+
+        # env.save_traj(f"Traj_{i}_{vehicle.name}")
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
@@ -73,11 +75,12 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
         interventions.append(vehicle.interventions)
         print(f"Interventions: {vehicle.interventions}")
         vehicle.interventions = 0
-        if r == -1:
-            crashes += 1
-        else:
+
+        if r == 1:
             completes += 1
             lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:

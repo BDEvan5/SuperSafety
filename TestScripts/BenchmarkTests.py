@@ -133,7 +133,7 @@ def benchmark_sss_tests(n):
 
 
 if __name__ == "__main__":
-    # pure_pursuit_tests(1)
+    pure_pursuit_tests(1)
     # follow_the_gap_tests(1)
-    benchmark_sss_tests(1)
-    benchmark_baseline_tests(1)
+    # benchmark_sss_tests(1)
+    # benchmark_baseline_tests(1)
