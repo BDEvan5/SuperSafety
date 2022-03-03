@@ -7,7 +7,8 @@ from copy import copy
 from TrainTest import *
 
 
-MAP_NAME = "columbia_small"
+# MAP_NAME = "columbia_small"
+MAP_NAME = "porto"
 
 def run_reward_tests():
     runs = load_yaml_dict("reward_run")
@@ -22,6 +23,7 @@ def run_reward_tests():
             conf[param] = run[param]
 
         conf = Namespace(**conf)
+        conf.map_name = MAP_NAME
         agent_name = f"KernelSSS_{n}_{conf.name}"
         env = F110Env(map=conf.map_name)
 

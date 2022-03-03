@@ -82,6 +82,9 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
         else:
             crashes += 1
 
+        vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
+
+
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
         avg_times, std_dev = np.mean(lap_times), np.std(lap_times)

@@ -159,7 +159,7 @@ class VeiwKernel:
         plt.figure(3)
         plt.clf()
         angle = int(len(self.phis)/2)
-        modes = [0, 8]
+        modes = [0, 4, 8]
 
         for m in modes:
             plt.imshow(self.kernel[:, :, angle, m].T + self.o_map.T, origin='lower')
@@ -206,6 +206,34 @@ def assemble_growth_stages_picture():
     img = Image.fromarray(img)
     # img.show()
     img.save(f"Data/Images/Kernel_{map_name}_growth.png")
+
+
+def assemble_growth_stages_picture_three():
+    numbers = np.array([1, 4, 25])
+    map_name = "porto"
+
+    
+    y1 = 165
+    x1 = 410
+
+    size = 160
+    b = 5
+    b2 = size+b*3
+    b3 = b2+size+b*2
+    i_size_x = size*3 + b*6
+    i_size_y = size + b*2
+    img = np.zeros((i_size_y, i_size_x, 4), dtype=np.uint8)
+    pts = [[b, b], [b, b2], [b, b3]]
+
+    for i, n in enumerate(numbers):
+        img_no = Image.open(f"Data/Images/Kernel_{map_name}_{n}.png")
+        img_n = np.asarray_chkfinite(img_no)
+        img_crop = img_n[y1:y1+size, x1:x1+size]
+        img[pts[i][0]:pts[i][0]+size, pts[i][1]:pts[i][1]+size] = img_crop
+
+    img = Image.fromarray(img)
+    # img.show()
+    img.save(f"Data/Images/Kernel_{map_name}_growth_three.png")
 
 
 def assemble_angles_picture():
@@ -263,6 +291,61 @@ def assemble_modes_picture():
     img.save(f"Data/Images/Kernel_{map_name}_modes.png")
 
 
+def assemble_angles_picture_three():
+    angles = [12, 15, 18]
+    map_name = "columbia_small"
+    
+    y1 = 160
+    x1 = 80
+
+    size = 250
+    b = 5
+    b2 = size+b*3
+    b3 = b2+size+b*2
+    i_size_x = size*3 + b*6
+    i_size_y = size + b*2
+    img = np.zeros((i_size_y, i_size_x, 4), dtype=np.uint8)
+    pts = [[b, b], [b, b2], [b, b3]]
+
+    for i, n in enumerate(angles):
+        img_no = Image.open(f"Data/Images/Angle_{n}_{map_name}.png")
+        img_n = np.asarray_chkfinite(img_no)
+        img_crop = img_n[y1:y1+size, x1:x1+size]
+        img[pts[i][0]:pts[i][0]+size, pts[i][1]:pts[i][1]+size] = img_crop
+
+    img = Image.fromarray(img)
+    # img.show()
+    img.save(f"Data/Images/Kernel_{map_name}_angles_th.png")
+
+
+
+def assemble_modes_picture_three():
+    modes = [8, 4, 0]
+    map_name = "columbia_small"
+    
+    y1 = 160
+    x1 = 80
+
+    size = 250
+    b = 5
+    b2 = size+b*3
+    b3 = b2+size+b*2
+    i_size_x = size*3 + b*6
+    i_size_y = size + b*2
+    img = np.zeros((i_size_y, i_size_x, 4), dtype=np.uint8)
+    pts = [[b, b], [b, b2], [b, b3]]
+
+    for i, n in enumerate(modes):
+        img_no = Image.open(f"Data/Images/Mode_{n}_{map_name}.png")
+        img_n = np.asarray_chkfinite(img_no)
+        img_crop = img_n[y1:y1+size, x1:x1+size]
+        img[pts[i][0]:pts[i][0]+size, pts[i][1]:pts[i][1]+size] = img_crop
+
+    img = Image.fromarray(img)
+    # img.show()
+    img.save(f"Data/Images/Kernel_{map_name}_modes_th.png")
+
+
 
 def build_track_kernel(conf):
     img = prepare_track_img(conf) 
@@ -286,10 +369,11 @@ if __name__ == "__main__":
     # conf.map_name = "porto"
     # build_track_kernel(conf)
 # 
-    assemble_growth_stages_picture()
+    # assemble_growth_stages_picture()
     # view_kernel()
     # assemble_angles_picture()
     # assemble_modes_picture()
-
-
+    # assemble_growth_stages_picture_three()
+    # assemble_angles_picture_three()
+    assemble_modes_picture_three()
 

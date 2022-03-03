@@ -58,13 +58,13 @@ def run_repeatability():
     conf.map_name = MAP_NAME
     env = F110Env(map=conf.map_name)
 
-    for i in range (100, 110):
+    for i in range (100, 150):
     # for i in range (200, 220):
         # baseline(copy(conf), env, i)
         kernel_sss(copy(conf), env, i)
 
 def eval_sss():
-    n = 214
+    n = 104
     agent_name = f"KernelSSS_{n}"
     conf = load_conf("config_file")
     conf.map_name = MAP_NAME
