@@ -4,6 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import matplotlib
+from PIL import Image
+from matplotlib.ticker import MultipleLocator
+import matplotlib.patches as patches
+
 
 def turn_on_pgf():
     matplotlib.use("pgf")
@@ -16,16 +20,14 @@ def turn_on_pgf():
 
 def moving_average(data, period):
     ret = np.convolve(data, np.ones(period), 'same') / period
-    # for i in range(period):
-    #     t = np.mean
-    #     t = np.convolve(data, np.ones(i+1), 'valid') / (i+1)
-    #     ret[i] = t[0]
-    #     ret[-i-1] = t[-1]
+    ret[0:period] = ret[period]
+    ret[-period::] = ret[-period-1]
+
     return ret
 
 def generate_training_graph():
     # agent = "Baseline_304"
-    agent = "Baseline_309"
+    agent = "Baseline_101"
     path = f"Data/Vehicles/{agent}/training_data.csv"
 
     # data = np.load(path, allow_pickle=True)
@@ -46,7 +48,7 @@ def generate_training_graph():
     plt.plot(avg, color='red', linewidth=2)
     plt.xlabel('Episode Number')
     plt.ylabel('Reward')
-    plt.gca().set_aspect(10)
+    plt.gca().set_aspect(20)
     plt.grid(b=True)
 
     plt.tight_layout()
@@ -59,7 +61,7 @@ def generate_training_graph():
 
 
 def generate_kernel_graph():
-    agent = "KernelSSS_100"
+    agent = "KernelSSS_101"
     path = f"Data/Vehicles/{agent}/training_data.csv"
 
     # data = np.load(path, allow_pickle=True)
@@ -79,9 +81,9 @@ def generate_kernel_graph():
     plt.plot(data, color='red', linewidth=2)
     # avg = moving_average(data, 20)
     # plt.plot(avg, color='red', linewidth=2)
-    plt.xlabel('Episode Number')
+    plt.xlabel('Lap Number')
     plt.ylabel('Reward')
-    plt.gca().set_aspect(0.01)
+    plt.gca().set_aspect(0.0135)
     plt.grid(b=True)
 
     plt.tight_layout()
@@ -91,142 +93,9 @@ def generate_kernel_graph():
     plt.savefig(f"Data/Vehicles/{agent}/kernel_training.pgf", bbox_inches='tight', pad_inches=0.1)
     plt.savefig(f"Data/Graphs/kernel_training.pgf", bbox_inches='tight', pad_inches=0.1)
 
-    # plt.show()
-
-
-def generate_kernel_graph_step():
-    agent = "KernelSSS_1_porto"
-    path = f"Data/Vehicles/{agent}/step_data.csv"
-
-    # data = np.load(path, allow_pickle=True)
-    with open(path) as file:
-        reader = csv.reader(file, quoting = csv.QUOTE_NONNUMERIC)
-        rewards = []
-        for lines in reader:  
-            if lines[1] == 0:
-                break
-            rewards.append(lines)
-    data = np.array(rewards)[:, 1]
-    # data = np.array(reward)
-
-    # new_data = moving_average(data, 10)
-    d =  np.zeros(2500)
-    d[:len(data)] = data
-    n = 20
-    d = d.reshape((-1, n))
-    new_data = np.cumsum(d, axis=1)[:, -1]
-    xs = np.linspace(0, 2500, int(2500/n))
-
-    d2 = moving_average(new_data, 10)
-
-    plt.figure(1, figsize=(3.6, 3.2))
-    # plt.plot(data, '.', color='red', markersize=2)
-    plt.plot(xs, new_data, color='darkblue', linewidth=2)
-    plt.plot(xs, d2, color='red', linewidth=2)
-    # avg = moving_average(data, 20)
-    # plt.plot(avg, color='red', linewidth=2)
-    plt.xlabel('Step Number')
-    plt.ylabel('Reward')
-    # plt.gca().set_aspect(0.01)
-    plt.grid(b=True)
-
-    plt.tight_layout()
-
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_step_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_step_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_step_training.pgf", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_step_training.pgf", bbox_inches='tight', pad_inches=0.1)
-
-    # plt.show()
-
-def generate_baseline_graph_step():
-    agent = "Baseline_1_columbia_small"
-    path = f"Data/Vehicles/{agent}/step_data.csv"
-
-    # data = np.load(path, allow_pickle=True)
-    with open(path) as file:
-        reader = csv.reader(file, quoting = csv.QUOTE_NONNUMERIC)
-        rewards = []
-        for lines in reader:  
-            if lines[1] == 0:
-                break
-            rewards.append(lines)
-    data = np.array(rewards)[:, 1]
-    # data = np.array(reward)
-
-    # new_data = moving_average(data, 10)
-    # d =  np.zeros(15300)
-    # d[:len(data)] = data
-    # n = 50
-    # d = d.reshape((-1, n))
-    # new_data = np.cumsum(d, axis=1)[:, -1]
-    # xs = np.linspace(0, 15300, int(15300/n))
-    new_data = np.cumsum(data) + 120 * np.ones_like(data)
-    xs = np.linspace(0, len(data), len(data))
-
-    d2 = moving_average(new_data, 10)
-
-    plt.figure(1, figsize=(3.6, 3.2))
-    # plt.plot(data, '.', color='red', markersize=2)
-    plt.plot(xs, new_data, color='darkblue', linewidth=2)
-    plt.plot(xs, d2, color='red', linewidth=2)
-    # avg = moving_average(data, 20)
-    # plt.plot(avg, color='red', linewidth=2)
-    plt.xlabel('Step Number')
-    plt.ylabel('Reward')
-    # plt.gca().set_aspect(0.01)
-    plt.grid(b=True)
-
-    plt.tight_layout()
-
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_step_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_step_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_step_training.pgf", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_step_training.pgf", bbox_inches='tight', pad_inches=0.1)
-
-    # plt.show()
-
-def generate_kernel_graph_step_zoom():
-    agent = "KernelSSS_1_porto"
-    path = f"Data/Vehicles/{agent}/step_data.csv"
-
-    # data = np.load(path, allow_pickle=True)
-    with open(path) as file:
-        reader = csv.reader(file, quoting = csv.QUOTE_NONNUMERIC)
-        rewards = []
-        for lines in reader:  
-            if lines[1] == 0:
-                break
-            rewards.append(lines)
-    data = np.array(rewards)[:, 1]
-    # data = np.array(reward)
-
-    new_data = moving_average(data, 10)
-
-
-    plt.figure(1, figsize=(3.6, 3.2))
-    plt.plot(data, '.', color='red', markersize=2)
-    plt.plot(new_data, color='darkblue', linewidth=2)
-    # avg = moving_average(data, 20)
-    # plt.plot(avg, color='red', linewidth=2)
-    plt.xlabel('Step Number')
-    plt.ylabel('Reward')
-    plt.ylim([-0.046, -0.03])
-    # plt.gca().set_aspect(0.01)
-    plt.grid(b=True)
-
-    plt.tight_layout()
-
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_stepZoom_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_stepZoom_training.png", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Vehicles/{agent}/kernel_stepZoom_training.pgf", bbox_inches='tight', pad_inches=0.1)
-    plt.savefig(f"Data/Graphs/kernel_stepZoom_training.pgf", bbox_inches='tight', pad_inches=0.1)
-
-    # plt.show()
-
 
 def generate_laptime_graph():
-    agent = "KernelSSS_100"
+    agent = "KernelSSS_101"
     path = f"Data/Vehicles/{agent}/{agent}_laptime_list.csv"
 
     # data = np.load(path, allow_pickle=True)
@@ -248,7 +117,7 @@ def generate_laptime_graph():
     # plt.plot(avg, color='red', linewidth=2)
     plt.xlabel('Episode Number')
     plt.ylabel('Lap Time (s)')
-    plt.gca().set_aspect(2)
+    plt.gca().set_aspect(0.8)
     plt.grid(b=True)
 
     plt.tight_layout()
@@ -258,8 +127,6 @@ def generate_laptime_graph():
     plt.savefig(f"Data/Graphs/kernel_laptime.png", bbox_inches='tight', pad_inches=0.1)
     plt.savefig(f"Data/Graphs/kernel_laptime.pgf", bbox_inches='tight', pad_inches=0.1)
 
-    # plt.show()
-from matplotlib.ticker import MultipleLocator
 def generate_dynamics_blocks():
     dynamics = np.load(f"Data/Dynamics/viab_dyns.npy")
     print(f"Dynamics Loaded: {dynamics.shape}")
@@ -299,7 +166,6 @@ def generate_dynamics_blocks():
         plt.savefig("Data/Modes/mode_" + str(mode) + ".png", bbox_inches='tight', pad_inches=0.0)
         plt.savefig("Data/Modes/mode_" + str(mode) + ".pgf", bbox_inches='tight', pad_inches=0.0)
 
-import matplotlib.patches as patches
 def generate_dynamics_obs_blocks():
     dynamics = np.load(f"Data/Dynamics/viab_dyns.npy")
     print(f"Dynamics Loaded: {dynamics.shape}")
@@ -351,9 +217,8 @@ def generate_dynamics_obs_blocks():
         plt.savefig("Data/Modes/mode_obs_" + str(mode) + ".png", bbox_inches='tight', pad_inches=0.0)
         plt.savefig("Data/Modes/mode_obs_" + str(mode) + ".pgf", bbox_inches='tight', pad_inches=0.0)
 
-    # plt.show()
 
-from PIL import Image
+
 
 def assemble_modes_picture():
     modes = [0, 4]
@@ -407,11 +272,11 @@ def build_repeat_barplot():
 turn_on_pgf()
 # generate_laptime_graph()
 # generate_kernel_graph()
-# generate_training_graph()
+generate_training_graph()
+
 # generate_dynamics_blocks()
 # build_repeat_barplot()
 # generate_dynamics_obs_blocks()
 
-# generate_kernel_graph_step()
-# generate_kernel_graph_step_zoom()
-generate_baseline_graph_step()
+
+
