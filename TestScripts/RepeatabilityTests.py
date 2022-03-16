@@ -60,7 +60,7 @@ def run_repeatability():
 
     for i in range (100, 150):
     # for i in range (200, 220):
-        # baseline(copy(conf), env, i)
+        baseline(copy(conf), env, i)
         kernel_sss(copy(conf), env, i)
 
 def eval_sss():

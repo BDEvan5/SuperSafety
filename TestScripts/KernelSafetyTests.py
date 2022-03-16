@@ -56,7 +56,7 @@ class RandomPlanner:
 
 def run_random_test(n=1):
     conf = load_conf("config_file")
-    conf.test_n = 20
+    conf.test_n = 100
 
 
     runs = zip(['porto', 'columbia_small'], [-0.4, 0])

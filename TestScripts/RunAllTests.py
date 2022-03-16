@@ -9,7 +9,7 @@ from ResultBuilder import run_builder
 def run_all_tests():
     generate_kernels()
     run_random_test(1)
-    run_reward_tests()
+    # run_reward_tests()
     pure_pursuit_tests(1)
     follow_the_gap_tests(1)
     benchmark_sss_tests(1)

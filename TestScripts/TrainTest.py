@@ -82,8 +82,69 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
         else:
             crashes += 1
 
-        vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
+        # vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
 
+
+    success_rate = (completes / (completes + crashes) * 100)
+    if len(lap_times) > 0:
+        avg_times, std_dev = np.mean(lap_times), np.std(lap_times)
+        avg_interventions = np.mean(interventions)
+    else:
+        avg_times, std_dev = 0, 0
+
+
+    print(f"Crashes: {crashes}")
+    print(f"Completes: {completes} --> {success_rate:.2f} %")
+    print(f"Lap times Avg: {avg_times} --> Std: {std_dev}")
+    print(f"Interventions Avg: {avg_interventions}")
+
+    eval_dict = {}
+    eval_dict['success_rate'] = float(success_rate)
+    eval_dict['avg_times'] = float(avg_times)
+    eval_dict['std_dev'] = float(std_dev)
+    eval_dict['avg_interventions'] = float(avg_interventions)
+    eval_dict['std_inters'] = float(np.std(interventions))
+
+    print(f"Finished running test and saving file with results.")
+
+    return eval_dict
+
+
+def render_kernel_eval(env, vehicle, conf, show=False):
+    crashes = 0
+    completes = 0
+    lap_times = [] 
+    start = time.time()
+    interventions = []
+
+    for i in range(conf.test_n):
+        obs, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+        while not done:
+            action = vehicle.plan(obs)
+            sim_steps = conf.sim_steps
+            while sim_steps > 0 and not done:
+                obs, step_reward, done, _ = env.step(action[None, :])
+                sim_steps -= 1
+
+            if show:
+                env.render(mode='human_fast')
+
+        # env.sim.agents[0].history.plot_history()
+        r = find_conclusion(obs, start)
+        interventions.append(vehicle.interventions)
+        print(f"Interventions: {vehicle.interventions}")
+        vehicle.interventions = 0
+
+        if r == 1:
+            completes += 1
+            lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
+
+        # vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
+
+        env.render_trajectory(vehicle.planner.path, f"Traj_{i}", vehicle.safe_history)
+        vehicle.safe_history.save_safe_history(vehicle.planner.path, f"Traj_{i}")
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
