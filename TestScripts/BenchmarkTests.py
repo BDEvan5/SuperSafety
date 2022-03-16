@@ -133,9 +133,40 @@ def benchmark_sss_tests(n):
         save_conf_dict(config_dict)
         env.close_rendering() #TODO: add in everywhere
 
+def render_sss_tests(n):
+    conf = load_conf("config_file")
+    runs = zip(['porto', 'columbia_small'], [-0.4, 0])
+    for track, stheta in runs:
+        conf.map_name = track
+        conf.stheta = stheta
+        agent_name = f"Render_KernelSSS_{n}_{track}"
+        env = F110Env(map=conf.map_name)
+
+        planner = TrainVehicle(agent_name, conf)
+        safe_planner = LearningSupervisor(planner, conf)
+        train_kernel_vehicle(env, safe_planner, conf)
+
+        # planner = TestVehicle(agent_name, conf)
+        # eval_wo = evaluate_vehicle(env, planner, conf, True)
+
+        # planner = TestVehicle(agent_name, conf)
+        # safe_planner = Supervisor(planner, conf)
+        # eval_sss = evaluate_kernel_vehicle(env, safe_planner, conf, True)
+
+        # config_dict = vars(conf)
+        # config_dict['test_number'] = n
+        # config_dict['Wo'] = eval_wo
+        # config_dict['SSS'] = eval_sss
+        # config_dict['agent_name'] = agent_name
+        # config_dict['eval_name'] = "benchmark"
+        # config_dict['vehicle'] = f"KernelSSS{n}"
+
+
+
 
 if __name__ == "__main__":
-    pure_pursuit_tests(1)
+    # pure_pursuit_tests(1)
     # follow_the_gap_tests(1)
     # benchmark_sss_tests(1)
     # benchmark_baseline_tests(1)
+    render_sss_tests(1)

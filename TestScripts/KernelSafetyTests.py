@@ -37,7 +37,9 @@ def run_random_test(n=1):
 
 def render_random_test(n=1):
     conf = load_conf("config_file")
-    conf.map_name = "porto"
+    # conf.map_name = "porto"
+    conf.map_name = "columbia_small"
+    conf.test_n = 100
 
     agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
     planner = RandomPlanner(conf, agent_name)
@@ -47,11 +49,11 @@ def render_random_test(n=1):
 
     eval_dict = render_kernel_eval(env, safety_planner, conf, True)
     
-    config_dict = vars(conf)
-    config_dict['test_number'] = n
-    config_dict.update(eval_dict)
+    # config_dict = vars(conf)
+    # config_dict['test_number'] = n
+    # config_dict.update(eval_dict)
 
-    save_conf_dict(config_dict)
+    # save_conf_dict(config_dict)
 
 
 

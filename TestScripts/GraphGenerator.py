@@ -269,14 +269,103 @@ def build_repeat_barplot():
     print(data)
     print(new_data)
 
+def remap_colors():
+    # img_name = "Data/Images/Kernel_columbia_small_modes_th.png"
+    # img_name = "Data/Images/Kernel_columbia_small_angles_th.png"
+    img_name = "Data/Images/Kernel_porto_growth_three.png"
+    img = Image.open(img_name)
+    # img.show()
+    img = img.convert("RGB")
+    c = img.getcolors()
+    for cd in c:
+        if cd[0] > 100:
+            print(cd)
+            # img.putpixel(cd[1], (0, 0, 0))
+    # print(img.getcolors())
+ 
+    d = img.getdata()
+    
+    new_image = []
+    for item in d:
+        # if item == (253, 231, 36):
+        if item[0] >200 or item[1] > 190:
+            new_image.append((224, 224, 224))
+        elif item[0] < 80 and item[0] > 40:
+        # elif item[1] < 10 and item[0] > 0:
+        # elif item == (68, 1, 84):
+            new_image.append((0, 225, 128))
+        elif item[0] < 50 and item[0]>0:
+        # elif item == (32, 144, 140):
+            new_image.append((225, 51, 51))
+
+        # if item[0] in list(range(200, 256)):
+        #     new_image.append((255, 224, 100))
+        else:
+            new_image.append((255, 255, 255))
+            # new_image.append(item)
+            
+    # update image data
+    img.putdata(new_image)
+    print("------")
+    c = img.getcolors()
+    for cd in c:
+        # if cd[0] > 50:
+        #     print(cd)
+        print(cd)
+    # print(img.getcolors())
+
+    img.show()
+    
+    # save new image
+    img.save(img_name)
+
+
+def remap_colorss():
+    # img_name = "Data/Images/Kernel_columbia_small_modes_th.png"
+    img_name = "Data/Images/Kernel_columbia_small_angles.png"
+    # img_name = "Data/Images/Kernel_porto_growth_three.png"
+    img = Image.open(img_name)
+    # img.show()
+    img = img.convert("RGB")
+    c = img.getcolors()
+    for cd in c:
+        if cd[0] > 100:
+            print(cd)
+            # img.putpixel(cd[1], (0, 0, 0))
+    # print(img.getcolors())
+ 
+    d = img.getdata()
+    
+    new_image = []
+    for item in d:
+        if item[0] == 255:
+            new_image.append((255, 255, 255))
+            
+    # update image data
+    img.putdata(new_image)
+    print("------")
+    c = img.getcolors()
+    for cd in c:
+        # if cd[0] > 50:
+        #     print(cd)
+        print(cd)
+    # print(img.getcolors())
+
+    img.show()
+    
+    # save new image
+    img.save(img_name)
+
+
 turn_on_pgf()
 # generate_laptime_graph()
 # generate_kernel_graph()
-generate_training_graph()
+# generate_training_graph()
 
 # generate_dynamics_blocks()
 # build_repeat_barplot()
 # generate_dynamics_obs_blocks()
 
-
+remap_colors()
+# remap_colors2()
 
