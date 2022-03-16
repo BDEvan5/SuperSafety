@@ -18,6 +18,10 @@ class SafetyHistory:
         else:
             self.safe_actions.append(safe_action)
 
+    def reset(self):
+        self.planned_actions = []
+        self.safe_actions = []
+
     def plot_safe_history(self):
         planned = np.array(self.planned_actions)
         safe = np.array(self.safe_actions)
