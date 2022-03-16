@@ -35,6 +35,24 @@ def run_random_test(n=1):
 
     save_conf_dict(config_dict)
 
+def render_random_test(n=1):
+    conf = load_conf("config_file")
+    conf.map_name = "porto"
+
+    agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
+    planner = RandomPlanner(conf, agent_name)
+    env = F110Env(map=conf.map_name)
+
+    safety_planner = Supervisor(planner, conf)
+
+    eval_dict = render_kernel_eval(env, safety_planner, conf, True)
+    
+    config_dict = vars(conf)
+    config_dict['test_number'] = n
+    config_dict.update(eval_dict)
+
+    save_conf_dict(config_dict)
+
 
 
 
@@ -83,5 +101,6 @@ def run_random_test(n=1):
 if __name__ == "__main__":
     # generate_kernels()
 
-    run_random_test(1)
+    # run_random_test(1)
+    render_random_test(2)
 

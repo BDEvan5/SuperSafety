@@ -144,7 +144,8 @@ def render_kernel_eval(env, vehicle, conf, show=False):
         # vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
 
         env.render_trajectory(vehicle.planner.path, f"Traj_{i}", vehicle.safe_history)
-        vehicle.safe_history.save_safe_history(vehicle.planner.path, f"Traj_{i}")
+        # vehicle.safe_history.save_safe_history(vehicle.planner.path, f"Traj_{i}")
+        vehicle.safe_history.reset()
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
