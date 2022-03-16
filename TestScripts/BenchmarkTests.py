@@ -15,7 +15,8 @@ def pure_pursuit_tests(n=1):
     conf.map_name = MAP_NAME
     conf.test_n = 100
 
-    runs = zip(['porto', 'columbia_small'], [-0.4, 0])
+    # runs = zip(['porto', 'columbia_small'], [-0.4, 0])
+    runs = zip(['columbia_small'], [0])
     for track, stheta in runs:
         conf.map_name = track
         conf.stheta = stheta
