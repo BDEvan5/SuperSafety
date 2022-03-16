@@ -258,6 +258,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             if show:
                 env.render(wait=False)
 
+            env.render_trajectory(vehicle.planner.path, f"Traj_{n}")
+
             env.data_reset()
             done = False
             ep_steps = 0 
