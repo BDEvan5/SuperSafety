@@ -4,7 +4,7 @@ from numba import njit
 from matplotlib import pyplot as plt
 import yaml, csv
 from SuperSafety.Supervisor.Dynamics import run_dynamics_update 
-from SuperSafety.Supervisor.Modes import Modes
+from SuperSafety.Supervisor.DynamicsBuilder import Modes
 
 class SafetyHistory:
     def __init__(self):
@@ -353,7 +353,7 @@ class TrackKernel:
         self.plot_kernel_point(i, j, k, m)
 
 if __name__ == "__main__":
-    conf = load_conf("std_test_kernel")
+    conf = load_conf("config_file")
     t = TrackKernel(conf)
 
 

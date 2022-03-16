@@ -25,7 +25,7 @@ class BaseVehicle:
         self.name = agent_name
         self.n_beams = sim_conf.n_beams
         self.max_v = sim_conf.max_v
-        self.speed = sim_conf.kernel_speed
+        self.speed = sim_conf.vehicle_speed
         self.max_steer = sim_conf.max_steer
         self.range_finder_scale = sim_conf.range_finder_scale
 
@@ -82,8 +82,8 @@ class TrainVehicle(BaseVehicle):
 
         self.t_his = TrainHistory(agent_name, sim_conf, load)
 
+        # self.calculate_reward = RefDistanceReward(sim_conf) 
         self.calculate_reward = RefCTHReward(sim_conf) 
-        # self.calculate_reward = RefCTHReward(sim_conf) 
 
     def plan(self, obs, add_mem_entry=True):
         nn_obs = self.transform_obs(obs)
@@ -107,7 +107,7 @@ class TrainVehicle(BaseVehicle):
     def add_memory_entry(self, s_prime, nn_s_prime):
         if self.state is not None:
             reward = self.calculate_reward(self.state, s_prime)
-
+    
             self.t_his.add_step_data(reward)
 
             self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)

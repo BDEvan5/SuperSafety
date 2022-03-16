@@ -44,7 +44,7 @@ import time
 import pyglet
 pyglet.options['debug_gl'] = False
 from pyglet import gl
-
+import matplotlib.pyplot as plt
 # constants
 
 # rendering
@@ -204,6 +204,8 @@ class F110Env(gym.Env):
         # stateful observations for rendering
         self.render_obs = None
 
+        self.poses = []
+
     def __del__(self):
         """
         Finalizer, does cleanup
@@ -238,9 +240,10 @@ class F110Env(gym.Env):
         temp_y[np.invert(np.logical_or(idx1, idx2))] = 0
 
         dist2 = delta_pt[0, :]**2 + temp_y**2
-        closes = dist2 <= 0.1
+        # closes = dist2 <= 0.02
+        closes = np.sqrt(dist2) <= 0.1
         for i in range(self.num_agents):
-            if closes[i] and not self.near_starts[i]:
+            if closes[i] and not self.near_starts[i] and self.current_time > 10:
                 self.near_starts[i] = True
                 self.toggle_list[i] += 1
             elif not closes[i] and self.near_starts[i]:
@@ -250,11 +253,16 @@ class F110Env(gym.Env):
             if self.toggle_list[i] < 4:
                 self.lap_times[i] = self.current_time
         
-        done = (self.collisions[self.ego_idx]) or np.all(self.toggle_list >= 2)
+        done = (self.collisions[self.ego_idx]) or (np.all(self.toggle_list >= 2) and self.current_time > 10)
         # This number (2) is 2x the number of laps desired
         
-        personal_done = self.check_location()
-        done = personal_done or done
+        # done = done and self.current_time > 10 #! this is a temporary hack for the porto map
+        if self.current_time < 10:
+            self.lap_counts[0] = 0
+
+        # if done:
+        #     print(f"d2: {dist2[0]} -> Distance: {np.sqrt(dist2[self.ego_idx])}")
+        #     print(f"Collisions: {self.collisions[0]}")
 
         return done, self.toggle_list >= 4
 
@@ -310,7 +318,7 @@ class F110Env(gym.Env):
             'lap_times': obs['lap_times'],
             'lap_counts': obs['lap_counts']
             }
-
+        self.poses.append([obs['poses_x'][0], obs['poses_y'][0]])
         # times
         reward = self.timestep
         self.current_time = self.current_time + self.timestep
@@ -320,8 +328,11 @@ class F110Env(gym.Env):
 
         # check done
         done, toggle_list = self._check_done()
-        info = {'checkpoint_done': toggle_list}
+        if self.check_location():
+            obs['collisions'][0] = True
+            done = True
 
+        info = {'checkpoint_done': toggle_list}
         if done:
             self.log_data(obs)
 
@@ -374,6 +385,9 @@ class F110Env(gym.Env):
             'lap_times': obs['lap_times'],
             'lap_counts': obs['lap_counts']
             }
+
+        self.poses = []
+        self.poses.append([obs['poses_x'][0], obs['poses_y'][0]])
         
         return obs, reward, done, info
 
@@ -497,6 +511,39 @@ class F110Env(gym.Env):
 
         F110Env.render_callbacks.append(callback_func)
 
+    # def render(self, mode='human'):
+    #     """
+    #     Renders the environment with pyglet. Use mouse scroll in the window to zoom in/out, use mouse click drag to pan. Shows the agents, the map, current fps (bottom left corner), and the race information near as text.
+
+    #     Args:
+    #         mode (str, default='human'): rendering mode, currently supports:
+    #             'human': slowed down rendering such that the env is rendered in a way that sim time elapsed is close to real time elapsed
+    #             'human_fast': render as fast as possible
+
+    #     Returns:
+    #         None
+    #     """
+    #     assert mode in ['human', 'human_fast']
+        
+    #     if F110Env.renderer is None:
+    #         # first call, initialize everything
+    #         from SuperSafety.f110_gym.rendering import EnvRenderer
+    #         F110Env.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
+    #         F110Env.renderer.update_map(self.map_name, self.map_ext)
+            
+    #     F110Env.renderer.update_obs(self.render_obs)
+
+    #     for render_callback in F110Env.render_callbacks:
+    #         render_callback(F110Env.renderer)
+        
+    #     F110Env.renderer.dispatch_events()
+    #     F110Env.renderer.on_draw()
+    #     F110Env.renderer.flip()
+    #     if mode == 'human':
+    #         time.sleep(0.005)
+    #     elif mode == 'human_fast':
+            # pass
+
     def render(self, mode='human'):
         """
         Renders the environment with pyglet. Use mouse scroll in the window to zoom in/out, use mouse click drag to pan. Shows the agents, the map, current fps (bottom left corner), and the race information near as text.
@@ -511,21 +558,39 @@ class F110Env(gym.Env):
         """
         assert mode in ['human', 'human_fast']
         
-        if F110Env.renderer is None:
+        if self.renderer is None:
             # first call, initialize everything
             from SuperSafety.f110_gym.rendering import EnvRenderer
-            F110Env.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
-            F110Env.renderer.update_map(self.map_name, self.map_ext)
+            self.renderer = EnvRenderer(WINDOW_W, WINDOW_H)
+            self.renderer.update_map(self.map_name, self.map_ext)
             
-        F110Env.renderer.update_obs(self.render_obs)
+        self.renderer.update_obs(self.render_obs)
 
-        for render_callback in F110Env.render_callbacks:
-            render_callback(F110Env.renderer)
+        for render_callback in self.render_callbacks:
+            render_callback(self.renderer)
         
-        F110Env.renderer.dispatch_events()
-        F110Env.renderer.on_draw()
-        F110Env.renderer.flip()
+        self.renderer.dispatch_events()
+        self.renderer.on_draw()
+        self.renderer.flip()
         if mode == 'human':
             time.sleep(0.005)
         elif mode == 'human_fast':
             pass
+
+    def close_rendering(self):
+        if self.renderer is not None:
+            self.renderer.close()        
+
+    def save_traj(self, name="Traj"):
+        poses = np.array(self.poses)
+        plt.figure(1)
+        plt.clf()
+        plt.plot(poses[:,0], poses[:,1], 'b-')
+
+        plt.gca().set_aspect('equal', adjustable='box')
+
+        plt.pause(0.001)
+
+        plt.savefig("Data/Trajectories/" + name + ".png")
+
+        plt.show()

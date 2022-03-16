@@ -2,7 +2,9 @@
 title: "AutonomousRacingResults"
 author: "Benjamin Evans"
 date: "04/02/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 
@@ -25,7 +27,7 @@ Firstly, we run random tests to ensure that the kernels are safe and that they d
 ```{r, kernel_safety}
 kernel_gen = data %>%
   filter(eval_name=="KernelGen")%>%
-  select(map_name, SSS_avg_interventions, SSS_avg_times, SSS_std_dev, SSS_success_rate)
+  select(map_name, SSS_avg_times, SSS_std_dev, SSS_avg_interventions, SSS_std_inters, SSS_success_rate)
   
 kable(kernel_gen)
 ```
@@ -49,12 +51,13 @@ kable(reward)
 ```{r}
 
 benchmarks = data %>%
-  filter(eval_name=="Performance")%>%
-  filter(Wo_avg_times> 1)%>%
+  filter(eval_name=="repeat")%>%
+  # filter(Wo_avg_times> 1)%>%
   select(agent_name, SSS_avg_times, Wo_avg_times, Wo_success_rate)%>%
    arrange(desc(agent_name))
 
-kable(benchmarks)
+# kable(benchmarks)
+
 
 ```
 
@@ -62,16 +65,16 @@ kable(benchmarks)
 ```{r, stability}
 
 data %>%
-  filter(eval_name=="Performance")%>%
-  filter(Wo_avg_times>2)%>%
+  filter(eval_name=="repeat")%>%
+  filter(Wo_avg_times>6)%>%
   select(agent_name, Wo_avg_times, Wo_success_rate, vehicle)%>%
   ggplot(aes(x=vehicle, y=Wo_avg_times, group=vehicle))+
   geom_boxplot()
   # coord_cartesian(ylim = c(1, 20))
 
 b =  data %>%
-  filter(eval_name=="Performance")%>%
-  filter(Wo_avg_times>2)%>%
+  filter(eval_name=="repeat")%>%
+  filter(Wo_avg_times>6)%>%
   select(Wo_avg_times, vehicle, agent_name)%>%
   pivot_wider(names_from = vehicle, values_from = Wo_avg_times)
   # group_by(vehicle)
@@ -87,14 +90,28 @@ summary(b)
 
 benchmarks = data %>%
   filter(eval_name=="benchmark")%>%
-  select(agent_name, SSS_avg_times, SSS_success_rate, Wo_avg_times, Wo_success_rate)%>%
-   arrange(desc(agent_name))
+  select(vehicle, map_name, Wo_avg_times, Wo_std_dev)%>%
+   arrange(desc(vehicle)) %>%
+  pivot_wider(names_from = map_name, values_from = c(Wo_avg_times, Wo_std_dev))
 
 #TODO: get map name then use pivot wider to compare accross maps.
 
 kable(benchmarks)
 
 ```
+```{r}
+
+benchmarks = data %>%
+  filter(eval_name=="benchmark")%>%
+  select(vehicle, map_name, Wo_avg_times, Wo_success_rate)%>%
+   arrange(desc(vehicle))
+
+
+kable(benchmarks)
+
+```
+
+
 
 
 

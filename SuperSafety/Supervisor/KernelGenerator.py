@@ -1,5 +1,3 @@
-
-
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -9,20 +7,15 @@ from numba import njit
 import yaml
 from PIL import Image
 from SuperSafety.Utils.utils import load_conf
-from SuperSafety.Supervisor.Modes import Modes
-
-
 
 
 class KernelGenerator:
-    def __init__(self, track_img, sim_conf, load_dyns=False):
+    def __init__(self, track_img, sim_conf):
         self.track_img = track_img
         self.sim_conf = sim_conf
         self.n_dx = int(sim_conf.n_dx)
         self.t_step = sim_conf.kernel_time_step
         self.n_phi = sim_conf.n_phi
-        self.phi_range = sim_conf.phi_range
-        self.half_phi = self.phi_range / (2*self.n_phi)
         self.max_steer = sim_conf.max_steer 
         self.L = sim_conf.l_f + sim_conf.l_r
 
@@ -30,32 +23,21 @@ class KernelGenerator:
         self.n_y = self.track_img.shape[1]
         self.xs = np.linspace(0, self.n_x/self.n_dx, self.n_x) 
         self.ys = np.linspace(0, self.n_y/self.n_dx, self.n_y)
-        self.phis = np.linspace(-self.phi_range/2, self.phi_range/2, self.n_phi)
+        self.phis = np.linspace(-np.pi, np.pi, self.n_phi)
         
-        self.m = Modes(sim_conf)
-        self.n_modes = self.m.n_modes
+        self.n_modes = sim_conf.nq_steer 
+        self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
 
         self.o_map = np.copy(self.track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
         self.kernel = np.zeros((self.n_x, self.n_y, self.n_phi, self.n_modes))
-        self.previous_kernel = np.zeros((self.n_x, self.n_y, self.n_phi, self.n_modes))
-        
-        self.kernel[:, :, :, :] = self.track_img[:, :, None, None] * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
+        self.previous_kernel = np.copy(self.kernel)
 
+        self.kernel[:, :, :, :] = self.track_img[:, :, None, None] * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
+        
         self.dynamics = np.load(f"{sim_conf.dynamics_path}{sim_conf.kernel_mode}_dyns.npy")
         print(f"Dynamics Loaded: {self.dynamics.shape}")
-
-    def save_kernel(self, name):
-        np.save(f"{self.sim_conf.kernel_path}{name}.npy", self.kernel)
-        print(f"Saved kernel to file: {name}")
-
-
-        self.view_speed_build(False)
-        plt.savefig(f"{self.sim_conf.kernel_path}KernelSpeed_{name}_{self.sim_conf.kernel_mode}.png")
-
-        self.view_angle_build(False)
-        plt.savefig(f"{self.sim_conf.kernel_path}KernelAngle_{name}_{self.sim_conf.kernel_mode}.png")
 
     def get_filled_kernel(self):
         filled = np.count_nonzero(self.kernel)
@@ -63,7 +45,7 @@ class KernelGenerator:
         print(f"Filled: {filled} / {total} -> {filled/total}")
         return filled/total
 
-    def view_angle_build(self, show=True):
+    def view_kernel_angles(self, show=True):
         self.axs[0, 0].cla()
         self.axs[1, 0].cla()
         self.axs[0, 1].cla()
@@ -72,11 +54,10 @@ class KernelGenerator:
         half_phi = int(len(self.phis)/2)
         quarter_phi = int(len(self.phis)/4)
 
-        mode_ind = 6
+        mode_ind = int((self.n_modes-1)/2)
 
         self.axs[0, 0].imshow(self.kernel[:, :, 0, mode_ind].T + self.o_map.T, origin='lower')
         self.axs[0, 0].set_title(f"Kernel phi: {self.phis[0]}")
-        # axs[0, 0].clear()
         self.axs[1, 0].imshow(self.kernel[:, :, half_phi, mode_ind].T + self.o_map.T, origin='lower')
         self.axs[1, 0].set_title(f"Kernel phi: {self.phis[half_phi]}")
         self.axs[0, 1].imshow(self.kernel[:, :, -quarter_phi, mode_ind].T + self.o_map.T, origin='lower')
@@ -84,75 +65,8 @@ class KernelGenerator:
         self.axs[1, 1].imshow(self.kernel[:, :, quarter_phi, mode_ind].T + self.o_map.T, origin='lower')
         self.axs[1, 1].set_title(f"Kernel phi: {self.phis[quarter_phi]}")
 
-        # plt.title(f"Building Kernel")
-
         plt.pause(0.0001)
         plt.pause(1)
-
-        if show:
-            plt.show()
-     
-    def view_speed_build(self, show=True):
-        self.axs[0, 0].cla()
-        self.axs[1, 0].cla()
-        self.axs[0, 1].cla()
-        self.axs[1, 1].cla()
-
-        phi_ind = int(len(self.phis)/2)
-        # phi_ind = 0
-        # quarter_phi = int(len(self.phis)/4)
-        # phi_ind = 
-        inds = np.array([3, 4, 7, 8], dtype=int)
-
-        # inds = np.array([2, 3, 6, 7], dtype=int)
-        # inds = np.array([2, 28, 32, 34], dtype=int)
-
-        self.axs[0, 0].imshow(self.kernel[:, :, phi_ind, inds[0]].T + self.o_map.T, origin='lower')
-        self.axs[0, 0].set_title(f"Kernel Mode: {self.m.qs[inds[0]]}")
-        # axs[0, 0].clear()
-        self.axs[1, 0].imshow(self.kernel[:, :, phi_ind, inds[1]].T + self.o_map.T, origin='lower')
-        self.axs[1, 0].set_title(f"Kernel Mode: {self.m.qs[inds[1]]}")
-        self.axs[0, 1].imshow(self.kernel[:, :, phi_ind, inds[2]].T + self.o_map.T, origin='lower')
-        self.axs[0, 1].set_title(f"Kernel Mode: {self.m.qs[inds[2]]}")
-
-        self.axs[1, 1].imshow(self.kernel[:, :, phi_ind, inds[3]].T + self.o_map.T, origin='lower')
-        self.axs[1, 1].set_title(f"Kernel Mode: {self.m.qs[inds[3]]}")
-
-        # plt.title(f"Building Kernel")
-
-        plt.pause(0.0001)
-        plt.pause(1)
-
-        if show:
-            plt.show()
-    
-    def make_picture(self, show=True):
-        self.axs[0, 0].cla()
-        self.axs[1, 0].cla()
-        self.axs[0, 1].cla()
-        self.axs[1, 1].cla()
-
-        half_phi = int(len(self.phis)/2)
-        quarter_phi = int(len(self.phis)/4)
-
-
-        self.axs[0, 0].set(xticks=[])
-        self.axs[0, 0].set(yticks=[])
-        self.axs[1, 0].set(xticks=[])
-        self.axs[1, 0].set(yticks=[])
-        self.axs[0, 1].set(xticks=[])
-        self.axs[0, 1].set(yticks=[])
-        self.axs[1, 1].set(xticks=[])
-        self.axs[1, 1].set(yticks=[])
-
-        self.axs[0, 0].imshow(self.kernel[:, :, 0].T + self.o_map.T, origin='lower')
-        self.axs[1, 0].imshow(self.kernel[:, :, half_phi].T + self.o_map.T, origin='lower')
-        self.axs[0, 1].imshow(self.kernel[:, :, -quarter_phi].T + self.o_map.T, origin='lower')
-        self.axs[1, 1].imshow(self.kernel[:, :, quarter_phi].T + self.o_map.T, origin='lower')
-        
-        plt.pause(0.0001)
-        plt.pause(1)
-        plt.savefig(f"{self.sim_conf.kernel_path}Kernel_build_{self.sim_conf.kernel_mode}.svg")
 
         if show:
             plt.show()
@@ -166,12 +80,8 @@ class KernelGenerator:
             self.previous_kernel = np.copy(self.kernel)
             self.kernel = viability_loop(self.kernel, self.dynamics)
 
-            # self.view_kernel(0, False)
-            self.view_speed_build(False)
             self.get_filled_kernel()
-
-        # print(f"non: {np.count_nonzero(self.kernel[:, :, :, 8])}")
-        # print(f"zero: {np.where(self.kernel[:, :, :, 8]==0)}")
+        self.view_kernel_angles(False)
 
         return self.get_filled_kernel()
 
@@ -282,7 +192,7 @@ class VeiwKernel:
         
         self.phis = np.linspace(-conf.phi_range/2, conf.phi_range/2, conf.n_phi)
 
-        self.m = Modes(conf)
+        self.qs = np.linspace(-conf.max_steer, conf.max_steer, conf.nq_steer)
         self.view_speed_build(True)
      
     def view_speed_build(self, show=True):
@@ -292,54 +202,88 @@ class VeiwKernel:
         self.axs[1, 1].cla()
 
         phi_ind = int(len(self.phis)/2)
-        # phi_ind = 0
-        # quarter_phi = int(len(self.phis)/4)
-        # phi_ind = 
 
         inds = np.array([3, 4, 7, 8], dtype=int)
-        # inds = np.array([2, 16, 17, 18], dtype=int)
-        # inds = np.array([4, 6, 31, 34], dtype=int)
 
         self.axs[0, 0].imshow(self.kernel[:, :, phi_ind, inds[0]].T + self.o_map.T, origin='lower')
-        self.axs[0, 0].set_title(f"Kernel Mode: {self.m.qs[inds[0]]}")
-        # axs[0, 0].clear()
+        self.axs[0, 0].set_title(f"Kernel Mode: {self.qs[inds[0]]}")
         self.axs[1, 0].imshow(self.kernel[:, :, phi_ind, inds[1]].T + self.o_map.T, origin='lower')
-        self.axs[1, 0].set_title(f"Kernel Mode: {self.m.qs[inds[1]]}")
+        self.axs[1, 0].set_title(f"Kernel Mode: {self.qs[inds[1]]}")
         self.axs[0, 1].imshow(self.kernel[:, :, phi_ind, inds[2]].T + self.o_map.T, origin='lower')
-        self.axs[0, 1].set_title(f"Kernel Mode: {self.m.qs[inds[2]]}")
+        self.axs[0, 1].set_title(f"Kernel Mode: {self.qs[inds[2]]}")
 
         self.axs[1, 1].imshow(self.kernel[:, :, phi_ind, inds[3]].T + self.o_map.T, origin='lower')
-        self.axs[1, 1].set_title(f"Kernel Mode: {self.m.qs[inds[3]]}")
-
-        # plt.title(f"Building Kernel")
+        self.axs[1, 1].set_title(f"Kernel Mode: {self.qs[inds[3]]}")
 
         plt.pause(0.0001)
         plt.pause(1)
 
         if show:
             plt.show()
-    
+        
+    def make_picture(self, show=True):
+        self.axs[0, 0].cla()
+        self.axs[1, 0].cla()
+        self.axs[0, 1].cla()
+        self.axs[1, 1].cla()
+
+        half_phi = int(len(self.phis)/2)
+        quarter_phi = int(len(self.phis)/4)
+
+
+        self.axs[0, 0].set(xticks=[])
+        self.axs[0, 0].set(yticks=[])
+        self.axs[1, 0].set(xticks=[])
+        self.axs[1, 0].set(yticks=[])
+        self.axs[0, 1].set(xticks=[])
+        self.axs[0, 1].set(yticks=[])
+        self.axs[1, 1].set(xticks=[])
+        self.axs[1, 1].set(yticks=[])
+
+        self.axs[0, 0].imshow(self.kernel[:, :, 0].T + self.o_map.T, origin='lower')
+        self.axs[1, 0].imshow(self.kernel[:, :, half_phi].T + self.o_map.T, origin='lower')
+        self.axs[0, 1].imshow(self.kernel[:, :, -quarter_phi].T + self.o_map.T, origin='lower')
+        self.axs[1, 1].imshow(self.kernel[:, :, quarter_phi].T + self.o_map.T, origin='lower')
+        
+        plt.pause(0.0001)
+        plt.pause(1)
+        plt.savefig(f"{self.sim_conf.kernel_path}Kernel_build_{self.sim_conf.kernel_mode}.svg")
+
+        if show:
+            plt.show()
+
+    def save_kernel(self, name):
+
+        self.view_speed_build(False)
+        plt.savefig(f"{self.sim_conf.kernel_path}KernelSpeed_{name}_{self.sim_conf.kernel_mode}.png")
+
+        self.view_angle_build(False)
+        plt.savefig(f"{self.sim_conf.kernel_path}KernelAngle_{name}_{self.sim_conf.kernel_mode}.png")
+
 
 def build_track_kernel(conf):
-  
     img = prepare_track_img(conf) 
-    img, img2 = shrink_img(img, 1)
+    img, img2 = shrink_img(img, conf.track_shrink_pixels)
     kernel = KernelGenerator(img2, conf)
     kernel.calculate_kernel(100)
-    kernel.save_kernel(f"Kernel_{conf.kernel_mode}_{conf.map_name}")
+
+    name = f"Kernel_{conf.kernel_mode}_{conf.map_name}"
+    np.save(f"{conf.kernel_path}{name}.npy", kernel.kernel)
+    print(f"Saved kernel to file: {name}")
+
+
 
 def view_kernel():
-    conf = load_conf("kernel_config")
+    conf = load_conf("config_file")
     img = prepare_track_img(conf) 
     img, img2 = shrink_img(img, 5)
     k = VeiwKernel(conf, img2)
 
 if __name__ == "__main__":
 
-    # test_construction()
-    conf = load_conf("kernel_config")
-    # conf.map_name = "porto"
-    build_track_kernel(conf)
-    # view_kernel()
+    # conf = load_conf("kernel_config")
+    # build_track_kernel(conf)
+
+    view_kernel()
 
 

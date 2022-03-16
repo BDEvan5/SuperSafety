@@ -18,23 +18,25 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
                 sim_steps -= 1
 
             if show:
+                # env.render(mode='human')
                 env.render(mode='human_fast')
  
         # env.sim.agents[0].history.plot_history()
         r = find_conclusion(obs, start)
 
-        if r == -1:
-            crashes += 1
-        else:
+        if r == 1:
             completes += 1
             lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
+
+        # env.save_traj(f"Traj_{i}_{vehicle.name}")
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
         avg_times, std_dev = np.mean(lap_times), np.std(lap_times)
     else:
         avg_times, std_dev = 0, 0
-
 
     print(f"Crashes: {crashes}")
     print(f"Completes: {completes} --> {success_rate:.2f} %")
@@ -73,11 +75,76 @@ def evaluate_kernel_vehicle(env, vehicle, conf, show=False):
         interventions.append(vehicle.interventions)
         print(f"Interventions: {vehicle.interventions}")
         vehicle.interventions = 0
-        if r == -1:
-            crashes += 1
-        else:
+
+        if r == 1:
             completes += 1
             lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
+
+        # vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
+
+
+    success_rate = (completes / (completes + crashes) * 100)
+    if len(lap_times) > 0:
+        avg_times, std_dev = np.mean(lap_times), np.std(lap_times)
+        avg_interventions = np.mean(interventions)
+    else:
+        avg_times, std_dev = 0, 0
+
+
+    print(f"Crashes: {crashes}")
+    print(f"Completes: {completes} --> {success_rate:.2f} %")
+    print(f"Lap times Avg: {avg_times} --> Std: {std_dev}")
+    print(f"Interventions Avg: {avg_interventions}")
+
+    eval_dict = {}
+    eval_dict['success_rate'] = float(success_rate)
+    eval_dict['avg_times'] = float(avg_times)
+    eval_dict['std_dev'] = float(std_dev)
+    eval_dict['avg_interventions'] = float(avg_interventions)
+    eval_dict['std_inters'] = float(np.std(interventions))
+
+    print(f"Finished running test and saving file with results.")
+
+    return eval_dict
+
+
+def render_kernel_eval(env, vehicle, conf, show=False):
+    crashes = 0
+    completes = 0
+    lap_times = [] 
+    start = time.time()
+    interventions = []
+
+    for i in range(conf.test_n):
+        obs, step_reward, done, info = env.reset(np.array([[conf.sx, conf.sy, conf.stheta]]))
+        while not done:
+            action = vehicle.plan(obs)
+            sim_steps = conf.sim_steps
+            while sim_steps > 0 and not done:
+                obs, step_reward, done, _ = env.step(action[None, :])
+                sim_steps -= 1
+
+            if show:
+                env.render(mode='human_fast')
+
+        # env.sim.agents[0].history.plot_history()
+        r = find_conclusion(obs, start)
+        interventions.append(vehicle.interventions)
+        print(f"Interventions: {vehicle.interventions}")
+        vehicle.interventions = 0
+
+        if r == 1:
+            completes += 1
+            lap_times.append(env.lap_times[0])
+        else:
+            crashes += 1
+
+        # vehicle.plot_safe_history(f"Traj_{i}_{vehicle.name}")
+
+        env.render_trajectory(vehicle.planner.path, f"Traj_{i}", vehicle.safe_history)
+        vehicle.safe_history.save_safe_history(vehicle.planner.path, f"Traj_{i}")
 
     success_rate = (completes / (completes + crashes) * 100)
     if len(lap_times) > 0:
@@ -112,7 +179,7 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.train_n):
+    for n in range(conf.baseline_train_n + conf.buffer_n):
         state['reward'] = set_reward(state)
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
@@ -121,7 +188,8 @@ def train_baseline_vehicle(env, vehicle, conf, show=False):
             sim_steps -= 1
 
         state = s_prime
-        vehicle.agent.train(2)
+        if n > conf.buffer_n:
+            vehicle.agent.train(2)
         if show:
             env.render('human_fast')
         
@@ -158,8 +226,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
     ep_steps = 0 
     lap_counter = 0
-    for n in range(conf.train_n):
-        state['reward'] = set_reward(state) #theoretically always zero in this position
+    state['reward'] = 0 # unless changed
+    for n in range(conf.kernel_train_n+ conf.buffer_n):
         action = vehicle.plan(state)
         sim_steps = conf.sim_steps
         while sim_steps > 0 and not done:
@@ -167,7 +235,10 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             sim_steps -= 1
 
         state = s_prime
-        vehicle.planner.agent.train(2)
+        state['reward'] = 0 # unless changed
+        if n > conf.buffer_n:
+            vehicle.planner.agent.train(2)
+
         # env.render('human_fast')
         
         if s_prime['collisions'][0] == 1:
@@ -177,7 +248,6 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             s_prime['reward'] = set_reward(s_prime) # -1 in this position
             vehicle.done_entry(s_prime, env.lap_times[0])
             ep_steps = 0 
-
 
         if done or ep_steps > conf.max_steps:
             s_prime['reward'] = set_reward(s_prime) # always lap finished=1 at this position
@@ -208,16 +278,27 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
 
 def find_conclusion(s_p, start):
     laptime = s_p['lap_times'][0]
-    if s_p['collisions'][0] == 1:
-        print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
-        return -1
-    elif s_p['lap_counts'][0] == 1:
+    if s_p['lap_counts'][0] == 1:
         print(f'Complete --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
         return 1
     else:
-        print("No conclusion: Awkward palm trees")
-        # print(s_p)
-    return 0
+        print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+        return 0
+
+
+
+# def find_conclusion(s_p, start):
+#     laptime = s_p['lap_times'][0]
+#     if s_p['collisions'][0] == 1:
+#         print(f'Collision --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+#         return -1
+#     elif s_p['lap_counts'][0] == 1:
+#         print(f'Complete --> Sim time: {laptime:.2f} Real time: {(time.time()-start):.2f}')
+#         return 1
+#     else:
+#         print("No conclusion: Awkward palm trees")
+#         # print(s_p)
+#     return 0
 
 
 def set_reward(s_p):
@@ -225,6 +306,5 @@ def set_reward(s_p):
         return -1
     elif s_p['lap_counts'][0] == 1:
         return 1
-        # return (30 - s_p['lap_times'][0]) 
     return 0
 

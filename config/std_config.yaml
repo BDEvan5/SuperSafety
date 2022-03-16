@@ -43,5 +43,5 @@ train_n: 20000
 #save_paths
 vehicle_path: "Data/Vehicles/"
 
-kernel_speed: 3
+vehicle_speed: 3
 

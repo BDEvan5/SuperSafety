@@ -7,13 +7,11 @@ from copy import copy
 from TrainTest import *
 
 
+# MAP_NAME = "columbia_small"
+MAP_NAME = "porto"
 
-
-
-MAP_NAME = "columbia_small"
-
-def execute_kernel_run(run_name):
-    runs = load_yaml_dict(run_name)
+def run_reward_tests():
+    runs = load_yaml_dict("reward_run")
     base_config = load_yaml_dict(runs['base_config_name'])
     n = runs['n']
 
@@ -25,6 +23,7 @@ def execute_kernel_run(run_name):
             conf[param] = run[param]
 
         conf = Namespace(**conf)
+        conf.map_name = MAP_NAME
         agent_name = f"KernelSSS_{n}_{conf.name}"
         env = F110Env(map=conf.map_name)
 
@@ -43,6 +42,7 @@ def execute_kernel_run(run_name):
         save_dict['Wo'] = eval_dict_wo
         save_dict['SSS'] = eval_dict_sss
         save_dict['agent_name'] = agent_name
+        save_dict['vehicle'] = "KernelSSS2"
         save_conf_dict(save_dict)
 
 def eval_kernel_run(run_name):
@@ -76,5 +76,5 @@ def eval_kernel_run(run_name):
         save_conf_dict(save_dict)
 
 if __name__ == "__main__":
-    # execute_kernel_run("reward_run")
-    eval_kernel_run("reward_run")
+    run_reward_tests()
+    # eval_kernel_run("reward_run")

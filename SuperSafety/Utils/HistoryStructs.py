@@ -33,6 +33,7 @@ class TrainHistory():
         self.lengths = np.zeros(SIZE)
         self.rewards = np.zeros(SIZE) 
         self.t_counter = 0 # total steps
+        self.step_rewards = []
         
         # espisode data
         self.ep_counter = 0 # ep steps
@@ -56,6 +57,7 @@ class TrainHistory():
         self.ep_rewards.append(new_r)
         self.ep_counter += 1
         self.t_counter += 1 
+        self.step_rewards.append(new_r)
 
     def lap_done(self, show_reward=False):
         self.lengths[self.ptr] = self.ep_counter
@@ -95,6 +97,14 @@ class TrainHistory():
         for i in range(len(self.rewards)):
             data.append([i, self.rewards[i], self.lengths[i]])
         full_name = self.path + '/training_data.csv'
+        with open(full_name, 'w') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerows(data)
+
+        data = []
+        for i in range(len(self.step_rewards)):
+            data.append([i, self.step_rewards[i]])
+        full_name = self.path + '/step_data.csv'
         with open(full_name, 'w') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
