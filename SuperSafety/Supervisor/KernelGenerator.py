@@ -66,7 +66,7 @@ class KernelGenerator:
         self.axs[1, 1].set_title(f"Kernel phi: {self.phis[quarter_phi]}")
 
         plt.pause(0.0001)
-        plt.pause(1)
+        # plt.pause(1)
 
         if show:
             plt.show()
@@ -80,8 +80,8 @@ class KernelGenerator:
             self.previous_kernel = np.copy(self.kernel)
             self.kernel = viability_loop(self.kernel, self.dynamics)
 
+            self.view_kernel_angles(False)
             self.get_filled_kernel()
-        self.view_kernel_angles(False)
 
         return self.get_filled_kernel()
 
@@ -265,6 +265,7 @@ def build_track_kernel(conf):
     img = prepare_track_img(conf) 
     img, img2 = shrink_img(img, conf.track_shrink_pixels)
     kernel = KernelGenerator(img2, conf)
+    kernel.view_kernel_angles(False)
     kernel.calculate_kernel(100)
 
     name = f"Kernel_{conf.kernel_mode}_{conf.map_name}"

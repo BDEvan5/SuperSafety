@@ -112,7 +112,7 @@ def benchmark_sss_tests(n):
 
         planner = TrainVehicle(agent_name, conf)
         safe_planner = LearningSupervisor(planner, conf)
-        train_kernel_vehicle(env, safe_planner, conf)
+        train_kernel_vehicle(env, safe_planner, conf, True)
 
         planner = TestVehicle(agent_name, conf)
         eval_wo = evaluate_vehicle(env, planner, conf, True)
@@ -135,7 +135,7 @@ def benchmark_sss_tests(n):
 
 
 if __name__ == "__main__":
-    pure_pursuit_tests(1)
+    # pure_pursuit_tests(1)
     # follow_the_gap_tests(1)
-    # benchmark_sss_tests(1)
+    benchmark_sss_tests(2)
     # benchmark_baseline_tests(1)
