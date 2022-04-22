@@ -240,8 +240,8 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             vehicle.planner.agent.train(2)
 
         if show:
-            # env.render('human_fast')
-            env.render('human')
+            env.render('human_fast')
+            # env.render('human')
         
         if s_prime['collisions'][0] == 1:
             print(f"COLLISION:: Lap done {lap_counter} -> {env.lap_times[0]} -> Inters: {vehicle.ep_interventions}")
@@ -249,6 +249,7 @@ def train_kernel_vehicle(env, vehicle, conf, show=False):
             lap_counter += 1
             s_prime['reward'] = set_reward(s_prime) # -1 in this position
             vehicle.done_entry(s_prime, env.lap_times[0])
+            state['reward'] = 0 # restarting with no reward
             ep_steps = 0 
 
         if done or ep_steps > conf.max_steps:

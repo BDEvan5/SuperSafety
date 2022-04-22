@@ -133,11 +133,12 @@ class EnvRenderer(pyglet.window.Window):
                 origin = map_metadata['origin']
                 origin_x = origin[0]
                 origin_y = origin[1]
+                map_img_name = map_metadata['image']
             except yaml.YAMLError as ex:
                 print(ex)
 
-        # load map image
-        map_img = np.array(Image.open(map_path + map_ext).transpose(Image.FLIP_TOP_BOTTOM)).astype(np.float64)
+        map_img_path = "maps/" + map_img_name
+        map_img = np.array(Image.open(map_img_path).transpose(Image.FLIP_TOP_BOTTOM)).astype(np.float64)
         map_height = map_img.shape[0]
         map_width = map_img.shape[1]
 

@@ -21,7 +21,7 @@ def load_conf(fname):
 
     conf = Namespace(**conf_dict)
 
-    np.random.seed(conf.random_seed)
+    # np.random.seed(conf.random_seed)
 
     return conf
 

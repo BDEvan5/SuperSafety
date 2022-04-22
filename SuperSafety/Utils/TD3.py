@@ -142,7 +142,7 @@ class TD3(object):
 
         torch.manual_seed(0)
         torch.use_deterministic_algorithms(True)
-        np.random.seed(0)
+        # np.random.seed(0)
 
     def create_agent(self, h_size):
         state_dim = self.state_dim
