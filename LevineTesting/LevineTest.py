@@ -139,7 +139,7 @@ def pure_pursuit_tests(n):
     agent_name = f"PurePursuit_{conf.map_name}_{n}"
     planner = PurePursuit(conf, agent_name)
 
-    eval_dict = evaluate_vehicle(env, planner, conf, True)
+    # eval_dict = evaluate_vehicle(env, planner, conf, True)
     
     safe_planner = Supervisor(planner, conf)
     eval_sss = evaluate_kernel_vehicle(env, safe_planner, conf, True)
@@ -160,8 +160,8 @@ def pure_pursuit_tests(n):
 
 if __name__ == "__main__":
     # generate_kernels()
-    # run_random_test(1)
-    benchmark_sss_tests(1)
+    run_random_test(1)
+    # benchmark_sss_tests(1)
     # test_sss(1)
     # benchmark_baseline_tests(1)
     # pure_pursuit_tests(1)

@@ -76,7 +76,7 @@ class Supervisor:
         """
         
         self.d_max = conf.max_steer
-        self.kernel = TrackKernel(conf)
+        self.kernel = TrackKernel(conf, True)
         self.planner = planner
         self.safe_history = SafetyHistory()
         self.intervene = False
@@ -130,6 +130,7 @@ class Supervisor:
     def check_init_action(self, state, init_action):
         next_state = run_dynamics_update(state, init_action, self.time_step/2)
         safe = check_kernel_state(next_state, self.kernel.kernel, self.kernel.origin, self.kernel.resolution, self.kernel.phi_range, self.m.qs)
+        self.kernel.plot_state(next_state)
         if not safe:
             return safe, next_state
         next_state = run_dynamics_update(state, init_action, self.time_step)
@@ -334,6 +335,7 @@ class TrackKernel:
         plt.plot(i, j, 'x', markersize=20, color='red')
         plt.pause(0.0001)
 
+
     def get_indices(self, state):
         x_ind = min(max(0, int(round((state[0]-self.origin[0])*self.resolution))), self.kernel.shape[0]-1)
         y_ind = min(max(0, int(round((state[1]-self.origin[1])*self.resolution))), self.kernel.shape[1]-1)
@@ -344,7 +346,7 @@ class TrackKernel:
         elif phi < -self.phi_range/2:
             phi = phi + self.phi_range
         theta_ind = int(round((phi + self.phi_range/2) / self.phi_range * (self.kernel.shape[2]-1)))
-        mode = self.m.get_mode_id(state[3], state[4])
+        mode = self.m.get_mode_id(state[4])
 
         return x_ind, y_ind, theta_ind, mode
 

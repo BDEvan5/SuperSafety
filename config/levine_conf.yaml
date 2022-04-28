@@ -20,7 +20,7 @@ m: 3.47
 g: 9.81
 l_r: 0.171
 l_f: 0.158
-vehicle_speed: 2          # speed at which the vehilce is set to travel at
+vehicle_speed: 1.2          # speed at which the vehilce is set to travel at
 
 # agent parameters
 n_beams: 20               # number of beams used by agent
@@ -48,7 +48,7 @@ v_min_plan: 1            # minimum speed for selecting a steering angle to preve
 # test params
 test_n: 10               # number of test episodes to run
 baseline_train_n: 20000            # number of training steps to train agent
-kernel_train_n: 10000            # number of training steps to train agent
+kernel_train_n: 5000            # number of training steps to train agent
 buffer_n: 500
 
 #save_paths
