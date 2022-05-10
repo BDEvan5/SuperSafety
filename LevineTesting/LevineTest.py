@@ -159,8 +159,8 @@ def pure_pursuit_tests(n):
 
 
 if __name__ == "__main__":
-    # generate_kernels()
-    run_random_test(1)
+    generate_kernels()
+    # run_random_test(1)
     # benchmark_sss_tests(1)
     # test_sss(1)
     # benchmark_baseline_tests(1)

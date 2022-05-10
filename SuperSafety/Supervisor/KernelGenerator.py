@@ -39,6 +39,7 @@ class KernelGenerator:
         self.dynamics = np.load(f"{sim_conf.dynamics_path}{sim_conf.kernel_mode}_dyns.npy")
         print(f"Dynamics Loaded: {self.dynamics.shape}")
 
+
     def get_filled_kernel(self):
         filled = np.count_nonzero(self.kernel)
         total = self.kernel.size
@@ -273,6 +274,13 @@ def build_track_kernel(conf):
     print(f"Saved kernel to file: {name}")
 
 
+def generate_kernels():
+    conf = load_conf("config_file")
+    # build_dynamics_table(conf)
+
+    conf.map_name = "columbia_small"
+    build_track_kernel(conf)
+
 
 def view_kernel():
     conf = load_conf("config_file")
@@ -285,6 +293,8 @@ if __name__ == "__main__":
     # conf = load_conf("kernel_config")
     # build_track_kernel(conf)
 
-    view_kernel()
+    generate_kernels()
+
+    # view_kernel()
 
 
