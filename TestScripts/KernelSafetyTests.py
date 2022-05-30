@@ -17,12 +17,13 @@ def generate_kernels():
         conf.map_name = track
         build_track_kernel(conf)
 
-def generate_kernel_columbia():
+def generate_kernel_single():
     conf = load_conf("config_file")
     build_dynamics_table(conf)
 
     # conf.map_name = 'example_map'
-    conf.map_name = 'race_track'
+    # conf.map_name = 'race_track'
+    # conf.map_name = 'f1_aut_wide'
     # conf.map_name = 'columbia_small'
     build_track_kernel(conf)
 
@@ -33,7 +34,8 @@ def generate_kernel_columbia():
 def run_random_test_single(n=1):
     conf = load_conf("config_file")
     # conf.map_name = "porto"
-    conf.map_name = "race_track"
+    # conf.map_name = "race_track"
+    conf.map_name = "f1_aut_wide"
 
     agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
     planner = RandomPlanner(conf, agent_name)
@@ -96,7 +98,7 @@ def run_random_test(n=1):
 
 if __name__ == "__main__":
     # generate_kernels()
-    generate_kernel_columbia()
+    # generate_kernel_single()
     run_random_test_single(1)
 
     # run_random_test(1)
