@@ -31,7 +31,7 @@ class KernelGenerator:
         self.o_map = np.copy(self.track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
-        self.kernel = np.zeros((self.n_x, self.n_y, self.n_phi, self.n_modes), dtype=np.bool)
+        self.kernel = np.zeros((self.n_x, self.n_y, self.n_phi, self.n_modes), dtype=bool)
         self.previous_kernel = np.copy(self.kernel)
 
         self.kernel[:, :, :, :] = self.track_img[:, :, None, None] * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))

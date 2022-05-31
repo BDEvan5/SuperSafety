@@ -35,7 +35,8 @@ def run_random_test_single(n=1):
     conf = load_conf("config_file")
     # conf.map_name = "porto"
     # conf.map_name = "race_track"
-    conf.map_name = "f1_aut_wide"
+    conf.map_name = "columbia_small"
+    # conf.map_name = "f1_aut_wide"
 
     agent_name = f"RandoResult_{conf.map_name}_{conf.kernel_mode}_{n}"
     planner = RandomPlanner(conf, agent_name)
