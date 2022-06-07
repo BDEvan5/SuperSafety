@@ -25,8 +25,13 @@ class KernelGenerator:
         self.ys = np.linspace(0, self.n_y/self.n_dx, self.n_y)
         self.phis = np.linspace(-np.pi, np.pi, self.n_phi)
         
-        self.n_modes = sim_conf.nq_steer 
-        self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
+        if not sim_conf.no_steer:
+            self.n_modes = sim_conf.nq_steer 
+            self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
+        else:
+            self.n_modes = 1
+            self.qs = np.array([[0, sim_conf.vehicle_speed]])
+
 
         self.o_map = np.copy(track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
@@ -35,7 +40,6 @@ class KernelGenerator:
         self.previous_kernel = np.copy(self.kernel)
 
         self.kernel[:, :, :, :] *= self.track_img[:, :, None, None]
-        # * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
         
         self.dynamics = np.load(f"{sim_conf.dynamics_path}{sim_conf.kernel_mode}_dyns.npy")
         print(f"Dynamics Loaded: {self.dynamics.shape}")

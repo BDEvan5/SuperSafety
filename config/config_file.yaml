@@ -67,3 +67,5 @@ kernel_mode: "viab"      # Name to save kernel by
 track_shrink_pixels: 8   # number of pixels to shrink the track map by
 n_intermediate_pts: 1
 
+no_steer: True
+
