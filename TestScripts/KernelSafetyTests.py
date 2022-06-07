@@ -24,7 +24,7 @@ def generate_kernel_single():
     # conf.map_name = 'example_map'
     # conf.map_name = 'race_track'
     # conf.map_name = 'f1_aut_wide'
-    # conf.map_name = 'columbia_small'
+    conf.map_name = 'columbia_small'
     build_track_kernel(conf)
 
 
@@ -99,7 +99,7 @@ def run_random_test(n=1):
 
 if __name__ == "__main__":
     # generate_kernels()
-    # generate_kernel_single()
+    generate_kernel_single()
     run_random_test_single(1)
 
     # run_random_test(1)
