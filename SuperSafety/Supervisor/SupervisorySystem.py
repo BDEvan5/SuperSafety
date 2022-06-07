@@ -271,7 +271,7 @@ def check_state_modes(v, d):
         return True # this is allowed mode
     return False # this is not allowed mode: the friction is too high
 
-# @njit(cache=True)
+@njit(cache=True)
 def check_kernel_state(state, kernel, origin, resolution, phi_range, qs):
         x_ind = min(max(0, int(round((state[0]-origin[0])*resolution))), kernel.shape[0]-1)
         y_ind = min(max(0, int(round((state[1]-origin[1])*resolution))), kernel.shape[1]-1)
