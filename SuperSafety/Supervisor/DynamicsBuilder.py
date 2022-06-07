@@ -82,10 +82,7 @@ def build_viability_dynamics(state_m, act_m, conf):
             for k, action in enumerate(act_m.qs): # searches through actions
 
                 for l in range(ns):
-                    dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                     
-                # for delta in [-0.4, 0, 0.4]:
-                            
-                #     dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                             
+                    dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                                
                 
     print(f"Invalid transitions: {invalid_counter}")
     print(f"Dynamics Table has been built: {dynamics.shape}")
@@ -96,9 +93,10 @@ def build_viability_dynamics(state_m, act_m, conf):
 
 
 def build_dynamics_table(sim_conf):
-    if sim_conf.no_steer:
-        state_m = SingleMode(sim_conf)
-    else: state_m = Modes(sim_conf)
+    # if sim_conf.no_steer:
+    #     state_m = SingleMode(sim_conf)
+    # else: state_m = Modes(sim_conf)
+    state_m = Modes(sim_conf)
     act_m = Modes(sim_conf)
 
     if sim_conf.kernel_mode == "viab":

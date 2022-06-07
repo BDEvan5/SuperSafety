@@ -77,8 +77,8 @@ class Supervisor:
         
         self.d_max = conf.max_steer
 
-        # self.kernel = TrackKernel(conf, False)
-        self.kernel = TrackKernel(conf, True, "Kernel_filter_columbia_small.npy")
+        self.kernel = TrackKernel(conf, False)
+        # self.kernel = TrackKernel(conf, True, "Kernel_filter_columbia_small.npy")
         self.planner = planner
         self.safe_history = SafetyHistory()
         self.intervene = False
@@ -300,8 +300,11 @@ def check_kernel_state(state, kernel, origin, resolution, phi_range, qs):
 
 class TrackKernel:
     def __init__(self, sim_conf, plotting=False, kernel_name=None):
+        
         if kernel_name is None:
-            kernel_name = f"{sim_conf.kernel_path}Kernel_{sim_conf.kernel_mode}_{sim_conf.map_name}.npy"
+            if sim_conf.no_steer: kernel_mode = "filter"
+            else: kernel_mode = sim_conf.kernel_mode
+            kernel_name = f"{sim_conf.kernel_path}Kernel_{kernel_mode}_{sim_conf.map_name}.npy"
         else:
             kernel_name = f"{sim_conf.kernel_path}{kernel_name}"
         self.kernel = np.load(kernel_name)

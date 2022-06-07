@@ -25,12 +25,8 @@ class KernelGenerator:
         self.ys = np.linspace(0, self.n_y/self.n_dx, self.n_y)
         self.phis = np.linspace(-np.pi, np.pi, self.n_phi)
         
-        if not sim_conf.no_steer:
-            self.n_modes = sim_conf.nq_steer 
-            self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
-        else:
-            self.n_modes = 1
-            self.qs = np.array([[0, sim_conf.vehicle_speed]])
+        self.n_modes = sim_conf.nq_steer 
+        self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
 
 
         self.o_map = np.copy(track_img)    
@@ -92,6 +88,12 @@ class KernelGenerator:
 
         return self.get_filled_kernel()
 
+    def filter_kernel(self):
+        print(f"Starting to filter: {np.count_nonzero(self.kernel)} --> {self.kernel.shape}")
+        xs, ys, ths, ms = self.kernel.shape
+        new_kernel = np.zeros((xs, ys, ths, 1), dtype=bool)
+        self.kernel = filter_kernel(self.kernel, new_kernel)
+        print(f"finished filtering: {np.count_nonzero(self.kernel)} --> {self.kernel.shape}")
 
 
 @njit(cache=True)
@@ -137,6 +139,17 @@ def check_viable_state(i, j, k, q, dynamics, previous_kernel):
             return False # it is safe
 
     return True # it isn't safe because I haven't found a valid action yet...
+
+@njit(cache=True)
+def filter_kernel(kernel, new_kernel):
+    xs, ys, ths, ms = kernel.shape
+    assert ms > 2, "Single Use kernels..."
+    for i in range(xs):
+        for j in range(ys):
+            for k in range(ths):
+                new_kernel[i, j, k, 0] = kernel[i, j, k, :].any()
+            
+    return new_kernel
 
 
 def prepare_track_img(sim_conf):
@@ -277,6 +290,11 @@ def build_track_kernel(conf):
     kernel.calculate_kernel(100)
 
     name = f"Kernel_{conf.kernel_mode}_{conf.map_name}"
+    np.save(f"{conf.kernel_path}{name}.npy", kernel.kernel)
+    print(f"Saved kernel to file: {name}")
+
+    kernel.filter_kernel()
+    name = f"Kernel_filter_{conf.map_name}"
     np.save(f"{conf.kernel_path}{name}.npy", kernel.kernel)
     print(f"Saved kernel to file: {name}")
 
