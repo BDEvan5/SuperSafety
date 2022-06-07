@@ -48,6 +48,7 @@ def run_random_test_single(n=1):
     
     config_dict = vars(conf)
     config_dict['test_number'] = n
+    config_dict['agent_name'] = agent_name
     config_dict.update(eval_dict)
 
     save_conf_dict(config_dict)
@@ -99,7 +100,7 @@ def run_random_test(n=1):
 
 if __name__ == "__main__":
     # generate_kernels()
-    generate_kernel_single()
+    # generate_kernel_single()
     run_random_test_single(1)
 
     # run_random_test(1)

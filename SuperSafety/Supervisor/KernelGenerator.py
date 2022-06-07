@@ -28,7 +28,7 @@ class KernelGenerator:
         self.n_modes = sim_conf.nq_steer 
         self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
 
-        self.o_map = np.copy(self.track_img)    
+        self.o_map = np.copy(track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
         self.kernel = np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes), dtype=bool)
