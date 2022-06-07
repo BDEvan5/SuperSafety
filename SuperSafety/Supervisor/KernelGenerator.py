@@ -204,7 +204,8 @@ def shrink_img(img, n_shrinkpx):
 
 class VeiwKernel:
     def __init__(self, conf, track_img):
-        kernel_name = f"{conf.kernel_path}Kernel_{conf.kernel_mode}_{conf.map_name}.npy"
+        # kernel_name = f"{conf.kernel_path}Kernel_{conf.kernel_mode}_{conf.map_name}.npy"
+        kernel_name = f"{conf.kernel_path}Kernel_filter_{conf.map_name}.npy"
         self.kernel = np.load(kernel_name)
 
         self.o_map = np.copy(track_img)    
@@ -214,7 +215,8 @@ class VeiwKernel:
         self.phis = np.linspace(-conf.phi_range/2, conf.phi_range/2, conf.n_phi)
 
         self.qs = np.linspace(-conf.max_steer, conf.max_steer, conf.nq_steer)
-        self.view_speed_build(True)
+        # self.view_speed_build(True)
+        self.view_kernel_angles(True)
      
     def view_speed_build(self, show=True):
         self.axs[0, 0].cla()
@@ -281,6 +283,32 @@ class VeiwKernel:
         self.view_angle_build(False)
         plt.savefig(f"{self.sim_conf.kernel_path}KernelAngle_{name}_{self.sim_conf.kernel_mode}.png")
 
+    def view_kernel_angles(self, show=True):
+        self.axs[0, 0].cla()
+        self.axs[1, 0].cla()
+        self.axs[0, 1].cla()
+        self.axs[1, 1].cla()
+
+        half_phi = int(len(self.phis)/2)
+        quarter_phi = int(len(self.phis)/4)
+
+        mode_ind = 0
+
+        self.axs[0, 0].imshow(self.kernel[:, :, 0, mode_ind].T + self.o_map.T, origin='lower')
+        self.axs[0, 0].set_title(f"Kernel phi: {self.phis[0]}")
+        self.axs[1, 0].imshow(self.kernel[:, :, half_phi, mode_ind].T + self.o_map.T, origin='lower')
+        self.axs[1, 0].set_title(f"Kernel phi: {self.phis[half_phi]}")
+        self.axs[0, 1].imshow(self.kernel[:, :, -quarter_phi, mode_ind].T + self.o_map.T, origin='lower')
+        self.axs[0, 1].set_title(f"Kernel phi: {self.phis[-quarter_phi]}")
+        self.axs[1, 1].imshow(self.kernel[:, :, quarter_phi, mode_ind].T + self.o_map.T, origin='lower')
+        self.axs[1, 1].set_title(f"Kernel phi: {self.phis[quarter_phi]}")
+
+        plt.pause(0.0001)
+        # plt.pause(1)
+
+        if show:
+            plt.show()
+
 
 def build_track_kernel(conf):
     img = prepare_track_img(conf) 
@@ -318,8 +346,8 @@ if __name__ == "__main__":
     # conf = load_conf("kernel_config")
     # build_track_kernel(conf)
 
-    generate_kernels()
+    # generate_kernels()
 
-    # view_kernel()
+    view_kernel()
 
 
