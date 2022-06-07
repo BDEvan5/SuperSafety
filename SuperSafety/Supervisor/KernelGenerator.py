@@ -11,7 +11,7 @@ from SuperSafety.Utils.utils import load_conf
 
 class KernelGenerator:
     def __init__(self, track_img, sim_conf):
-        self.track_img = track_img
+        self.track_img = np.array(track_img, dtype=bool)
         self.sim_conf = sim_conf
         self.n_dx = int(sim_conf.n_dx)
         self.t_step = sim_conf.kernel_time_step
@@ -28,22 +28,24 @@ class KernelGenerator:
         self.n_modes = sim_conf.nq_steer 
         self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
 
-        self.o_map = np.copy(self.track_img)    
+        self.o_map = np.copy(track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
-        self.kernel = np.zeros((self.n_x, self.n_y, self.n_phi, self.n_modes), dtype=bool)
+        self.kernel = np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes), dtype=bool)
         self.previous_kernel = np.copy(self.kernel)
 
-        self.kernel[:, :, :, :] = self.track_img[:, :, None, None] * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
+        self.kernel[:, :, :, :] *= self.track_img[:, :, None, None]
+        # * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
         
         self.dynamics = np.load(f"{sim_conf.dynamics_path}{sim_conf.kernel_mode}_dyns.npy")
         print(f"Dynamics Loaded: {self.dynamics.shape}")
 
 
     def get_filled_kernel(self):
+        prev_filled = np.count_nonzero(self.previous_kernel)
         filled = np.count_nonzero(self.kernel)
         total = self.kernel.size
-        print(f"Filled: {filled} / {total} -> {filled/total}")
+        print(f"Filled: {filled} / {total} -> {filled/total} --> diff: {filled-prev_filled}")
         return filled/total
 
     def view_kernel_angles(self, show=True):
