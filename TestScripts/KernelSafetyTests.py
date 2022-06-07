@@ -100,7 +100,7 @@ def run_random_test(n=1):
 
 if __name__ == "__main__":
     # generate_kernels()
-    # generate_kernel_single()
+    generate_kernel_single()
     run_random_test_single(1)
 
     # run_random_test(1)
