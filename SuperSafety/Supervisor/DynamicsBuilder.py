@@ -37,10 +37,7 @@ class Modes:
 
 class SingleMode:
     def __init__(self, conf) -> None:
-        self.time_step = conf.kernel_time_step
-
-        d = 0
-        self.qs = np.array([[d, conf.vehicle_speed]])
+        self.qs = np.array([[0, conf.vehicle_speed]])
         self.n_modes = 1
 
     def get_mode_id(self, delta):
@@ -85,7 +82,10 @@ def build_viability_dynamics(state_m, act_m, conf):
             for k, action in enumerate(act_m.qs): # searches through actions
 
                 for l in range(ns):
-                    dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                             
+                    dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                     
+                # for delta in [-0.4, 0, 0.4]:
+                            
+                #     dynamics[i, j, k, l] = generate_dynamics_entry(state.copy(), action, state_m, dt*(l+1), conf.n_dx, phis)                             
                 
     print(f"Invalid transitions: {invalid_counter}")
     print(f"Dynamics Table has been built: {dynamics.shape}")

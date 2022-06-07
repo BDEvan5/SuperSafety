@@ -7,7 +7,7 @@ from numba import njit
 import yaml
 from PIL import Image
 from SuperSafety.Utils.utils import load_conf
-
+from SuperSafety.Supervisor.DynamicsBuilder import build_dynamics_table
 
 class KernelGenerator:
     def __init__(self, track_img, sim_conf):
@@ -112,7 +112,8 @@ def viability_loop(kernel, dynamics):
 @njit(cache=True)
 def check_viable_state(i, j, k, q, dynamics, previous_kernel):
     l_xs, l_ys, l_phis, n_modes = previous_kernel.shape
-    for l in range(n_modes):
+    _p, n_state_ms, n_act_ms, _i, _dim = dynamics.shape
+    for l in range(n_act_ms):
         safe = True
         di, dj, new_k, new_q = dynamics[k, q, l, 0, :]
 
@@ -282,7 +283,7 @@ def build_track_kernel(conf):
 
 def generate_kernels():
     conf = load_conf("config_file")
-    # build_dynamics_table(conf)
+    build_dynamics_table(conf)
 
     conf.map_name = "columbia_small"
     build_track_kernel(conf)

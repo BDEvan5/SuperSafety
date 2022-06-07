@@ -4,7 +4,7 @@ from numba import njit
 from matplotlib import pyplot as plt
 import yaml, csv
 from SuperSafety.Supervisor.Dynamics import run_dynamics_update 
-from SuperSafety.Supervisor.DynamicsBuilder import Modes
+from SuperSafety.Supervisor.DynamicsBuilder import Modes, SingleMode
 
 class SafetyHistory:
     def __init__(self):
@@ -76,8 +76,9 @@ class Supervisor:
         """
         
         self.d_max = conf.max_steer
-        self.kernel = TrackKernel(conf, False)
-        # self.kernel = TrackKernel(conf, True)
+
+        # self.kernel = TrackKernel(conf, False)
+        self.kernel = TrackKernel(conf, True, "Kernel_filter_columbia_small.npy")
         self.planner = planner
         self.safe_history = SafetyHistory()
         self.intervene = False
@@ -105,7 +106,6 @@ class Supervisor:
         state = np.array([p_x, p_y, pose_th, velocity, delta])
 
         return state
-
 
     def plan(self, obs):
         init_action = self.planner.plan(obs)
@@ -271,7 +271,7 @@ def check_state_modes(v, d):
         return True # this is allowed mode
     return False # this is not allowed mode: the friction is too high
 
-@njit(cache=True)
+# @njit(cache=True)
 def check_kernel_state(state, kernel, origin, resolution, phi_range, qs):
         x_ind = min(max(0, int(round((state[0]-origin[0])*resolution))), kernel.shape[0]-1)
         y_ind = min(max(0, int(round((state[1]-origin[1])*resolution))), kernel.shape[1]-1)
@@ -291,7 +291,8 @@ def check_kernel_state(state, kernel, origin, resolution, phi_range, qs):
         d_ind = min(max(0, int(round(di))), qs.shape[0]-1)
         mode = int(d_ind)
         
-        if kernel[x_ind, y_ind, theta_ind, mode] != 0:
+        # if kernel[x_ind, y_ind, theta_ind, mode] != 0:
+        if kernel[x_ind, y_ind, theta_ind, 0] != 0: #!!!! WARNING
             return False # unsfae state
         return True # safe state
 
@@ -306,7 +307,8 @@ class TrackKernel:
         self.kernel = np.load(kernel_name)
 
         self.plotting = plotting
-        self.m = Modes(sim_conf)
+        if sim_conf.no_steer: self.m = SingleMode(sim_conf)
+        else:                 self.m = Modes(sim_conf)
         self.resolution = sim_conf.n_dx
         self.phi_range = sim_conf.phi_range
         self.max_steer = sim_conf.max_steer
