@@ -7,7 +7,7 @@ from numba import njit
 import yaml
 from PIL import Image
 from SuperSafety.Utils.utils import load_conf
-
+from SuperSafety.Supervisor.DynamicsBuilder import build_dynamics_table
 
 class KernelGenerator:
     def __init__(self, track_img, sim_conf):
@@ -28,6 +28,7 @@ class KernelGenerator:
         self.n_modes = sim_conf.nq_steer 
         self.qs = np.linspace(-self.max_steer, self.max_steer, self.n_modes)
 
+
         self.o_map = np.copy(track_img)    
         self.fig, self.axs = plt.subplots(2, 2)
 
@@ -35,7 +36,6 @@ class KernelGenerator:
         self.previous_kernel = np.copy(self.kernel)
 
         self.kernel[:, :, :, :] *= self.track_img[:, :, None, None]
-        # * np.ones((self.n_x, self.n_y, self.n_phi, self.n_modes))
         
         self.dynamics = np.load(f"{sim_conf.dynamics_path}{sim_conf.kernel_mode}_dyns.npy")
         print(f"Dynamics Loaded: {self.dynamics.shape}")
@@ -88,6 +88,12 @@ class KernelGenerator:
 
         return self.get_filled_kernel()
 
+    def filter_kernel(self):
+        print(f"Starting to filter: {np.count_nonzero(self.kernel)} --> {self.kernel.shape}")
+        xs, ys, ths, ms = self.kernel.shape
+        new_kernel = np.zeros((xs, ys, ths, 1), dtype=bool)
+        self.kernel = filter_kernel(self.kernel, new_kernel)
+        print(f"finished filtering: {np.count_nonzero(self.kernel)} --> {self.kernel.shape}")
 
 
 @njit(cache=True)
@@ -108,7 +114,8 @@ def viability_loop(kernel, dynamics):
 @njit(cache=True)
 def check_viable_state(i, j, k, q, dynamics, previous_kernel):
     l_xs, l_ys, l_phis, n_modes = previous_kernel.shape
-    for l in range(n_modes):
+    _p, n_state_ms, n_act_ms, _i, _dim = dynamics.shape
+    for l in range(n_act_ms):
         safe = True
         di, dj, new_k, new_q = dynamics[k, q, l, 0, :]
 
@@ -132,6 +139,17 @@ def check_viable_state(i, j, k, q, dynamics, previous_kernel):
             return False # it is safe
 
     return True # it isn't safe because I haven't found a valid action yet...
+
+@njit(cache=True)
+def filter_kernel(kernel, new_kernel):
+    xs, ys, ths, ms = kernel.shape
+    assert ms > 2, "Single Use kernels..."
+    for i in range(xs):
+        for j in range(ys):
+            for k in range(ths):
+                new_kernel[i, j, k, 0] = kernel[i, j, k, :].any()
+            
+    return new_kernel
 
 
 def prepare_track_img(sim_conf):
@@ -275,10 +293,15 @@ def build_track_kernel(conf):
     np.save(f"{conf.kernel_path}{name}.npy", kernel.kernel)
     print(f"Saved kernel to file: {name}")
 
+    kernel.filter_kernel()
+    name = f"Kernel_filter_{conf.map_name}"
+    np.save(f"{conf.kernel_path}{name}.npy", kernel.kernel)
+    print(f"Saved kernel to file: {name}")
+
 
 def generate_kernels():
     conf = load_conf("config_file")
-    # build_dynamics_table(conf)
+    build_dynamics_table(conf)
 
     conf.map_name = "columbia_small"
     build_track_kernel(conf)
