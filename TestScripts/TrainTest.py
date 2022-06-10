@@ -30,6 +30,7 @@ def evaluate_vehicle(env, vehicle, conf, show=False):
         else:
             crashes += 1
 
+        env.render_trajectory(vehicle.planner.path, f"Traj_{i}_{vehicle.name}", vehicle.safe_history)
         # env.save_traj(f"Traj_{i}_{vehicle.name}")
 
     success_rate = (completes / (completes + crashes) * 100)

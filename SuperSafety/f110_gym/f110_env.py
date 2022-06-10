@@ -594,3 +594,42 @@ class F110Env(gym.Env):
         plt.savefig("Data/Trajectories/" + name + ".png")
 
         plt.show()
+    
+    def render_trajectory(self, path, save_name="VehicleName", safety_history=None):
+        """
+        Renders the map using the plt library
+
+        Args:
+            wait: plt.show() should be called or not
+        """
+        # self.env_map.render_map(4)
+        # plt.show()
+        fig = plt.figure(4)
+        plt.clf()
+        plt.title(save_name)
+
+        # xs, ys = self.env_map.convert_positions(self.history.positions)
+        poses = np.array(self.poses)
+        poses = poses[0:-1:5]
+        xs, ys = poses[:,0], poses[:,1]
+        if safety_history is None:
+            plt.plot(xs, ys, 'r', linewidth=3)
+            # plt.plot(xs, ys, '+', markersize=12)
+        else:
+            N = len(safety_history.planned_actions)
+            for i in range(N-1):
+                x_pts = [xs[i], xs[i+1]]
+                y_pts = [ys[i], ys[i+1]]
+                if safety_history.planned_actions[i][0] == safety_history.safe_actions[i][0]:
+                    plt.plot(x_pts, y_pts, 'r', linewidth=3)
+                else:
+                    plt.plot(x_pts, y_pts, 'b', linewidth=3)
+                
+        plt.gca().set_aspect('equal', adjustable='box')
+
+        plt.savefig(f"{path}/{save_name}_track.svg")
+        plt.savefig(f"{path}/{save_name}_track.png") # for easy viewing
+
+        safety_history.planned_actions = []
+        safety_history.safe_actions = []
+

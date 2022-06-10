@@ -2,8 +2,8 @@
 # map_name: "porto"
 # stheta: -0.4  # porto
 
-map_name: "columbia_small"
-# map_name: "f1_aut_wide"
+# map_name: "columbia_small"
+map_name: "f1_aut_wide"
 stheta: 0  # columbia
 
 map_ext: ".png"
@@ -20,7 +20,7 @@ m: 3.47
 g: 9.81
 l_r: 0.171
 l_f: 0.158
-vehicle_speed: 7          # speed at which the vehilce is set to travel at
+vehicle_speed: 4          # speed at which the vehilce is set to travel at
 
 # agent parameters
 n_beams: 20               # number of beams used by agent
@@ -54,8 +54,8 @@ kernel_path: "Data/Kernels/"
 dynamics_path: "Data/Dynamics/"
 
 nq_steer: 9              # number of modes for the steering range
-kernel_time_step: 0.2    # Planning timestep used in kernel generation
-lookahead_time_step: 0.2 # Planning timestep used the supervisor
+kernel_time_step: 0.4    # Planning timestep used in kernel generation
+lookahead_time_step: 0.4 # Planning timestep used the supervisor
 n_dx: 40                 # number of points per m in discretising the track map
 phi_range: 6.28 # I think this can be removed
 n_phi: 41                # number of points per rotation in discretising vehicle orientation

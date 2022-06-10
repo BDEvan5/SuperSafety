@@ -331,7 +331,8 @@ def generate_kernels():
     conf = load_conf("config_file")
     build_dynamics_table(conf)
 
-    conf.map_name = "columbia_small"
+    # conf.map_name = "columbia_small"
+    conf.map_name = "f1_aut_wide"
     build_track_kernel(conf)
 
 
@@ -346,8 +347,8 @@ if __name__ == "__main__":
     # conf = load_conf("kernel_config")
     # build_track_kernel(conf)
 
-    # generate_kernels()
+    generate_kernels()
 
-    view_kernel()
+    # view_kernel()
 
 
